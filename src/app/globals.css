@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* Lanna-ChiangRai Theme Customization */
+@theme {
+  --color-lanna-purple: #7B2CBF;
+  --color-lanna-gold: #D4AF37;
+}
