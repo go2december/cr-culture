@@ -1,13 +1,143 @@
-@import "tailwindcss";
-@plugin "daisyui";
+/* Google Fonts Import - must be first */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap');
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base Styles */
+@layer base {
+  html {
+    font-family: 'Noto Sans Thai', 'Sarabun', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Prompt', 'Noto Sans Thai', sans-serif;
+    font-weight: 600;
+  }
+
+  body {
+    @apply bg-base-100 text-base-content;
+    line-height: 1.7;
+  }
 }
 
-/* Lanna-ChiangRai Theme Customization */
-@theme {
-  --color-lanna-purple: #7B2CBF;
-  --color-lanna-gold: #D4AF37;
+/* Component Styles */
+@layer components {
+
+  /* Hero Section */
+  .hero-lanna {
+    @apply bg-gradient-to-br from-primary via-primary-dark to-secondary-dark;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-lanna::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/patterns/lanna-pattern.svg');
+    background-repeat: repeat;
+    opacity: 0.1;
+  }
+
+  /* Card Styles */
+  .card-district {
+    @apply card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300;
+    @apply border border-base-300;
+  }
+
+  .card-district:hover {
+    transform: translateY(-4px);
+    @apply border-primary-light;
+  }
+
+  /* Blog Card */
+  .card-heritage {
+    @apply card bg-base-100 shadow-lg rounded-card;
+    overflow: hidden;
+  }
+
+  .card-heritage .card-body {
+    @apply p-6;
+  }
+
+  /* Navigation */
+  .nav-lanna {
+    @apply navbar bg-base-100/95 backdrop-blur-sm shadow-md sticky top-0 z-50;
+  }
+
+  /* Section Headers */
+  .section-header {
+    @apply text-3xl md:text-4xl font-bold text-center mb-12;
+    position: relative;
+  }
+
+  .section-header::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    @apply bg-gradient-to-r from-primary to-secondary;
+    margin: 1rem auto 0;
+    border-radius: 2px;
+  }
+
+  /* Gold Accent Line */
+  .gold-accent {
+    @apply bg-gradient-to-r from-secondary-dark via-secondary to-secondary-dark;
+    height: 3px;
+  }
+
+  /* Committee Table */
+  .table-committee {
+    @apply table table-zebra w-full;
+  }
+
+  .table-committee th {
+    @apply bg-primary text-white;
+  }
+
+  /* Button styles */
+  .btn-lanna {
+    @apply btn btn-primary;
+  }
+
+  .btn-lanna-outline {
+    @apply btn btn-outline btn-primary;
+  }
+}
+
+/* Utility Classes */
+@layer utilities {
+  .text-gradient-lanna {
+    @apply bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent;
+  }
+
+  .bg-lanna-pattern {
+    background-image: url('/patterns/lanna-subtle.svg');
+    background-repeat: repeat;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

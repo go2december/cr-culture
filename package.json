@@ -1,32 +1,39 @@
 {
-  "name": "cr-culture-webapp",
-  "version": "0.1.0",
+  "name": "cr-culture",
+  "version": "1.0.0",
+  "description": "สภาวัฒนธรรมจังหวัดเชียงราย - Cultural Council of Chiang Rai Province Website",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate:types": "payload generate:types"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "@payloadcms/db-mongodb": "^3.0.0",
+    "@payloadcms/next": "^3.0.0",
+    "@payloadcms/richtext-lexical": "^3.0.0",
+    "@payloadcms/ui": "^3.0.0",
+    "daisyui": "^4.12.0",
     "next": "16.1.1",
-    "payload": "latest",
-    "@payloadcms/db-mongodb": "latest",
-    "@payloadcms/richtext-lexical": "latest",
-    "graphql": "^16.8.1",
-    "tailwindcss": "^4.1.0",
-    "daisyui": "^5.5.14",
-    "sharp": "latest"
+    "payload": "^3.0.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "sharp": "^0.33.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/node": "^20.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "postcss": "^8.0.0",
-    "eslint": "^8.0.0",
-    "eslint-config-next": "16.1.1"
+    "@types/node": "^22.0.0",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
+    "autoprefixer": "^10.4.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "16.1.1",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

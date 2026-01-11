@@ -1,34 +1,47 @@
-version: '3.8'
-
 services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: crculture_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: crculture
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - crculture_network
+
+  # Next.js + Payload CMS Application
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crculture_app
+    restart: unless-stopped
     ports:
       - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URI=mongodb://admin:password123@mongodb:27017/crculture?authSource=admin
+      - PAYLOAD_SECRET=cr-culture-super-secret-key-2026
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:3000
     volumes:
       - .:/app
       - /app/node_modules
-    environment:
-      - MONGODB_URI=mongodb://mongo:27017/cr-culture
-      - PAYLOAD_SECRET=YOUR_SECRET_KEY
-      - NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+      - /app/.next
     depends_on:
-      - mongo
+      - mongodb
     networks:
-      - cr-network
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    networks:
-      - cr-network
+      - crculture_network
+    command: npm run dev
 
 volumes:
-  mongo-data:
-
+  mongodb_data:
 
 networks:
-  cr-network:
+  crculture_network:
+    driver: bridge

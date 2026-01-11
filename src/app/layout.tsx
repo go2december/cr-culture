@@ -1,26 +1,40 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Kanit } from 'next/font/google'; // Using Kanit for Thai context if available, or just standard Inter
-
-// Prompt said "Lanna-ChiangRai Theme"
-// Let's assume standard font first or just className
-// Actually, I'll use a standard font placeholder or just body class.
+import type { Metadata } from 'next'
+import './globals.css'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-    title: 'Chiang Rai Cultural Council',
-    description: 'Preserving and promoting the cultural heritage of Chiang Rai',
-};
+    title: {
+        default: 'สภาวัฒนธรรมจังหวัดเชียงราย',
+        template: '%s | สภาวัฒนธรรมจังหวัดเชียงราย',
+    },
+    description: 'เว็บไซต์สภาวัฒนธรรมจังหวัดเชียงราย - ส่งเสริมและอนุรักษ์มรดกวัฒนธรรมล้านนา Cultural Council of Chiang Rai Province',
+    keywords: ['สภาวัฒนธรรม', 'เชียงราย', 'วัฒนธรรมล้านนา', 'มรดกภูมิปัญญา', 'Chiang Rai Culture'],
+    authors: [{ name: 'สภาวัฒนธรรมจังหวัดเชียงราย' }],
+    openGraph: {
+        title: 'สภาวัฒนธรรมจังหวัดเชียงราย',
+        description: 'ส่งเสริมและอนุรักษ์มรดกวัฒนธรรมล้านนา',
+        url: 'https://crculture.go.th',
+        siteName: 'สภาวัฒนธรรมจังหวัดเชียงราย',
+        locale: 'th_TH',
+        type: 'website',
+    },
+}
 
 export default function RootLayout({
     children,
 }: {
-    children: React.ReactNode;
+    children: React.ReactNode
 }) {
     return (
-        <html lang="th">
-            <body className="antialiased min-h-screen bg-base-100 text-base-content">
-                {children}
+        <html lang="th" data-theme="lanna">
+            <body className="min-h-screen flex flex-col">
+                <Navbar />
+                <main className="flex-grow">
+                    {children}
+                </main>
+                <Footer />
             </body>
         </html>
-    );
+    )
 }

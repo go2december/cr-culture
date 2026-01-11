@@ -1,15 +1,11 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
     slug: 'users',
-    labels: {
-        singular: 'ผู้ใช้งาน',
-        plural: 'ผู้ใช้งาน',
-    },
     auth: true,
     admin: {
         useAsTitle: 'email',
-        defaultColumns: ['email', 'name', 'role'],
+        group: 'ระบบ',
     },
     fields: [
         {
@@ -21,15 +17,13 @@ export const Users: CollectionConfig = {
             name: 'role',
             type: 'select',
             label: 'บทบาท',
-            required: true,
-            defaultValue: 'editor',
             options: [
                 { label: 'ผู้ดูแลระบบ', value: 'admin' },
                 { label: 'บรรณาธิการ', value: 'editor' },
-                { label: 'ผู้เขียน', value: 'author' },
+                { label: 'ผู้ใช้ทั่วไป', value: 'user' },
             ],
+            defaultValue: 'user',
+            required: true,
         },
     ],
-};
-
-export default Users;
+}

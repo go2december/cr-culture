@@ -1,10 +1,14 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
     slug: 'media',
+    admin: {
+        group: 'ระบบ',
+        description: 'คลังสื่อและไฟล์',
+    },
     labels: {
         singular: 'สื่อ',
-        plural: 'สื่อ',
+        plural: 'คลังสื่อ',
     },
     upload: {
         staticDir: 'media',
@@ -18,11 +22,11 @@ export const Media: CollectionConfig = {
             {
                 name: 'card',
                 width: 768,
-                height: 480,
+                height: 432,
                 position: 'centre',
             },
             {
-                name: 'hero',
+                name: 'cover',
                 width: 1920,
                 height: 1080,
                 position: 'centre',
@@ -30,64 +34,22 @@ export const Media: CollectionConfig = {
         ],
         adminThumbnail: 'thumbnail',
         mimeTypes: [
-            'image/png',
-            'image/jpeg',
-            'image/gif',
-            'image/webp',
-            'image/svg+xml',
+            'image/*',
+            'application/pdf',
             'video/mp4',
             'video/webm',
-            'video/ogg',
-            'audio/mpeg',
-            'audio/ogg',
-            'application/pdf',
         ],
-    },
-    admin: {
-        useAsTitle: 'alt',
-        defaultColumns: ['filename', 'alt', 'mediaType', 'updatedAt'],
     },
     fields: [
         {
             name: 'alt',
             type: 'text',
-            required: true,
-            label: 'คำอธิบายรูปภาพ (Alt Text)',
+            label: 'ข้อความทดแทน (Alt Text)',
         },
         {
             name: 'caption',
-            type: 'textarea',
+            type: 'text',
             label: 'คำบรรยาย',
         },
-        {
-            name: 'mediaType',
-            type: 'select',
-            label: 'ประเภทสื่อ',
-            defaultValue: 'image',
-            options: [
-                { label: 'รูปภาพ', value: 'image' },
-                { label: 'วิดีโอ', value: 'video' },
-                { label: 'เสียง', value: 'audio' },
-                { label: 'เอกสาร', value: 'document' },
-            ],
-        },
-        {
-            name: 'credit',
-            type: 'text',
-            label: 'เครดิต/ที่มา',
-        },
-        {
-            name: 'tags',
-            type: 'array',
-            label: 'แท็ก',
-            fields: [
-                {
-                    name: 'tag',
-                    type: 'text',
-                },
-            ],
-        },
     ],
-};
-
-export default Media;
+}

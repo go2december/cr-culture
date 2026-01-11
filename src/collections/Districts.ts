@@ -1,86 +1,110 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload'
 
 export const Districts: CollectionConfig = {
     slug: 'districts',
+    admin: {
+        useAsTitle: 'name',
+        group: 'เครือข่าย',
+        description: 'ข้อมูล 18 อำเภอของจังหวัดเชียงราย',
+    },
     labels: {
         singular: 'อำเภอ',
         plural: 'อำเภอ',
     },
-    admin: {
-        useAsTitle: 'name_th',
-        defaultColumns: ['name_th', 'name_en', 'code'],
-    },
     fields: [
+        {
+            name: 'name',
+            type: 'text',
+            label: 'ชื่ออำเภอ',
+            required: true,
+        },
+        {
+            name: 'slug',
+            type: 'text',
+            label: 'Slug (URL)',
+            required: true,
+            unique: true,
+            admin: {
+                description: 'ใช้สำหรับ URL เช่น "muang-chiang-rai"',
+            },
+        },
         {
             name: 'code',
             type: 'text',
-            required: true,
-            unique: true,
             label: 'รหัสอำเภอ',
         },
         {
-            name: 'name_th',
-            type: 'text',
-            required: true,
-            label: 'ชื่อภาษาไทย',
+            name: 'image',
+            type: 'upload',
+            relationTo: 'media',
+            label: 'รูปภาพสัญลักษณ์',
         },
         {
-            name: 'name_en',
-            type: 'text',
-            required: true,
-            label: 'ชื่อภาษาอังกฤษ',
+            name: 'coverImage',
+            type: 'upload',
+            relationTo: 'media',
+            label: 'รูปภาพปก',
         },
         {
             name: 'description',
-            type: 'richText',
+            type: 'textarea',
             label: 'รายละเอียด',
         },
         {
-            name: 'coordinates',
-            type: 'group',
-            label: 'พิกัด GPS',
+            type: 'row',
             fields: [
                 {
                     name: 'latitude',
                     type: 'number',
                     label: 'ละติจูด',
+                    admin: { width: '50%' },
                 },
                 {
                     name: 'longitude',
                     type: 'number',
                     label: 'ลองจิจูด',
+                    admin: { width: '50%' },
                 },
             ],
         },
         {
-            name: 'featuredImage',
-            type: 'upload',
-            relationTo: 'media',
-            label: 'รูปภาพประจำอำเภอ',
+            name: 'contact',
+            type: 'group',
+            label: 'ข้อมูลติดต่อ',
+            fields: [
+                {
+                    name: 'address',
+                    type: 'textarea',
+                    label: 'ที่อยู่',
+                },
+                {
+                    name: 'phone',
+                    type: 'text',
+                    label: 'เบอร์โทรศัพท์',
+                },
+                {
+                    name: 'email',
+                    type: 'email',
+                    label: 'อีเมล',
+                },
+                {
+                    name: 'facebook',
+                    type: 'text',
+                    label: 'Facebook',
+                },
+            ],
+        },
+        {
+            name: 'order',
+            type: 'number',
+            label: 'ลำดับการแสดงผล',
+            defaultValue: 99,
+        },
+        {
+            name: 'isActive',
+            type: 'checkbox',
+            label: 'เปิดใช้งาน',
+            defaultValue: true,
         },
     ],
-};
-
-// 18 Districts of Chiang Rai for seeding
-export const CHIANG_RAI_DISTRICTS = [
-    { code: '5701', name_th: 'เมืองเชียงราย', name_en: 'Mueang Chiang Rai' },
-    { code: '5702', name_th: 'เวียงชัย', name_en: 'Wiang Chai' },
-    { code: '5703', name_th: 'เชียงของ', name_en: 'Chiang Khong' },
-    { code: '5704', name_th: 'เทิง', name_en: 'Thoeng' },
-    { code: '5705', name_th: 'พาน', name_en: 'Phan' },
-    { code: '5706', name_th: 'ป่าแดด', name_en: 'Pa Daet' },
-    { code: '5707', name_th: 'แม่จัน', name_en: 'Mae Chan' },
-    { code: '5708', name_th: 'เชียงแสน', name_en: 'Chiang Saen' },
-    { code: '5709', name_th: 'แม่สาย', name_en: 'Mae Sai' },
-    { code: '5710', name_th: 'แม่สรวย', name_en: 'Mae Suai' },
-    { code: '5711', name_th: 'เวียงป่าเป้า', name_en: 'Wiang Pa Pao' },
-    { code: '5712', name_th: 'พญาเม็งราย', name_en: 'Phaya Mengrai' },
-    { code: '5713', name_th: 'เวียงแก่น', name_en: 'Wiang Kaen' },
-    { code: '5714', name_th: 'ขุนตาล', name_en: 'Khun Tan' },
-    { code: '5715', name_th: 'แม่ฟ้าหลวง', name_en: 'Mae Fa Luang' },
-    { code: '5716', name_th: 'แม่ลาว', name_en: 'Mae Lao' },
-    { code: '5717', name_th: 'เวียงเชียงรุ้ง', name_en: 'Wiang Chiang Rung' },
-    { code: '5718', name_th: 'ดอยหลวง', name_en: 'Doi Luang' },
-];
-
-export default Districts;
+}
