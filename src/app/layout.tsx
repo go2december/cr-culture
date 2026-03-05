@@ -27,16 +27,16 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="th" data-theme="lanna">
+        <html lang="th" data-theme="lofi">
             <head>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
                 <link
-                    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap"
+                    href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Charmonman:wght@400;700&family=Noto+Serif+Thai:wght@400;500;600;700&display=swap"
                     rel="stylesheet"
                 />
             </head>
-            <body className="min-h-screen flex flex-col">
+            <body className="min-h-screen flex flex-col font-sans">
                 <Navbar />
                 <main className="flex-grow">
                     {children}

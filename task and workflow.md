@@ -71,11 +71,11 @@
 
 คุณสามารถคัดลอก Tasks เหล่านี้ไปสั่งงาน Agent ทีละข้อตามลำดับได้เลย:
 
-#### **Task 1: Project Initialization & Docker**
+#### **Task 1: Project Initialization & Docker** ✅ (Completed)
 
 > **Prompt:** "สร้างโครงสร้างโปรเจกต์ Next.js 16.1.1 ร่วมกับ Payload CMS โดยใช้ Node.js 25 ให้จัดเตรียมไฟล์ `docker-compose.yml` สำหรับการรัน Container ของ App และ MongoDB เวอร์ชั่นล่าสุด พร้อมติดตั้ง Tailwind CSS 4.1 และ daisyUI 5.5.14 ให้พร้อมใช้งาน"
 
-#### **Task 2: Define Content Collections (Schema)**
+#### **Task 2: Define Content Collections (Schema)** ✅ (Completed)
 
 > **Prompt:** "กำหนด Collections ใน Payload CMS ดังนี้:
 > 1. `ProvincialBoard`: ฟิลด์ (Name, Position, Image, Bio)
@@ -87,15 +87,15 @@
 > 
 > 
 
-#### **Task 3: Layout & Theme Design**
+#### **Task 3: Layout & Theme Design** ✅ (Completed)
 
 > **Prompt:** "ออกแบบไฟล์ `globals.css` โดยใช้ Tailwind 4.1 Engine ใหม่ และตั้งค่าธีม daisyUI 5.5 ให้เป็นสไตล์ 'Modern Lanna' (สีม่วงเชียงราย, สีทองเมทัลลิก, พื้นหลังสีขาวนวล) และสร้าง Navigation Bar ที่มีเมนูครบตาม Site Map ที่กำหนด"
 
-#### **Task 4: District Detail & Committee Logic**
+#### **Task 4: District Detail & Committee Logic** 🔄 (In Progress)
 
 > **Prompt:** "สร้างหน้า Dynamic Route `/districts/[slug]` ใน Next.js ให้ดึงข้อมูลจาก `Districts` และเขียน Logic เพื่อดึงรายชื่อจาก `DistrictMembers` ทั้งหมดที่สังกัดอำเภอนั้นมาแสดงผลเป็นตารางกรรมการ และดึง `Activities` ที่มี Level เป็น 'District' ของอำเภอนั้นมาโชว์ด้วย"
 
-#### **Task 5: Heritage Blog Engine**
+#### **Task 5: Heritage Blog Engine** ⏳ (Pending)
 
 > **Prompt:** "สร้างหน้าคลังมรดกภูมิปัญญา `/heritage` ที่แสดงบทความแบบ Blog Grid โดยมีฟังก์ชันการ Filter ตามหมวดหมู่ (Category) และ Tags และหน้าอ่านบทความ `/heritage/[slug]` ที่รองรับ Rich Text และแกลเลอรีรูปภาพ"
 

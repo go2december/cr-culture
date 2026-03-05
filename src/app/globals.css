@@ -1,40 +1,62 @@
 @import "tailwindcss";
-@plugin "daisyui";
 
-/* Modern Lanna Theme for CR-Culture */
+@plugin "daisyui" {
+  themes: light;
+}
+
+/* 🎨 Modern Lanna Theme for CR-Culture */
 @theme {
-  /* Primary Colors - สีม่วงเชียงราย */
-  --color-primary: oklch(0.45 0.2 290);
-  --color-primary-light: oklch(0.65 0.18 290);
-  --color-primary-dark: oklch(0.35 0.22 290);
+  /* Primary Colors - Indigo (คราม/หม้อห้อม - Reflecting local lifestyle & textiles) */
+  --color-primary: #1B2A49;
+  --color-primary-light: #2A406B;
+  --color-primary-dark: #0D1629;
 
-  /* Secondary Colors - สีทองเมทัลลิก */
-  --color-secondary: oklch(0.75 0.12 85);
-  --color-secondary-light: oklch(0.85 0.1 85);
-  --color-secondary-dark: oklch(0.65 0.14 85);
+  /* Secondary Colors - Gold Leaf (ทอง - Reflecting the glory of Lanna kingdom & temples) */
+  --color-secondary: #D4AF37;
+  --color-secondary-light: #E8CA6B;
+  --color-secondary-dark: #A38526;
 
-  /* Accent - สีเขียวล้านนา */
-  --color-accent: oklch(0.55 0.15 145);
+  /* Accent - Vermilion (แดงชาด - Reflecting temples and Tung (flags)) */
+  --color-accent: #C83228;
+  --color-accent-light: #ED5045;
+  --color-accent-dark: #911D15;
 
   /* Neutral Colors */
-  --color-base-100: oklch(0.98 0.005 85);
-  --color-base-200: oklch(0.95 0.008 85);
-  --color-base-300: oklch(0.90 0.01 85);
-  --color-base-content: oklch(0.25 0.02 290);
+  --color-base-100: #FAFAFA;
+  --color-base-200: #F4F4F5;
+  --color-base-300: #E4E4E7;
+  --color-base-content: #1B2A49;
 
-  /* Typography - Custom fonts loaded via layout.tsx */
-  --font-sans: 'Noto Sans Thai', 'Sarabun', system-ui, sans-serif;
-  --font-display: 'Prompt', 'Noto Sans Thai', sans-serif;
+  /* Typography */
+  --font-sans: 'Prompt', 'Noto Sans Thai', system-ui, sans-serif;
+  --font-display: 'Charmonman', 'Noto Serif Thai', serif;
 
   /* Border Radius */
-  --radius-lanna: 0.75rem;
+  --radius-lanna: 0.5rem;
   --radius-card: 1rem;
+}
+
+/* 🧩 Overriding DaisyUI Root Variables */
+:root {
+  --color-primary: #1B2A49;
+  --color-primary-content: #ffffff;
+  --color-secondary: #D4AF37;
+  --color-secondary-content: #ffffff;
+  --color-accent: #C83228;
+  --color-accent-content: #ffffff;
+  --color-base-100: #FAFAFA;
+  --color-base-200: #F4F4F5;
+  --color-base-300: #E4E4E7;
+  --color-base-content: #1B2A49;
+  --radius-box: 1rem;
+  --radius-btn: 0.5rem;
 }
 
 /* Base Styles */
 html {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 h1,
@@ -44,69 +66,53 @@ h4,
 h5,
 h6 {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 body {
   background-color: var(--color-base-100);
   color: var(--color-base-content);
-  line-height: 1.7;
+  line-height: 1.8;
+  font-weight: 300;
 }
 
-/* Hero Section */
-.hero-lanna {
-  background: linear-gradient(135deg,
-      var(--color-primary) 0%,
-      var(--color-primary-dark) 50%,
-      var(--color-secondary-dark) 100%);
+/* 🧩 Abstract SVG Masking (ลายกนก) */
+.mask-kanok {
+  /* Using Tailwind 4's mask-image with a custom SVGs */
+  mask-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l1.43 1.43-23.86 23.86.002.001-6.438 6.438L10.323 16.29 8.892 14.86l15.438-15.438-1.43-1.43-16.87 16.87-1.43 1.43L23.18 34.872l1.43-1.43 15.438-15.438 1.43 1.43L24.608 36.3l6.438 6.438.001-.001 23.86-23.86 1.43-1.43-1.43-1.43-23.86-23.86.002-.001-6.438-6.438L10.323.003h14.286l15.438 15.438 1.43-1.43L26.04.003h28.587zM4.608 0L0 4.609v14.286l15.438-15.438H4.608zM0 33.18L13.18 19.999l1.43 1.43L0 36.04V33.18zM0 53.18L33.18 20l1.43 1.43L0 56.04v-2.86zm10.323 6.82l23.86-23.86 1.43 1.43L11.753 60h-1.43zm14.286 0l23.86-23.86 1.43 1.43L26.04 60h-1.431zm14.287 0l23.86-23.86 1.43 1.43L40.327 60H38.896zm14.287 0L60 53.18v2.86L54.613 60h-1.43zM60 33.18l-13.18 13.18-1.43-1.43L60 30.32v2.86zm0-20l-33.18 33.18-1.43-1.43L60 10.32v2.86z' fill='%23000' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+  mask-size: 100px;
+  mask-repeat: repeat;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l1.43 1.43-23.86 23.86.002.001-6.438 6.438L10.323 16.29 8.892 14.86l15.438-15.438-1.43-1.43-16.87 16.87-1.43 1.43L23.18 34.872l1.43-1.43 15.438-15.438 1.43 1.43L24.608 36.3l6.438 6.438.001-.001 23.86-23.86 1.43-1.43-1.43-1.43-23.86-23.86.002-.001-6.438-6.438L10.323.003h14.286l15.438 15.438 1.43-1.43L26.04.003h28.587zM4.608 0L0 4.609v14.286l15.438-15.438H4.608zM0 33.18L13.18 19.999l1.43 1.43L0 36.04V33.18zM0 53.18L33.18 20l1.43 1.43L0 56.04v-2.86zm10.323 6.82l23.86-23.86 1.43 1.43L11.753 60h-1.43zm14.286 0l23.86-23.86 1.43 1.43L26.04 60h-1.431zm14.287 0l23.86-23.86 1.43 1.43L40.327 60H38.896zm14.287 0L60 53.18v2.86L54.613 60h-1.43zM60 33.18l-13.18 13.18-1.43-1.43L60 30.32v2.86zm0-20l-33.18 33.18-1.43-1.43L60 10.32v2.86z' fill='%23000' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100px;
+  -webkit-mask-repeat: repeat;
+}
+
+/* 🧩 Woven Textile SVG Masking (ลายผ้าทอล้านนา) */
+.mask-woven {
+  mask-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M30 0l30 30-30 30L0 30 30 0zm0 10L10 30l20 20 20-20-20-20zM15 30l15-15 15 15-15 15-15-15zm5 0l10 10 10-10-10-10-10 10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  mask-size: 60px;
+  mask-repeat: repeat;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M30 0l30 30-30 30L0 30 30 0zm0 10L10 30l20 20 20-20-20-20zM15 30l15-15 15 15-15 15-15-15zm5 0l10 10 10-10-10-10-10 10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: 60px;
+  -webkit-mask-repeat: repeat;
+}
+
+/* Background Abstract Overlay */
+.bg-lanna-pattern {
   position: relative;
-  overflow: hidden;
 }
 
-.hero-lanna::before {
+.bg-lanna-pattern::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('/patterns/lanna-pattern.svg');
-  background-repeat: repeat;
+  background-color: var(--color-primary);
+  mask-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4v16h2V24h-2zm4 0v16h2V24h-2zm4 0v16h2V24h-2zm4 0v16h2V24h-2z' fill='%23000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+  mask-size: 80px;
   opacity: 0.1;
-}
-
-/* Card Styles */
-.card-district {
-  background-color: var(--color-base-100);
-  border: 1px solid var(--color-base-300);
-  border-radius: var(--radius-card);
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  transition: all 0.3s ease;
-}
-
-.card-district:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-primary-light);
-  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-}
-
-/* Blog Card */
-.card-heritage {
-  background-color: var(--color-base-100);
-  border-radius: var(--radius-card);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  overflow: hidden;
-}
-
-.card-heritage .card-body {
-  padding: 1.5rem;
-}
-
-/* Navigation */
-.nav-lanna {
-  background-color: rgb(255 255 255 / 0.95);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  z-index: 0;
+  pointer-events: none;
 }
 
 /* Section Headers */
@@ -116,11 +122,13 @@ body {
   text-align: center;
   margin-bottom: 3rem;
   position: relative;
+  color: var(--color-primary);
+  font-family: var(--font-display);
 }
 
 @media (min-width: 768px) {
   .section-header {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 }
 
@@ -129,70 +137,113 @@ body {
   display: block;
   width: 80px;
   height: 4px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  background: var(--color-secondary);
   margin: 1rem auto 0;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
-/* Gold Accent Line */
-.gold-accent {
-  background: linear-gradient(90deg, var(--color-secondary-dark), var(--color-secondary), var(--color-secondary-dark));
-  height: 3px;
+/* Card Styles */
+.card-district,
+.card-heritage,
+.card-modern {
+  background-color: #ffffff;
+  border: 1px solid var(--color-base-200);
+  border-radius: var(--radius-card);
+  box-shadow: 0 4px 6px -1px rgb(27 42 73 / 0.05), 0 2px 4px -2px rgb(27 42 73 / 0.05);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
 }
 
-/* Committee Table */
-.table-committee th {
-  background-color: var(--color-primary);
-  color: white;
+.card-district:hover,
+.card-heritage:hover,
+.card-modern:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-secondary-light);
+  box-shadow: 0 20px 25px -5px rgb(27 42 73 / 0.1), 0 8px 10px -6px rgb(27 42 73 / 0.1);
+}
+
+/* Navigation */
+.nav-lanna {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-base-200);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: all 0.3s ease;
 }
 
 /* Button Styles */
 .btn-lanna {
   background-color: var(--color-primary);
   color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-lanna);
   font-weight: 500;
-  transition: all 0.2s ease;
+  letter-spacing: 0.02em;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+  box-shadow: 0 4px 6px -1px rgb(27 42 73 / 0.2);
 }
 
 .btn-lanna:hover {
   background-color: var(--color-primary-dark);
+  box-shadow: 0 10px 15px -3px rgb(27 42 73 / 0.3);
+  transform: translateY(-2px);
 }
 
-.btn-lanna-outline {
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  background: transparent;
-}
-
-.btn-lanna-outline:hover {
-  background-color: var(--color-primary);
+.btn-accent-lanna {
+  background-color: var(--color-accent);
   color: white;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-lanna);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: none;
 }
 
-/* Utility Classes */
-.text-gradient-lanna {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.btn-accent-lanna:hover {
+  background-color: var(--color-accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px -3px rgb(200 50 40 / 0.3);
 }
 
-.bg-lanna-pattern {
-  background-image: url('/patterns/lanna-subtle.svg');
-  background-repeat: repeat;
+/* Timeline specific styles */
+.timeline-lanna .timeline-start {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+.timeline-lanna .timeline-middle svg {
+  color: var(--color-secondary);
 }
 
-@keyframes fadeIn {
+/* Smooth Animations */
+.animate-fade-in-up {
+  opacity: 0;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -201,5 +252,20 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
