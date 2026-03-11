@@ -20,9 +20,14 @@ export const DistrictMembers: CollectionConfig = {
         },
         {
             name: 'position',
-            type: 'text',
+            type: 'relationship',
+            relationTo: 'district-board-positions',
             label: 'ตำแหน่ง',
             required: true,
+            hasMany: false,
+            admin: {
+                description: 'เลือกตำแหน่งจากรายการ (สามารถเพิ่มใหม่ได้จากเมนู ตำแหน่งกรรมการอำเภอ)',
+            },
         },
         {
             name: 'positionOrder',

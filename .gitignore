@@ -7,3 +7,7 @@ media
 .DS_Store
 dist
 build
+tsconfig.tsbuildinfo
+parsed.txt
+parsed_full.txt
+output.txt

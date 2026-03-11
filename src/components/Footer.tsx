@@ -58,9 +58,9 @@ export default function Footer() {
                         <h4 className="font-bold text-[15px] mb-5 text-primary tracking-wide">มรดกภูมิปัญญา</h4>
                         <ul className="space-y-3">
                             <li><Link href="/heritage?category=1" className="text-[15px] text-base-content/60 hover:text-primary transition-colors inline-block font-light">มรดกภูมิปัญญา</Link></li>
-                            <li><Link href="/heritage?category=2" className="text-[15px] text-base-content/60 hover:text-primary transition-colors inline-block font-light">ศูนย์เชียงรายศึกษา</Link></li>
-                            <li><Link href="/heritage?category=3" className="text-[15px] text-base-content/60 hover:text-primary transition-colors inline-block font-light">แหล่งเรียนรู้</Link></li>
-                            <li><Link href="/heritage?category=4" className="text-[15px] text-base-content/60 hover:text-primary transition-colors inline-block font-light">ปราชญ์ชาวบ้าน</Link></li>
+                            <li><Link href="/heritage?category=2" className="text-[15px] text-base-content/60 hover:text-primary transition-colors inline-block font-light">แหล่งเรียนรู้</Link></li>
+                            <li><Link href="/heritage?category=3" className="text-[15px] text-base-content/60 hover:text-primary transition-colors inline-block font-light">ปราชญ์ชาวบ้าน</Link></li>
+                            <li><a href="https://social.crru.ac.th/cr-studies-center" target="_blank" rel="noopener noreferrer" className="text-[15px] text-base-content/60 hover:text-primary transition-colors inline-flex items-center gap-1 font-light">ศูนย์เชียงรายศึกษา <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" x2="21" y1="14" y2="3" /></svg></a></li>
                         </ul>
                     </div>
 

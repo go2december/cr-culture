@@ -33,7 +33,6 @@ export const HeritageBlog: CollectionConfig = {
             required: true,
             options: [
                 { label: 'มรดกภูมิปัญญา', value: 'intangible-heritage' },
-                { label: 'ศูนย์เชียงรายศึกษา', value: 'chiangrai-studies' },
                 { label: 'แหล่งเรียนรู้', value: 'learning-resources' },
                 { label: 'ปราชญ์ชาวบ้าน', value: 'local-wisdom' },
             ],
@@ -43,13 +42,12 @@ export const HeritageBlog: CollectionConfig = {
             type: 'upload',
             relationTo: 'media',
             label: 'รูปภาพปก',
-            required: true,
         },
         {
             name: 'excerpt',
             type: 'textarea',
             label: 'บทคัดย่อ',
-            maxLength: 300,
+            maxLength: 500,
         },
         {
             name: 'content',

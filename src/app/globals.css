@@ -28,8 +28,8 @@
   --color-base-content: #1B2A49;
 
   /* Typography */
-  --font-sans: 'Prompt', 'Noto Sans Thai', system-ui, sans-serif;
-  --font-display: 'Charmonman', 'Noto Serif Thai', serif;
+  --font-sans: var(--font-sans), 'Noto Sans Thai', system-ui, sans-serif;
+  --font-display: var(--font-display), var(--font-noto-serif), serif;
 
   /* Border Radius */
   --radius-lanna: 0.5rem;

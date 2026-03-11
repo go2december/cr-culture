@@ -6,3 +6,7 @@ node_modules
 build
 dist
 .agent
+*.log
+*.txt
+tsconfig.tsbuildinfo
+media

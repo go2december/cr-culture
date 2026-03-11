@@ -11,13 +11,13 @@
     "generate:types": "payload generate:types"
   },
   "dependencies": {
-    "@payloadcms/db-mongodb": "^3.0.0",
-    "@payloadcms/next": "^3.0.0",
-    "@payloadcms/richtext-lexical": "^3.0.0",
-    "@payloadcms/ui": "^3.0.0",
+    "@payloadcms/db-mongodb": "^3.79.0",
+    "@payloadcms/next": "^3.79.0",
+    "@payloadcms/richtext-lexical": "^3.79.0",
+    "@payloadcms/ui": "^3.79.0",
     "daisyui": "^5.5.14",
-    "next": "16.1.1",
-    "payload": "^3.0.0",
+    "next": "^16.1.6",
+    "payload": "^3.79.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "sharp": "^0.33.0"
@@ -28,7 +28,7 @@
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
     "eslint": "^9.0.0",
-    "eslint-config-next": "16.1.1",
+    "eslint-config-next": "^16.1.6",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.7.0"
   },

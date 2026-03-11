@@ -31,9 +31,9 @@ const menuItems = [
         submenu: [
             { label: 'ทั้งหมด', href: '/heritage' },
             { label: 'มรดกภูมิปัญญา', href: '/heritage?category=1' },
-            { label: 'ศูนย์เชียงรายศึกษา', href: '/heritage?category=2' },
-            { label: 'แหล่งเรียนรู้', href: '/heritage?category=3' },
-            { label: 'ปราชญ์ชาวบ้าน', href: '/heritage?category=4' },
+            { label: 'แหล่งเรียนรู้', href: '/heritage?category=2' },
+            { label: 'ปราชญ์ชาวบ้าน', href: '/heritage?category=3' },
+            { label: 'ศูนย์เชียงรายศึกษา ↗', href: 'https://social.crru.ac.th/cr-studies-center', external: true },
         ],
     },
     {
@@ -71,9 +71,15 @@ export default function Navbar() {
                                                     <ul className="p-2 gap-1 relative before:absolute before:left-4 before:top-0 before:bottom-0 before:w-px before:bg-base-200">
                                                         {item.submenu.map((sub) => (
                                                             <li key={sub.href}>
-                                                                <Link href={sub.href} className="py-2 hover:bg-slate-50 hover:text-primary rounded-lg text-sm text-base-content/70">
-                                                                    {sub.label}
-                                                                </Link>
+                                                                {sub.external ? (
+                                                                    <a href={sub.href} target="_blank" rel="noopener noreferrer" className="py-2 hover:bg-slate-50 hover:text-primary rounded-lg text-sm text-base-content/70">
+                                                                        {sub.label}
+                                                                    </a>
+                                                                ) : (
+                                                                    <Link href={sub.href} className="py-2 hover:bg-slate-50 hover:text-primary rounded-lg text-sm text-base-content/70">
+                                                                        {sub.label}
+                                                                    </Link>
+                                                                )}
                                                             </li>
                                                         ))}
                                                     </ul>
@@ -114,9 +120,15 @@ export default function Navbar() {
                                                         <div className="absolute -top-1 left-6 w-3 h-3 bg-white border-l border-t border-base-200 rotate-45 -z-10"></div>
                                                         {item.submenu.map((sub) => (
                                                             <li key={sub.href}>
-                                                                <Link href={sub.href} className="block px-4 py-2.5 text-sm text-base-content/70 hover:bg-secondary/5 hover:text-primary rounded-xl transition-colors">
-                                                                    {sub.label}
-                                                                </Link>
+                                                                {sub.external ? (
+                                                                    <a href={sub.href} target="_blank" rel="noopener noreferrer" className="block px-4 py-2.5 text-sm text-base-content/70 hover:bg-secondary/5 hover:text-primary rounded-xl transition-colors">
+                                                                        {sub.label}
+                                                                    </a>
+                                                                ) : (
+                                                                    <Link href={sub.href} className="block px-4 py-2.5 text-sm text-base-content/70 hover:bg-secondary/5 hover:text-primary rounded-xl transition-colors">
+                                                                        {sub.label}
+                                                                    </Link>
+                                                                )}
                                                             </li>
                                                         ))}
                                                     </div>

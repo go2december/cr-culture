@@ -20,9 +20,14 @@ export const ProvincialBoard: CollectionConfig = {
         },
         {
             name: 'position',
-            type: 'text',
+            type: 'relationship',
+            relationTo: 'board-positions',
             label: 'ตำแหน่ง',
             required: true,
+            hasMany: false,
+            admin: {
+                description: 'เลือกตำแหน่งจากรายการ (สามารถเพิ่มใหม่ได้จากเมนู ตำแหน่งคณะกรรมการ)',
+            },
         },
         {
             name: 'positionOrder',

@@ -3,6 +3,10 @@ import { withPayload } from '@payloadcms/next/withPayload'
 
 const nextConfig: NextConfig = {
     output: 'standalone',
+    reactStrictMode: true,
+    experimental: {
+        optimizePackageImports: ['lucide-react', 'date-fns'],
+    },
     // Image optimization domains
     images: {
         remotePatterns: [
