@@ -17,14 +17,14 @@ export default async function DistrictDetailPage({
         return notFound()
     }
 
-    const rawMembers = await getDistrictMembers(districtData.id)
+    const rawMembers = await getDistrictMembers(String(districtData.id))
     const members = rawMembers.length > 0 ? rawMembers.map((member: any) => ({
         name: member.name,
         position: member.position?.title || 'กรรมการ',
         order: member.positionOrder || 99
     })).sort((a: any, b: any) => a.order - b.order) : []
 
-    const activities = await getActivities({ level: 'district', districtId: districtData.id, limit: 5 })
+    const { docs: activities } = await getActivities({ level: 'district', districtId: String(districtData.id), limit: 5 })
 
     // Build the final district object to map safely
     const district = {

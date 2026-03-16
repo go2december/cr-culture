@@ -1,59 +1,68 @@
 import Link from 'next/link'
-import { getActivities, getDistricts } from '@/lib/payload'
+import { getActivities, getDistricts, getNews } from '@/lib/payload'
 
 export default async function Home() {
     // Fetch data from Payload API
-    const activitiesData = await getActivities({ limit: 3 })
+    const { docs: activitiesData } = await getActivities({ limit: 3 })
+    const { docs: newsData } = await getNews({ limit: 3 })
     const districtsData = await getDistricts()
-
-    // Fallback data if no activities
-    const displayActivities = activitiesData && activitiesData.length > 0 ? activitiesData : [
-        { id: 1, title: 'โครงการสืบสานมรดกภูมิปัญญาท้องถิ่น ประจำปี 2569', excerpt: 'สภาวัฒนธรรมจังหวัดเชียงรายจัดกิจกรรมส่งเสริมการเรียนรู้และถ่ายทอดภูมิปัญญาจากเครือข่ายศิลปิน', titleImage: { url: 'https://images.unsplash.com/photo-1598911543265-51e8df81c817?q=80&w=800&auto=format&fit=crop' }, date: '2026-03-01T00:00:00.000Z' }
-    ]
 
     return (
         <div className="overflow-hidden bg-base-100 font-sans">
-            {/* Elegant Hero Section with Modern Lanna Concept */}
-            <section className="min-h-[90vh] flex items-center justify-center relative overflow-hidden bg-slate-50">
-                {/* Refined Background Decorators */}
-                <div className="absolute inset-0 z-0 bg-lanna-pattern">
-                    <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-gradient-to-bl from-secondary/10 to-transparent blur-[120px]" />
-                    <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-gradient-to-tr from-accent/5 to-transparent blur-[130px]" />
-                </div>
+            {/* Majestic Hero Section with Modern Lanna Concept */}
+            <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-stone-50">
+                {/* Geometric Red Background Pattern */}
+                <div 
+                    className="absolute inset-0 z-0 opacity-[0.08] pointer-events-none"
+                    style={{
+                        backgroundImage: `linear-gradient(45deg, #A03C3C 25%, transparent 25%, transparent 75%, #A03C3C 75%, #A03C3C),
+                                          linear-gradient(135deg, #A03C3C 25%, transparent 25%, transparent 75%, #A03C3C 75%, #A03C3C)`,
+                        backgroundSize: '40px 40px',
+                        backgroundPosition: '0 0, 20px 0'
+                    }}
+                />
+                
+                {/* Soft gradient overlays to blend the pattern and ensure text readability */}
+                <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-gradient-to-bl from-red-900/10 to-transparent blur-[120px]" />
+                <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-gradient-to-tr from-secondary/5 to-transparent blur-[130px]" />
 
-                <div className="container mx-auto px-4 z-10 pt-24 pb-16">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/60 backdrop-blur-md border border-secondary/20 text-sm font-medium text-primary shadow-sm mb-10 animate-fade-in-up">
-                            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                            Modern Lanna : รากเหง้าที่ร่วมสมัย
+                <div className="container mx-auto px-4 z-10 pt-32 pb-24 flex flex-col items-center">
+                    <div className="max-w-5xl mx-auto text-center">
+                        <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/60 backdrop-blur-md border border-red-900/10 text-sm font-medium text-stone-700 shadow-sm mb-12 animate-fade-in-up uppercase tracking-widest">
+                            <span className="w-2 h-2 rounded-full bg-[#A03C3C] animate-ping" />
+                            <span className="text-[#A03C3C] font-bold">Modern Lanna</span> <span className="text-stone-300 px-1">|</span> รากเหง้าที่ร่วมสมัย
                         </div>
 
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 animate-fade-in-up delay-100 tracking-tight text-primary leading-[1.1] font-display">
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-10 animate-fade-in-up delay-100 tracking-tight text-stone-800 leading-[1.1] font-display">
                             สภาวัฒนธรรม <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary-dark via-secondary to-secondary-light drop-shadow-sm font-light">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8A2B2B] via-[#A03C3C] to-[#C35252] font-normal relative">
                                 จังหวัดเชียงราย
+                                {/* Sparkle Effect */}
+                                <svg className="absolute -top-4 -right-8 w-10 h-10 text-[#A03C3C]/60 animate-pulse" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6h8l-6.4 4.7 2.4 7.7-6.4-4.7-6.4 4.7 2.4-7.7-6.4-4.7h8z"/></svg>
                             </span>
                         </h1>
 
-                        <p className="text-xl md:text-2xl mb-14 text-base-content/70 max-w-2xl mx-auto animate-fade-in-up delay-200 font-light leading-relaxed">
-                            เมืองศิลปิน ถิ่นวัฒนธรรม ส่งเสริมและอนุรักษ์มรดกล้านนา <br className="hidden sm:block" />
-                            เชื่อมโยงอดีตสู่ปัจจุบันอย่างยั่งยืน
+                        <p className="text-xl md:text-2xl lg:text-3xl mb-16 text-stone-600 max-w-3xl mx-auto animate-fade-in-up delay-200 font-light leading-relaxed">
+                            เมืองศิลปิน ถิ่นวัฒนธรรม ส่งเสริมและอนุรักษ์มรดกล้านนา <br className="hidden md:block" />
+                            เชื่อมโยงอดีตสู่ปัจจุบันอย่างยั่งยืนเพื่อชนรุ่นหลัง
                         </p>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up delay-300">
-                            <Link href="/districts" className="btn-lanna w-full sm:w-auto text-center flex items-center justify-center gap-2 px-8 py-4 text-lg">
-                                เครือข่าย 18 อำเภอ
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in-up delay-300">
+                            <Link href="/districts" className="group relative w-full sm:w-auto overflow-hidden rounded-full bg-gradient-to-r from-[#A03C3C] to-[#8A2B2B] px-10 py-5 text-center text-lg font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#A03C3C]/30">
+                                <span className="relative z-10 flex items-center justify-center gap-3">
+                                    เครือข่าย 18 อำเภอ
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1.5 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                </span>
                             </Link>
-                            <Link href="/heritage" className="btn-lanna-outline w-full sm:w-auto text-center border-2 border-base-200 bg-white shadow-sm hover:border-secondary hover:text-primary px-8 py-4 text-lg">
+                            <Link href="/heritage" className="w-full sm:w-auto text-center rounded-full border border-stone-200 bg-white px-10 py-5 text-lg font-medium text-stone-700 shadow-sm transition-all hover:bg-stone-50 hover:border-stone-300 hover:text-[#A03C3C]">
                                 คลังมรดกภูมิปัญญา
                             </Link>
                         </div>
                     </div>
                 </div>
 
-                {/* Elegant Bottom Edge */}
-                <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent z-10" />
+                {/* Elegant Bottom Edge Curve or Gradient */}
+                <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
             </section>
 
             {/* Cultural Heritage Highlights */}
@@ -141,19 +150,26 @@ export default async function Home() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {displayActivities.map((item: any, i) => {
+                        {activitiesData && activitiesData.length > 0 ? activitiesData.map((item: any, i) => {
                             const dateObj = new Date(item.date)
                             const formattedDate = dateObj.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })
-                            const imageUrl = item.titleImage?.url || item.gallery?.[0]?.image?.url || 'https://images.unsplash.com/photo-1598911543265-51e8df81c817?q=80&w=800&auto=format&fit=crop'
+                            const imageUrl = item.titleImage?.url || item.gallery?.[0]?.image?.url
                             const description = item.excerpt || 'กิจกรรมสภาวัฒนธรรมจังหวัดเชียงราย'
 
                             return (
                             <div key={item.id} className={`card-modern bg-white flex flex-col h-full animate-fade-in-up delay-${(i + 1) * 100} group rounded-2xl overflow-hidden shadow-lg shadow-primary/5 hover:shadow-2xl hover:shadow-secondary/10`}>
                                 <div className="aspect-[16/10] bg-base-200 relative overflow-hidden flex-shrink-0">
-                                    <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-700 ease-out">
-                                        <img src={imageUrl} alt={item.title} className="w-full h-full object-cover" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
-                                    </div>
+                                    {imageUrl ? (
+                                        <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-700 ease-out">
+                                            <img src={imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
+                                        </div>
+                                    ) : (
+                                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 flex items-center justify-center text-6xl group-hover:scale-105 transition-transform duration-700">
+                                            <span className="drop-shadow-md group-hover:-translate-y-2 transition-transform duration-500 delay-100 opacity-80 filter saturate-[0.8]">🎉</span>
+                                            <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent opacity-80" />
+                                        </div>
+                                    )}
                                     <div className="absolute top-4 left-4 z-20">
                                         <span className="bg-white/90 backdrop-blur-sm text-primary text-xs font-bold px-4 py-2 rounded-full shadow-lg border border-white/20">{formattedDate}</span>
                                     </div>
@@ -183,7 +199,66 @@ export default async function Home() {
                                     </div>
                                 </div>
                             </div>
-                        )})}
+                        )}) : (
+                            <div className="col-span-full py-10 text-center text-base-content/50">ยังไม่มีข้อมูลกิจกรรม</div>
+                        )}
+                    </div>
+                </div>
+            </section>
+
+            {/* Latest News Section */}
+            <section className="py-24 px-4 md:px-8 bg-white overflow-hidden relative border-b border-base-200/50">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-[80px] -z-10" />
+                <div className="container mx-auto max-w-7xl relative z-10">
+                    <div className="flex flex-col md:flex-row items-end justify-between mb-16 animate-fade-in-up">
+                        <div>
+                            <span className="text-accent font-semibold tracking-wider text-sm uppercase mb-3 block">Press & Announcements</span>
+                            <h2 className="text-4xl font-bold text-primary font-display">ข่าวสารล่าสุด</h2>
+                        </div>
+                        <Link href="/news" className="group flex items-center text-sm font-medium text-primary hover:text-secondary-dark transition-colors mt-6 md:mt-0 bg-white px-6 py-3 rounded-full border border-base-200 shadow-sm hover:shadow hover:border-secondary/30">
+                            ดูข่าวทั้งหมด
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {newsData && newsData.length > 0 ? newsData.map((news: any, i) => {
+                            const dateObj = new Date(news.date || news.createdAt)
+                            const formattedDate = dateObj.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })
+                            
+                            const typeConfig = {
+                                general: { label: 'ข่าวทั่วไป', color: 'text-primary border-primary/20 bg-primary/5' },
+                                video: { label: 'วิดีโอ', color: 'text-secondary-dark border-secondary/20 bg-secondary/5' },
+                                document: { label: 'เอกสาร', color: 'text-sky-700 border-sky-500/20 bg-sky-500/5' },
+                            }
+                            
+                            const config = typeConfig[news.type as keyof typeof typeConfig] || typeConfig.general
+
+                            return (
+                            <Link key={news.id} href={`/news/${news.slug || news.id}`} className={`bg-white group rounded-3xl p-6 sm:p-8 flex flex-col h-full border border-base-200 hover:border-secondary/30 hover:shadow-xl hover:shadow-secondary/5 transition-all duration-300 animate-fade-in-up delay-${(i + 1) * 100}`}>
+                                <div className="flex items-center justify-between mb-6">
+                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest border ${config.color}`}>
+                                        {config.label}
+                                    </span>
+                                    <span className="text-sm font-medium text-base-content/50 flex items-center gap-1.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
+                                        {formattedDate}
+                                    </span>
+                                </div>
+                                <h3 className="text-xl font-bold mb-4 font-display text-base-content group-hover:text-primary transition-colors line-clamp-3 leading-snug">
+                                    {news.title}
+                                </h3>
+                                <p className="text-base-content/60 text-sm font-light line-clamp-2 md:line-clamp-3 mb-6 mt-auto">
+                                    {news.summary || news.excerpt}
+                                </p>
+                                <div className="flex items-center gap-2 text-sm font-bold text-primary group-hover:underline group-hover:text-secondary-dark mt-auto">
+                                    อ่านรายละเอียด
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                </div>
+                            </Link>
+                        )}) : (
+                            <div className="col-span-full py-10 text-center text-base-content/50">ยังไม่มีข้อมูลข่าวสาร</div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -213,12 +288,7 @@ export default async function Home() {
                                 <span className="text-base md:text-lg font-medium text-primary/70 group-hover:text-primary transition-colors font-display tracking-wide">{district.name}</span>
                             </Link>
                         )) : (
-                            ['เมืองเชียงราย', 'เวียงชัย', 'เชียงของ', 'เทิง', 'พาน', 'ป่าแดด']
-                                .map((district, i) => (
-                                    <Link key={i} href="#" className="..." >
-                                        <span className="text-base md:text-lg font-medium text-primary/70">{district}</span>
-                                    </Link>
-                                ))
+                            <div className="col-span-full py-10 text-center text-base-content/50">ยังไม่มีข้อมูลเครือข่ายอำเภอ</div>
                         )}
                     </div>
                 </div>

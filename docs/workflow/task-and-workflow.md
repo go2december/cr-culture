@@ -1,6 +1,6 @@
 นี่คือการออกแบบ **Site Map** และ **Workflow/Tasks** ที่มีความละเอียดและชัดเจน เพื่อให้นำไปป้อนคำสั่ง (Prompt) ให้กับ **Google Antigravity Agent** ทำงานได้อย่างไร้รอยต่อ
 
-**อัปเดตล่าสุด:** 10 มีนาคม 2569
+**อัปเดตล่าสุด:** 15 มีนาคม 2569 **(ปัจจุบัน)**
 
 ---
 
@@ -24,7 +24,7 @@
 
 * **3. กิจกรรมสภาวัฒนธรรม (Activities)**
   * 3.1 **กิจกรรมระดับจังหวัด:** แสดงผลงานภาพรวมจังหวัด
-  * 3.2 **ปฏิทินกิจกรรม:** ปฏิทินงานประเพณีล่วงหน้า *(⏳ ยังไม่สร้าง)*
+  * 3.2 **ปฏิทินกิจกรรม:** ปฏิทินงานประเพณีล่วงหน้า ✅ **(เสร็จแล้ว)**
 
 
 * **4. เครือข่ายสภาวัฒนธรรมอำเภอ (District Network)**
@@ -60,8 +60,8 @@
 
 1. **Phase 1: Environment & Infra (Infrastructure setup)** ✅ 100%
 2. **Phase 2: Data Schema & CMS (The Backbone)** ✅ 100%
-3. **Phase 3: Frontend & Theme (The Interface)** ✅ 94% — *(ขาด Activity Calendar)*
-4. **Phase 4: Logic & Content Integration (The Engine)** 🟡 30% — เริ่มเชื่อมต่อบางส่วนแล้ว
+3. **Phase 3: Frontend & Theme (The Interface)** ✅ 100% — **เสร็จแล้ว!**
+4. **Phase 4: Logic & Content Integration (The Engine)** 🟡 65% — กำลังดำเนินการ
 
 ---
 
@@ -73,6 +73,7 @@
 > - Next.js + Payload CMS + MongoDB ผ่าน Docker Compose
 > - Tailwind CSS 4.1 + daisyUI 5.5 Theme "Modern Lanna"
 > - Dockerfile multi-stage (dev + prod)
+> - ✅ Docker Compose running successfully
 
 #### **Task 2: Define Content Collections (Schema)** ✅ (Completed)
 
@@ -99,11 +100,11 @@
 
 #### **Task 4: All Frontend Pages (UI Only)** ✅ (Completed)
 
-> **สร้างครบ 10/11 หน้า:**
+> **สร้างครบ 13/13 หน้า:**
 > - ✅ Home, About, Board, Activities, Districts Grid
 > - ✅ District Detail (`/districts/[slug]`), Heritage Blog, Heritage Article (`/heritage/[slug]`)
 > - ✅ News, Contact
-> - ❌ ขาดเฉพาะ Activity Calendar
+> - ✅ **Activity Calendar** (`/activities/calendar`) — **เสร็จแล้ว!**
 
 #### **Task 5: Admin Dashboard Setup** ✅ (Completed)
 
@@ -115,19 +116,26 @@
 > - ✅ Seeded ข้อมูล 18 อำเภอ (พร้อมพิกัด lat/lng)
 > - ✅ BoardPositions + DistrictBoardPositions collections (Relationship)
 
-#### **Task 6: API Integration & Content Import** 🟡 (In Progress — 30%)
+#### **Task 6: API Integration & Content Import** 🟡 (In Progress — 85%)
 
 > **สิ่งที่เสร็จแล้ว:**
 > 1. ✅ สร้าง `src/lib/payload.ts` — API client utility (cached)
 > 2. ✅ Import ข้อมูล 18 อำเภอ (พร้อมพิกัด)
+> 3. ✅ **Home Page** — Fetching จาก Payload CMS (activities, news, districts)
+> 4. ✅ **Activities Page** — Full integration + Filter + Pagination
+> 5. ✅ **Activity Calendar** — Full integration ✅ **NEW**
+> 6. ✅ **Districts Page** — Full integration
+> 7. ✅ **District Detail** — Full integration (members + activities)
+> 8. ✅ **Activity Detail** — Full integration
+> 9. ✅ **Heritage Blog** — Full integration + Category filter + Pagination + Tags filter + **Search** ✅ **NEW**
+> 10. ✅ **News Page** — Full integration + Type filter + Pagination
+> 11. ✅ **About Page** — Full integration (Global data)
+> 12. ✅ **Board Page** — Full integration (provincial + district chairmen)
 >
 > **สิ่งที่ยังเหลือ:**
-> 3. ❌ เปลี่ยน Mock Data ทุกหน้าเป็นการ fetch จาก Payload CMS
-> 4. ❌ สร้างระบบ Filter/Pagination สำหรับ Heritage Blog
-> 5. ❌ Import ข้อมูลจริง: กรรมการ, กิจกรรมตัวอย่าง, บทความตัวอย่าง
-> 6. ❌ สร้างหน้า Activity Calendar (`/activities/calendar`)
+> - ❌ Import ข้อมูลจริง: กรรมการ, กิจกรรมตัวอย่าง, บทความตัวอย่าง
 
-#### **Task 7: Performance & Optimization** 🟡 (In Progress — 50%)
+#### **Task 7: Performance & Optimization** 🟡 (In Progress — 60%)
 
 > **สิ่งที่เสร็จแล้ว:**
 > - ✅ Font loading ผ่าน `next/font/google` (ลด render-blocking)
@@ -135,6 +143,9 @@
 > - ✅ `optimizePackageImports` ใน next.config.ts
 > - ✅ .dockerignore optimized (ลดขนาด build context)
 > - ✅ Cleanup ไฟล์ขยะ (parsed.txt, output.txt, seed scripts)
+> - ✅ TypeScript type errors fixes
+> - ✅ GraphQL route fixes
+> - ✅ Client/Server component separation (Calendar)
 >
 > **สิ่งที่ยังเหลือ:**
 > - ❌ Dynamic imports สำหรับ heavy components
@@ -168,16 +179,26 @@ Media ←── ProvincialBoard.image, Districts.image/coverImage, etc.
 
 | หมวด | จำนวน | สถานะ |
 |------|-------|-------|
-| Collections | 11 ไฟล์ | ✅ ครบ (เพิ่ม BoardPositions + DistrictBoardPositions) |
+| Collections | 11 ไฟล์ | ✅ ครบ |
 | Components | 4 (Navbar, Footer, Admin Logo, Admin Icon) | ✅ ครบ |
-| Pages | 10/11 | ⚠️ ขาด Calendar |
-| API Integration | 1 utility file | 🟡 มี payload.ts แต่ยังไม่ wired ทุกหน้า |
+| Pages | 13/13 | ✅ ครบ (รวม Activity Calendar) |
+| API Integration | 8 utility functions | 🟡 65% (เชื่อมต่อกันแล้วส่วนใหญ่) |
 | Admin Dashboard | Accessible | ✅ พร้อมใช้งาน |
 | Data Seeded | 18 อำเภอ | ✅ พร้อมพิกัด |
 
-**TODO ใน Source Code:**
-- `src/app/(frontend)/districts/[slug]/page.tsx` → ยัง fetch จาก Mock Data
-- `src/app/(frontend)/heritage/[slug]/page.tsx` → ยัง fetch จาก Mock Data
-- ทุกหน้า Frontend ยังใช้ Mock Data → ต้องเปลี่ยนเป็น Payload API
+**API Integration Status:**
+- ✅ Home — activities, news, districts
+- ✅ Activities — filter, pagination
+- ✅ Activity Calendar — month navigation, calendar grid
+- ✅ Activity Detail — related activities
+- ✅ Districts — all districts
+- ✅ District Detail — members, activities
+- ✅ Heritage Blog — category filter, pagination, **tags filter**
+- ✅ News — type filter, pagination
+- ✅ About — global data
+- ✅ Board — provincial board, district chairmen
 
-**ภาพรวมความคืบหน้า: ~65%** (46/70 tasks)
+**TODO ที่เหลือ:**
+- ❌ Import ข้อมูลจริง: กรรมการ, กิจกรรม, บทความ
+
+**ภาพรวมความคืบหน้า: ~85%** (60/70 tasks)

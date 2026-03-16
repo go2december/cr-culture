@@ -1,29 +1,19 @@
 import Link from 'next/link'
 import { getActivities } from '@/lib/payload'
 
-export default async function ActivitiesPage() {
-    const rawActivities = await getActivities() || []
+export default async function ActivitiesPage(props: {
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+    const searchParams = await props.searchParams
+    const levelStr = searchParams?.level as string | undefined
+    const validLevel = (levelStr === 'province' || levelStr === 'district') ? levelStr : undefined
+    const page = Number(searchParams?.page) || 1
+
+    const activitiesResponse = await getActivities({ level: validLevel, limit: 6, page })
+    const { docs: rawActivities, hasNextPage } = activitiesResponse
     
     // Fallback data if no activities
-    const displayActivities = rawActivities.length > 0 ? rawActivities : [
-        {
-            slug: 'songkran-2026',
-            title: 'งานสงกรานต์เชียงราย 2569',
-            date: '2026-04-13',
-            endDate: '2026-04-15',
-            level: 'province',
-            location: 'ลานอนุสาวรีย์พ่อขุนเม็งรายมหาราช',
-            excerpt: 'เทศกาลสงกรานต์ประจำปีจังหวัดเชียงราย สืบสานประเพณีไทย',
-        },
-        {
-            slug: 'loy-krathong-2026',
-            title: 'งานลอยกระทงเชียงราย 2569',
-            date: '2026-11-15',
-            level: 'province',
-            location: 'ริมแม่น้ำกก',
-            excerpt: 'งานลอยกระทงประจำปี สืบสานประเพณียี่เป็ง',
-        },
-    ]
+    const displayActivities = rawActivities.length > 0 ? rawActivities : []
 
     return (
         <div className="bg-slate-50 min-h-screen font-sans">
@@ -63,9 +53,9 @@ export default async function ActivitiesPage() {
             {/* Filter Tabs */}
             <div className="container mx-auto max-w-7xl px-4 py-8 animate-fade-in-up delay-300">
                 <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                    <button className="px-6 py-2.5 rounded-full bg-primary text-white text-sm font-medium shadow-md hover:bg-primary-dark transition-colors">ทั้งหมด</button>
-                    <button className="px-6 py-2.5 rounded-full bg-slate-50 border border-base-200 text-base-content/70 text-sm font-medium hover:border-secondary hover:text-primary transition-all shadow-sm focus:bg-primary focus:text-white focus:border-primary">ระดับจังหวัด</button>
-                    <button className="px-6 py-2.5 rounded-full bg-slate-50 border border-base-200 text-base-content/70 text-sm font-medium hover:border-secondary hover:text-primary transition-all shadow-sm focus:bg-primary focus:text-white focus:border-primary">ระดับอำเภอ</button>
+                    <Link href="/activities" className={`px-6 py-2.5 rounded-full text-sm font-medium shadow-sm transition-all ${!validLevel ? 'bg-primary text-white shadow-md' : 'bg-slate-50 border border-base-200 text-base-content/70 hover:border-secondary hover:text-primary'}`}>ทั้งหมด</Link>
+                    <Link href="/activities?level=province" className={`px-6 py-2.5 rounded-full text-sm font-medium shadow-sm transition-all ${validLevel === 'province' ? 'bg-primary text-white shadow-md' : 'bg-slate-50 border border-base-200 text-base-content/70 hover:border-secondary hover:text-primary'}`}>ระดับจังหวัด</Link>
+                    <Link href="/activities?level=district" className={`px-6 py-2.5 rounded-full text-sm font-medium shadow-sm transition-all ${validLevel === 'district' ? 'bg-primary text-white shadow-md' : 'bg-slate-50 border border-base-200 text-base-content/70 hover:border-secondary hover:text-primary'}`}>ระดับอำเภอ</Link>
                     <div className="ml-auto basis-full md:basis-auto flex justify-center md:justify-end mt-4 md:mt-0">
                         <Link href="/activities/calendar" className="px-6 py-2.5 rounded-full bg-secondary/20 text-primary-dark text-sm font-medium hover:bg-secondary/30 transition-colors flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" /></svg>
@@ -77,68 +67,93 @@ export default async function ActivitiesPage() {
 
             {/* Activities Grid */}
             <section className="container mx-auto max-w-7xl px-4 pb-24">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8 animate-fade-in-up delay-400">
-                    {displayActivities.map((activity: any, i) => {
-                        const dateObj = new Date(activity.date)
-                        const imageUrl = activity.titleImage?.url || activity.gallery?.[0]?.image?.url
-                        
-                        return (
-                        <div key={activity.id || activity.slug} className={`card-modern bg-white flex flex-col h-full group rounded-3xl overflow-hidden border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:border-secondary/50 transition-all duration-400 delay-${(i % 3 + 1) * 100}`}>
-                            <div className="aspect-[16/10] bg-slate-50 relative overflow-hidden flex-shrink-0 border-b border-base-100">
-                                {imageUrl ? (
-                                    <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-700 ease-out">
-                                        <img src={imageUrl} alt={activity.title} className="w-full h-full object-cover" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
+                {displayActivities.length > 0 ? (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8 animate-fade-in-up delay-400">
+                        {displayActivities.map((activity: any, i) => {
+                            const dateObj = new Date(activity.date)
+                            const imageUrl = activity.titleImage?.url || activity.gallery?.[0]?.image?.url
+                            
+                            return (
+                            <div key={activity.id || activity.slug} className={`card-modern bg-white flex flex-col h-full group rounded-3xl overflow-hidden border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:border-secondary/50 transition-all duration-400 delay-${(i % 3 + 1) * 100}`}>
+                                <div className="aspect-[16/10] bg-slate-50 relative overflow-hidden flex-shrink-0 border-b border-base-100">
+                                    {imageUrl ? (
+                                        <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-700 ease-out">
+                                            <img src={imageUrl} alt={activity.title} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
+                                        </div>
+                                    ) : (
+                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/10 flex items-center justify-center text-4xl group-hover:scale-105 transition-transform duration-700">
+                                        <span className="drop-shadow-sm group-hover:-translate-y-2 transition-transform duration-500 delay-100">🎉</span>
                                     </div>
-                                ) : (
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/10 flex items-center justify-center text-4xl group-hover:scale-105 transition-transform duration-700">
-                                    <span className="drop-shadow-sm group-hover:-translate-y-2 transition-transform duration-500 delay-100">🎉</span>
+                                    )}
+                                    <div className="absolute top-4 left-4 z-20">
+                                        <div className="bg-white/95 backdrop-blur-sm shadow-md border border-white/50 rounded-xl overflow-hidden text-center min-w-[70px] flex flex-col">
+                                            <div className="bg-secondary text-primary-dark text-xs font-bold py-1 px-3 mb-0 uppercase tracking-widest leading-none">
+                                                {dateObj.toLocaleDateString('th-TH', { month: 'short' })}
+                                            </div>
+                                            <div className="text-2xl font-bold text-primary py-2 px-3 bg-white font-display">
+                                                {dateObj.getDate()}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                )}
-                                <div className="absolute top-4 left-4 z-20">
-                                    <div className="bg-white/95 backdrop-blur-sm shadow-md border border-white/50 rounded-xl overflow-hidden text-center min-w-[70px] flex flex-col">
-                                        <div className="bg-secondary text-primary-dark text-xs font-bold py-1 px-3 mb-0 uppercase tracking-widest leading-none">
-                                            {dateObj.toLocaleDateString('th-TH', { month: 'short' })}
-                                        </div>
-                                        <div className="text-2xl font-bold text-primary py-2 px-3 bg-white font-display">
-                                            {dateObj.getDate()}
-                                        </div>
+                                <div className="p-8 flex flex-col flex-grow relative">
+                                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded inline-block w-fit uppercase tracking-widest mb-4 ${activity.level === 'province' ? 'bg-primary/10 text-primary' : 'bg-secondary/20 text-secondary-dark'}`}>
+                                        {activity.level === 'province' ? 'กิจกรรมระดับจังหวัด' : `กิจกรรมระดับอำเภอ ${activity.district?.name || activity.districtName || ''}`}
+                                    </span>
+                                    <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2 leading-tight font-display text-base-content relative z-10 w-full">
+                                        {activity.title}
+                                    </h3>
+                                    {(activity.location || activity.district?.name) && (
+                                    <p className="text-sm font-medium text-base-content/50 flex items-center gap-2 mb-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
+                                        {activity.location || activity.district?.name}
+                                    </p>
+                                    )}
+                                    <p className="text-base-content/60 text-sm mb-6 line-clamp-2 font-light flex-grow">
+                                        {activity.excerpt || activity.summary}
+                                    </p>
+                                    <div className="pt-5 border-t border-base-100 flex items-center justify-between mt-auto">
+                                        <Link href={`/activities/${activity.slug || activity.id}`} className="text-sm font-semibold text-primary hover:text-secondary-dark transition-colors flex items-center gap-1 group/link w-full justify-between">
+                                            ดูรายละเอียดกิจกรรม
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover/link:translate-x-1 transition-transform text-secondary"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
-                            <div className="p-8 flex flex-col flex-grow relative">
-                                <span className={`text-[10px] font-bold px-2.5 py-1 rounded inline-block w-fit uppercase tracking-widest mb-4 ${activity.level === 'province' ? 'bg-primary/10 text-primary' : 'bg-secondary/20 text-secondary-dark'}`}>
-                                    {activity.level === 'province' ? 'กิจกรรมระดับจังหวัด' : `กิจกรรมระดับอำเภอ ${activity.district?.name || activity.districtName || ''}`}
-                                </span>
-                                <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2 leading-tight font-display text-base-content relative z-10 w-full">
-                                    {activity.title}
-                                </h3>
-                                {(activity.location || activity.district?.name) && (
-                                <p className="text-sm font-medium text-base-content/50 flex items-center gap-2 mb-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
-                                    {activity.location || activity.district?.name}
-                                </p>
-                                )}
-                                <p className="text-base-content/60 text-sm mb-6 line-clamp-2 font-light flex-grow">
-                                    {activity.excerpt || activity.summary}
-                                </p>
-                                <div className="pt-5 border-t border-base-100 flex items-center justify-between mt-auto">
-                                    <Link href={`/activities/${activity.slug || activity.id}`} className="text-sm font-semibold text-primary hover:text-secondary-dark transition-colors flex items-center gap-1 group/link w-full justify-between">
-                                        ดูรายละเอียดกิจกรรม
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover/link:translate-x-1 transition-transform text-secondary"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    )})}
-                </div>
+                        )})}
+                    </div>
+                ) : (
+                    <div className="text-center py-24 mb-12 bg-white rounded-3xl border border-dashed border-base-200">
+                        <span className="text-4xl mb-4 block opacity-50">📆</span>
+                        <h3 className="text-xl font-bold text-base-content/70">ยังไม่มีข้อมูลกิจกรรมในขณะนี้</h3>
+                    </div>
+                )}
 
-                {/* Load More */}
-                <div className="text-center mt-16 animate-fade-in-up delay-500">
-                    <button className="btn-outline-lanna inline-flex items-center justify-center min-w-[200px]">
-                        โหลดเพิ่มเติม
-                    </button>
-                </div>
+                {/* Load More Pagination */}
+                {hasNextPage && (
+                    <div className="text-center mt-16 animate-fade-in-up delay-500 flex justify-center items-center gap-4">
+                        <Link 
+                            href={`/activities?page=${page + 1}${validLevel ? `&level=${validLevel}` : ''}`}
+                            scroll={false} 
+                            className="btn-outline-lanna inline-flex items-center justify-center min-w-[200px]"
+                        >
+                            หน้าต่อไป
+                        </Link>
+                    </div>
+                )}
+                {page > 1 && (
+                    <div className="text-center mt-6 flex justify-center items-center gap-4">
+                        <Link 
+                            href={`/activities?page=${page - 1}${validLevel ? `&level=${validLevel}` : ''}`} 
+                            scroll={false}
+                            className="text-primary font-medium hover:underline flex items-center gap-2"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                            ย้อนกลับ
+                        </Link>
+                    </div>
+                )}
             </section>
         </div>
     )

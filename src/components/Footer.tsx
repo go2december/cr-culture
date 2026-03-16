@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
     return (
@@ -11,8 +12,8 @@ export default function Footer() {
                     {/* Brand & Contact */}
                     <div className="md:col-span-1">
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center text-white font-bold text-xl shadow-md border border-primary-light/30">
-                                สภ
+                            <div className="w-16 h-16 relative rounded-full overflow-hidden flex items-center justify-center shadow-sm border border-base-200 bg-white">
+                                <Image src="/logo.png" alt="โลโก้สภาวัฒนธรรม" fill sizes="64px" className="object-contain p-1" />
                             </div>
                             <div>
                                 <div className="font-bold text-primary text-xl tracking-tight leading-tight">สภาวัฒนธรรม</div>

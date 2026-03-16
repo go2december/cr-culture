@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getNewsBySlug, getNews } from '@/lib/payload'
+import ShareButtons from '@/components/ShareButtons'
 
 const typeConfig = {
     general: { label: 'ข่าวทั่วไป', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" /><path d="M18 14h-8" /><path d="M15 18h-5" /><path d="M10 6h8v4h-8V6Z" /></svg>, color: 'text-primary bg-primary/10 border-primary/20' },
@@ -40,58 +41,83 @@ export default async function NewsDetailPage({
     const relatedNews = relatedResponse.docs?.filter((doc: any) => doc.id !== newsData.id).slice(0, 3) || []
 
     return (
-        <div className="bg-slate-50 min-h-screen pb-24">
-            {/* Hero Section */}
+        <div className="bg-slate-50 min-h-screen pb-24 font-sans">
+            {/* Hero Banner Section */}
             <section className="relative pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden bg-white border-b border-base-200">
-                <div className="absolute inset-0 z-0 bg-slate-50/50">
-                    <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-gradient-to-bl from-secondary/5 to-transparent blur-[120px]" />
-                    <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-gradient-to-tr from-primary/5 to-transparent blur-[130px]" />
+                {news.titleImage && (
+                    <div className="absolute inset-0 z-0">
+                        <img src={news.titleImage} alt={news.title} className="w-full h-full object-cover opacity-[0.03] grayscale" />
+                    </div>
+                )}
+                <div className="absolute inset-0 z-0 bg-gradient-to-br from-slate-50/90 to-white/90">
+                    <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-gradient-to-bl from-secondary/10 to-transparent blur-[120px]" />
+                    <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-gradient-to-tr from-primary/10 to-transparent blur-[130px]" />
                 </div>
 
                 <div className="container mx-auto max-w-4xl px-4 relative z-10 text-center">
-                    <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium shadow-sm mb-6 animate-fade-in-up ${config.color.replace('border-', 'border border-')} bg-white`}>
+                    <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-sm font-medium shadow-sm mb-6 animate-fade-in-up ${config.color.replace('border-', 'border border-')} bg-white`}>
                         {config.icon}
                         {config.label}
                     </div>
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight animate-fade-in-up delay-100 text-primary font-display leading-snug">
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight animate-fade-in-up delay-100 text-primary leading-tight max-w-3xl mx-auto">
                         {news.title}
                     </h1>
-                    <div className="flex justify-center items-center gap-2 text-sm text-base-content/60 animate-fade-in-up delay-200 font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
-                        {dateObj.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    <div className="flex justify-center items-center gap-4 text-sm text-base-content/60 animate-fade-in-up delay-200 font-medium">
+                        <div className="flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
+                            {dateObj.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        </div>
+                        <div className="w-1 h-1 rounded-full bg-base-300" />
+                        <div className="flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" /></svg>
+                            สภาวัฒนธรรมเชียงราย
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Breadcrumb */}
-            <div className="container mx-auto max-w-4xl px-4 py-6 relative z-20 -mt-8">
-                <div className="breadcrumbs text-sm bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-sm border border-base-200 inline-block text-base-content/60 font-light animate-fade-in-up delay-300">
-                    <ul>
-                        <li><Link href="/" className="hover:text-primary transition-colors">หน้าแรก</Link></li>
-                        <li><Link href="/news" className="hover:text-primary transition-colors">ข่าวสารและประชาสัมพันธ์</Link></li>
-                        <li className="text-primary font-medium line-clamp-1 max-w-[200px] sm:max-w-[400px]">{news.title}</li>
-                    </ul>
+            {/* Breadcrumb Container */}
+            <div className="container mx-auto max-w-4xl px-4 relative z-20 -mt-8 mb-8 flex justify-center">
+                <div className="bg-white/95 backdrop-blur-md px-4 sm:px-6 py-3 rounded-2xl shadow-sm border border-base-200 inline-flex items-center animate-fade-in-up delay-300 max-w-full overflow-hidden">
+                    <nav className="text-sm text-base-content/60 font-light w-full">
+                        <ol className="flex items-center gap-2">
+                            <li className="hidden sm:block"><Link href="/" className="hover:text-primary transition-colors whitespace-nowrap">หน้าแรก</Link></li>
+                            <li className="hidden sm:block opacity-50">/</li>
+                            <li><Link href="/news" className="hover:text-primary transition-colors whitespace-nowrap">ข่าวสาร</Link></li>
+                            <li className="opacity-50">/</li>
+                            <li className="text-primary font-medium truncate shrink">{news.title}</li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
 
-            <div className="container mx-auto max-w-4xl px-4 py-8">
-                <article className="bg-white rounded-3xl border border-base-200 shadow-sm p-8 lg:p-12 mb-12 animate-fade-in-up delay-400">
+            <div className="container mx-auto max-w-4xl px-4 pb-12">
+                <article className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 sm:p-10 lg:p-12 mb-12 animate-fade-in-up delay-400">
+                    {/* Share Bar */}
+                    <div className="flex items-center justify-between pb-6 mb-8 border-b border-base-100">
+                        <span className="text-sm font-semibold text-base-content/50 uppercase tracking-widest">แชร์ข่าวสาร</span>
+                        <ShareButtons title={news.title} />
+                    </div>
+
                     {news.titleImage && (
-                        <figure className="mb-10 rounded-2xl overflow-hidden shadow-sm border border-base-100">
-                            <img src={news.titleImage} alt={news.title} className="w-full h-auto object-cover max-h-[500px]" />
+                        <figure className="mb-10 rounded-2xl overflow-hidden shadow-sm border border-base-200 bg-slate-50">
+                            <img src={news.titleImage} alt={news.title} className="w-full h-auto object-cover max-h-[600px]" />
                         </figure>
                     )}
 
                     {news.summary && (
-                        <div className="p-6 bg-slate-50/80 rounded-2xl border border-base-200 mb-10 text-lg text-base-content/80 font-medium leading-relaxed">
-                            {news.summary}
+                        <div className="p-6 md:p-8 bg-slate-50/80 rounded-2xl border-l-4 border-l-primary border border-y-base-200 border-r-base-200 mb-10">
+                            <p className="text-xl text-primary-dark font-display leading-relaxed">
+                                {news.summary}
+                            </p>
                         </div>
                     )}
 
                     <div
-                        className="prose prose-lg max-w-none prose-headings:text-primary prose-headings:font-bold prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-6 prose-p:text-base-content/80 prose-p:leading-relaxed prose-a:text-primary hover:prose-a:text-primary-light prose-strong:text-base-content"
+                        className="prose prose-lg md:prose-xl max-w-none prose-headings:text-primary prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-p:text-base-content/80 prose-p:leading-relaxed prose-a:text-primary hover:prose-a:text-primary-light prose-strong:text-base-content prose-img:rounded-2xl"
                         dangerouslySetInnerHTML={{ __html: news.contentHtml }}
                     />
+
 
                     {/* Gallery */}
                     {news.gallery.length > 0 && (
@@ -157,10 +183,10 @@ export default async function NewsDetailPage({
                                 const rConfig = typeConfig[related.type as keyof typeof typeConfig] || typeConfig.general
                                 return (
                                 <Link key={related.slug || related.id} href={`/news/${related.slug || related.id}`} className="group bg-white p-5 rounded-2xl border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.04)] hover:shadow-lg hover:border-secondary/30 transition-all flex flex-col h-full">
-                                    <span className={`inline-flex items-center px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-widest mb-3 w-fit ${rConfig.color.replace('border-', 'border border-')}`}>
+                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest mb-4 w-fit ${rConfig.color.replace('border-', 'border border-')}`}>
                                         {rConfig.label}
                                     </span>
-                                    <h4 className="font-bold text-base-content group-hover:text-primary transition-colors line-clamp-2 mb-3 leading-snug">
+                                    <h4 className="font-bold text-lg text-base-content group-hover:text-primary transition-colors line-clamp-2 mb-4 leading-snug font-display">
                                         {related.title}
                                     </h4>
                                     <div className="mt-auto pt-4 border-t border-base-100 flex items-center text-xs font-medium text-base-content/50">

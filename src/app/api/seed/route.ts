@@ -24,10 +24,10 @@ export async function GET() {
     for (const pos of positions) {
       const existing = await payload.find({ collection: 'board-positions', where: { title: { equals: pos.title } }, limit: 1 })
       if (existing.docs.length > 0) {
-        positionIds[pos.title] = existing.docs[0].id
+        positionIds[pos.title] = String(existing.docs[0].id)
       } else {
         const created = await payload.create({ collection: 'board-positions', data: pos })
-        positionIds[pos.title] = created.id
+        positionIds[pos.title] = String(created.id)
       }
     }
 
@@ -45,10 +45,10 @@ export async function GET() {
     for (const pos of distPositions) {
       const existing = await payload.find({ collection: 'district-board-positions', where: { title: { equals: pos.title } }, limit: 1 })
       if (existing.docs.length > 0) {
-        distPosIds[pos.title] = existing.docs[0].id
+        distPosIds[pos.title] = String(existing.docs[0].id)
       } else {
         const created = await payload.create({ collection: 'district-board-positions', data: pos })
-        distPosIds[pos.title] = created.id
+        distPosIds[pos.title] = String(created.id)
       }
     }
 
@@ -112,13 +112,13 @@ export async function GET() {
     for (const dist of districts) {
       const existing = await payload.find({ collection: 'districts', where: { slug: { equals: dist.slug } }, limit: 1 })
       if (existing.docs.length > 0) {
-        districtIds[dist.slug] = existing.docs[0].id
+        districtIds[dist.slug] = String(existing.docs[0].id)
       } else {
         const created = await payload.create({
           collection: 'districts',
           data: { ...dist, isActive: true },
         })
-        districtIds[dist.slug] = created.id
+        districtIds[dist.slug] = String(created.id)
       }
     }
 
@@ -183,10 +183,10 @@ export async function GET() {
     for (const tag of tags) {
       const existing = await payload.find({ collection: 'tags', where: { name: { equals: tag.name } }, limit: 1 })
       if (existing.docs.length > 0) {
-        tagIds[tag.name] = existing.docs[0].id
+        tagIds[tag.name] = String(existing.docs[0].id)
       } else {
         const created = await payload.create({ collection: 'tags', data: tag })
-        tagIds[tag.name] = created.id
+        tagIds[tag.name] = String(created.id)
       }
     }
 

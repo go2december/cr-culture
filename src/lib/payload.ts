@@ -73,9 +73,9 @@ export const getDistrictMembers = cache(async (districtId: string) => {
 /**
  * ดึงกิจกรรมทั้งหมด (สามารถกรองตามระดับจังหวัด/อำเภอได้)
  */
-export const getActivities = cache(async (options?: { level?: 'province' | 'district', districtId?: string, limit?: number }) => {
+export const getActivities = cache(async (options?: { level?: 'province' | 'district', districtId?: string, limit?: number, page?: number }) => {
   const payload = await getPayloadClient()
-  
+
   // สร้างเงื่อนไข Where แบบ Dynamic
   const where: any = {}
   if (options?.level) {
@@ -85,15 +85,16 @@ export const getActivities = cache(async (options?: { level?: 'province' | 'dist
     where.district = { equals: options.districtId }
   }
 
-  const { docs } = await payload.find({
+  const response = await payload.find({
     collection: 'activities',
     where: Object.keys(where).length > 0 ? where : undefined,
-    limit: options?.limit || 20,
+    limit: options?.limit || 6,
+    page: options?.page || 1,
     sort: '-date', // เรียงจากล่าสุดไปเก่าสุด
     depth: 1, // ดึงข้อมูลลึก 1 ระดับเผื่อมีไฟล์รูปหรือ District แนบมาด้วย
   })
-  
-  return docs
+
+  return response
 })
 
 /**
@@ -117,7 +118,13 @@ export const getActivityBySlug = cache(async (slug: string) => {
 /**
  * ดึงบทความมรดกภูมิปัญญา
  */
-export const getHeritageBlogs = cache(async (options?: { category?: string, tagSlug?: string, limit?: number, page?: number }) => {
+export const getHeritageBlogs = cache(async (options?: {
+  category?: string,
+  tagSlug?: string,
+  search?: string,      // NEW: Search keyword
+  limit?: number,
+  page?: number
+}) => {
   const payload = await getPayloadClient()
 
   const where: any = {}
@@ -125,8 +132,24 @@ export const getHeritageBlogs = cache(async (options?: { category?: string, tagS
     where.category = { equals: options.category }
   }
 
-  // ปล. ถ้าหา tag ด้วย tagSlug อาจจะต้องหา tag ID ก่อนแล้วค่อยนำมา query 
-  // หรือใช้ join ค้นหาใน GraphQL/REST แต่ผ่าน local API เราจำลองตามนี้ไปก่อน
+  // กรองตาม tag (ต้องหา tag ID จาก slug ก่อน)
+  if (options?.tagSlug) {
+    const tag = await payload.find({
+      collection: 'tags',
+      where: {
+        slug: {
+          equals: options.tagSlug,
+        },
+      },
+      limit: 1,
+    })
+
+    if (tag.docs.length > 0) {
+      where.tags = {
+        equals: tag.docs[0].id,
+      }
+    }
+  }
 
   const response = await payload.find({
     collection: 'heritage-blog',
@@ -136,8 +159,33 @@ export const getHeritageBlogs = cache(async (options?: { category?: string, tagS
     sort: '-createdAt', // บทความใหม่ล่าสุดขึ้นก่อน
     depth: 1,
   })
-  
+
+  // Post-filtering สำหรับ search (ค้นหาใน title + excerpt)
+  if (options?.search) {
+    const searchKeyword = options.search.toLowerCase().trim()
+    response.docs = response.docs.filter((doc: any) => {
+      const title = doc.title?.toLowerCase() || ''
+      const excerpt = doc.excerpt?.toLowerCase() || ''
+      const content = JSON.stringify(doc.content || '').toLowerCase()
+      return title.includes(searchKeyword) || excerpt.includes(searchKeyword) || content.includes(searchKeyword)
+    })
+    response.totalDocs = response.docs.length
+  }
+
   return response
+})
+
+/**
+ * ดึงแท็กทั้งหมด
+ */
+export const getTags = cache(async () => {
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'tags',
+    limit: 100,
+    sort: 'name',
+  })
+  return docs
 })
 
 /**
@@ -177,7 +225,7 @@ export const getNews = cache(async (options?: { type?: string, limit?: number, p
     sort: '-date', // ข่าวล่าสุดขึ้นก่อน
     depth: 1,
   })
-  
+
   return response
 })
 

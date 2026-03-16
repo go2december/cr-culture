@@ -18,7 +18,7 @@ export default async function NewsPage({
 
     const newsResponse = await getNews({
         type: selectedType === 'all' ? undefined : selectedType,
-        limit: 12,
+        limit: 6,
         page: currentPage
     })
 
@@ -121,28 +121,9 @@ export default async function NewsPage({
                                             </Link>
                                         </h2>
 
-                                        <p className="text-base-content/60 font-light leading-relaxed line-clamp-2 md:line-clamp-3 mb-8">
+                                        <p className="text-base-content/60 font-light leading-relaxed line-clamp-2 md:line-clamp-3">
                                             {news.summary || news.excerpt}
                                         </p>
-
-                                        <div className="mt-auto flex items-center relative z-20 pointer-events-none">
-                                            {news.type === 'document' ? (
-                                                <span className="inline-flex items-center gap-2 text-sm font-bold text-sky-600 group-hover:underline pointer-events-auto">
-                                                    อ่านรายละเอียด
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                                                </span>
-                                            ) : news.type === 'video' ? (
-                                                <span className="inline-flex items-center gap-2 text-sm font-bold text-secondary-dark group-hover:underline pointer-events-auto">
-                                                    อ่านรายละเอียด
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                                                </span>
-                                            ) : (
-                                                <span className="inline-flex items-center gap-1.5 text-sm font-bold text-primary group-hover:underline pointer-events-auto">
-                                                    อ่านรายละเอียด
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                                                </span>
-                                            )}
-                                        </div>
                                     </div>
                                 </div>
                             </article>

@@ -1,4 +1,8 @@
+'use client'
+
 import Link from 'next/link'
+import Image from 'next/image'
+import { useRef } from 'react'
 
 const menuItems = [
     {
@@ -47,6 +51,20 @@ const menuItems = [
 ]
 
 export default function Navbar() {
+    const handleClick = () => {
+        if (typeof document !== 'undefined') {
+            const activeElement = document.activeElement as HTMLElement
+            if (activeElement) {
+                activeElement.blur()
+            }
+            // For details element in daisyUI mobile menu
+            const detailsElement = activeElement.closest('details')
+            if (detailsElement) {
+                detailsElement.removeAttribute('open')
+            }
+        }
+    }
+
     return (
         <div className="fixed top-0 inset-x-0 z-50 px-4 py-4 transition-all duration-300">
             <nav className="mx-auto max-w-7xl rounded-2xl bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
@@ -72,11 +90,11 @@ export default function Navbar() {
                                                         {item.submenu.map((sub) => (
                                                             <li key={sub.href}>
                                                                 {sub.external ? (
-                                                                    <a href={sub.href} target="_blank" rel="noopener noreferrer" className="py-2 hover:bg-slate-50 hover:text-primary rounded-lg text-sm text-base-content/70">
+                                                                    <a href={sub.href} onClick={handleClick} target="_blank" rel="noopener noreferrer" className="py-2 hover:bg-slate-50 hover:text-primary rounded-lg text-sm text-base-content/70">
                                                                         {sub.label}
                                                                     </a>
                                                                 ) : (
-                                                                    <Link href={sub.href} className="py-2 hover:bg-slate-50 hover:text-primary rounded-lg text-sm text-base-content/70">
+                                                                    <Link href={sub.href} onClick={handleClick} className="py-2 hover:bg-slate-50 hover:text-primary rounded-lg text-sm text-base-content/70">
                                                                         {sub.label}
                                                                     </Link>
                                                                 )}
@@ -85,7 +103,7 @@ export default function Navbar() {
                                                     </ul>
                                                 </details>
                                             ) : (
-                                                <Link href={item.href} className="font-medium py-2 text-base-content/80 hover:bg-slate-50 hover:text-primary rounded-lg">{item.label}</Link>
+                                                <Link href={item.href} onClick={handleClick} className="font-medium py-2 text-base-content/80 hover:bg-slate-50 hover:text-primary rounded-lg">{item.label}</Link>
                                             )}
                                         </li>
                                     ))}
@@ -93,9 +111,9 @@ export default function Navbar() {
                             </div>
 
                             {/* Logo and Brand */}
-                            <Link href="/" className="flex items-center gap-3.5 group">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary to-secondary-light flex items-center justify-center text-primary-dark font-bold text-lg shadow-md shadow-secondary/20 group-hover:scale-105 transition-all duration-300 border border-secondary-light/50 font-display">
-                                    สภ
+                            <Link href="/" onClick={handleClick} className="flex items-center gap-3.5 group">
+                                <div className="w-11 h-11 relative rounded-full overflow-hidden flex items-center justify-center shadow-md shadow-secondary/20 group-hover:scale-105 transition-all duration-300">
+                                    <Image src="/logo.png" alt="โลโก้สภาวัฒนธรรม" fill sizes="44px" className="object-contain" priority />
                                 </div>
                                 <div className="hidden sm:block">
                                     <div className="font-bold text-primary text-xl leading-tight tracking-tight group-hover:text-secondary-dark transition-colors font-display">สภาวัฒนธรรม</div>
@@ -121,11 +139,11 @@ export default function Navbar() {
                                                         {item.submenu.map((sub) => (
                                                             <li key={sub.href}>
                                                                 {sub.external ? (
-                                                                    <a href={sub.href} target="_blank" rel="noopener noreferrer" className="block px-4 py-2.5 text-sm text-base-content/70 hover:bg-secondary/5 hover:text-primary rounded-xl transition-colors">
+                                                                    <a href={sub.href} onClick={handleClick} target="_blank" rel="noopener noreferrer" className="block px-4 py-2.5 text-sm text-base-content/70 hover:bg-secondary/5 hover:text-primary rounded-xl transition-colors">
                                                                         {sub.label}
                                                                     </a>
                                                                 ) : (
-                                                                    <Link href={sub.href} className="block px-4 py-2.5 text-sm text-base-content/70 hover:bg-secondary/5 hover:text-primary rounded-xl transition-colors">
+                                                                    <Link href={sub.href} onClick={handleClick} className="block px-4 py-2.5 text-sm text-base-content/70 hover:bg-secondary/5 hover:text-primary rounded-xl transition-colors">
                                                                         {sub.label}
                                                                     </Link>
                                                                 )}
@@ -135,7 +153,7 @@ export default function Navbar() {
                                                 </ul>
                                             </div>
                                         ) : (
-                                            <Link href={item.href} className="px-4 py-2 font-medium text-[15px] text-base-content/70 hover:text-primary hover:bg-secondary/5 rounded-full transition-all block">
+                                            <Link href={item.href} onClick={handleClick} className="px-4 py-2 font-medium text-[15px] text-base-content/70 hover:text-primary hover:bg-secondary/5 rounded-full transition-all block">
                                                 {item.label}
                                             </Link>
                                         )}
@@ -152,7 +170,7 @@ export default function Navbar() {
                                 </svg>
                             </button>
                             <div className="hidden sm:block w-px h-6 bg-base-200"></div>
-                            <Link href="/admin" className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary-dark transition-all shadow-[0_4px_14px_0_rgba(27,42,73,0.39)] hover:shadow-[0_6px_20px_rgba(27,42,73,0.23)] hover:-translate-y-0.5">
+                            <Link href="/admin" onClick={handleClick} className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary-dark transition-all shadow-[0_4px_14px_0_rgba(27,42,73,0.39)] hover:shadow-[0_6px_20px_rgba(27,42,73,0.23)] hover:-translate-y-0.5">
                                 เข้าสู่ระบบ
                             </Link>
                         </div>

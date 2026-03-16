@@ -31,7 +31,7 @@ export default async function ActivityDetailPage({
     }
 
     // Related activities
-    const relatedDocs = await getActivities({ level: activity.level, limit: 4 })
+    const { docs: relatedDocs } = await getActivities({ level: activity.level, limit: 4 })
     const relatedActivities = relatedDocs.filter((doc: any) => doc.id !== activityData.id).slice(0, 3)
 
     const dateObj = new Date(activity.date)

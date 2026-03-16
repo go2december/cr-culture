@@ -2,15 +2,17 @@
 
 สภาวัฒนธรรมจังหวัดเชียงราย - Cultural Council of Chiang Rai Province Website
 
-## 🚀 Tech Stack
+## 📚 Documentation
 
-- **Framework**: Next.js 15 + React 19
-- **CMS**: Payload CMS 3.0
-- **Database**: MongoDB
-- **Styling**: Tailwind CSS 4.0 + daisyUI 5.0
-- **Language**: TypeScript 5.7
+เอกสารโครงการทั้งหมดอยู่ใน [docs/](docs/) folder:
 
-## 📦 Getting Started
+- **[Progress Report](docs/guides/PROGRESS_REPORT.md)** - รายงานความคืบหน้าโครงการ (85%)
+- **[Docker Guide](docs/guides/DOCKER_GUIDE.md)** - คู่มือ Docker และ deployment
+- **[Task & Workflow](docs/workflow/task-and-workflow.md)** - แผนการพัฒนาและรายการงาน
+- **[Search Feature](docs/implementations/SEARCH_FEATURE_IMPLEMENTATION.md)** - ระบบค้นหาบทความ
+- **[Tags Filter](docs/implementations/TAGS_FILTER_IMPLEMENTATION.md)** - ระบบกรองแท็ก
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
@@ -48,17 +50,24 @@ npm run dev
 
 ```
 cr-culture/
+├── docs/                 # 📚 Documentation
+│   ├── guides/          # User guides and setup
+│   ├── implementations/ # Feature implementations
+│   └── workflow/        # Project planning
 ├── src/
-│   ├── app/                 # Next.js App Router
-│   │   ├── (frontend)/     # Public pages
-│   │   ├── admin/          # Payload CMS Admin
-│   │   └── api/            # API routes
-│   ├── collections/        # Payload CMS Collections
-│   ├── components/         # React components
-│   ├── lib/               # Utilities
-│   └── payload.config.ts  # Payload configuration
-├── public/                # Static assets
-├── docker-compose.yml    # Docker configuration
+│   ├── app/             # Next.js App Router
+│   │   ├── (frontend)/ # Public pages
+│   │   ├── admin/      # Payload CMS Admin
+│   │   └── api/        # API routes
+│   ├── collections/    # Payload CMS Collections
+│   ├── components/     # React components
+│   │   ├── heritage/  # Heritage-specific components
+│   │   ├── admin/     # Admin components
+│   │   └── ...
+│   ├── lib/           # Utilities
+│   └── payload.config.ts
+├── public/            # Static assets
+├── docker-compose.yml # Docker configuration
 └── package.json
 ```
 

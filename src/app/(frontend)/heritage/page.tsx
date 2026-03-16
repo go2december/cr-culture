@@ -1,5 +1,7 @@
 import Link from 'next/link'
-import { getHeritageBlogs } from '@/lib/payload'
+import { getHeritageBlogs, getTags } from '@/lib/payload'
+import SearchBox from '@/components/heritage/SearchBox'
+import ActiveFilters from '@/components/heritage/ActiveFilters'
 
 const categories = [
     { id: 'all', label: 'ทั้งหมด', icon: '📚' },
@@ -11,22 +13,31 @@ const categories = [
 export default async function HeritagePage({
     searchParams,
 }: {
-    searchParams: Promise<{ category?: string; tag?: string, page?: string }>
+    searchParams: Promise<{ category?: string; tag?: string, search?: string, page?: string }>
 }) {
     const params = await searchParams
     const selectedCategory = params.category || 'all'
+    const selectedTag = params.tag || ''
+    const searchQuery = params.search || ''
     const currentPage = Number(params.page) || 1
 
-    const blogResponse = await getHeritageBlogs({ 
-        category: selectedCategory === 'all' ? undefined : selectedCategory,
-        limit: 12,
-        page: currentPage
-    })
+    // ดึงข้อมูลบทความและแท็กพร้อมกัน
+    const [blogResponse, tagsData] = await Promise.all([
+        getHeritageBlogs({
+            category: selectedCategory === 'all' && !selectedTag && !searchQuery ? undefined : selectedCategory === 'all' ? undefined : selectedCategory,
+            tagSlug: selectedTag || undefined,
+            search: searchQuery || undefined,
+            limit: 12,
+            page: currentPage
+        }),
+        getTags()
+    ])
 
     const filteredArticles = blogResponse.docs || []
     const totalPages = blogResponse.totalPages || 1
     const hasNextPage = blogResponse.hasNextPage || false
     const hasPrevPage = blogResponse.hasPrevPage || false
+    const tags = tagsData || []
 
     return (
         <div className="bg-slate-50 min-h-screen font-sans">
@@ -67,45 +78,82 @@ export default async function HeritagePage({
                 <div className="grid lg:grid-cols-4 gap-8">
                     {/* Sidebar - Filters */}
                     <aside className="lg:col-span-1 animate-fade-in-up delay-300">
-                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 sticky top-28">
-                            <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2 font-display">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><line x1="21" x2="14" y1="4" y2="4" /><line x1="10" x2="3" y1="4" y2="4" /><line x1="21" x2="12" y1="12" y2="12" /><line x1="8" x2="3" y1="12" y2="12" /><line x1="21" x2="16" y1="20" y2="20" /><line x1="12" x2="3" y1="20" y2="20" /><line x1="14" x2="14" y1="2" y2="6" /><line x1="8" x2="8" y1="10" y2="14" /><line x1="16" x2="16" y1="18" y2="22" /></svg>
-                                หมวดหมู่
-                            </h3>
+                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 sticky top-28 space-y-6">
+                            {/* Search Box */}
+                            <div>
+                                <h3 className="text-sm font-bold text-base-content/80 mb-3 uppercase tracking-wider flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                                    ค้นหา
+                                </h3>
+                                <SearchBox placeholder="ค้นหาบทความ..." />
+                            </div>
 
-                            <ul className="space-y-1">
-                                {categories.map((cat) => (
-                                    <li key={cat.id}>
-                                        <Link
-                                            href={cat.id === 'all' ? '/heritage' : `/heritage?category=${cat.id}`}
-                                            className={`flex items-center gap-3 p-3 rounded-xl transition-all ${selectedCategory === cat.id
-                                                ? 'bg-primary text-white shadow-md font-medium'
-                                                : 'hover:bg-secondary/10 text-base-content/70 hover:text-primary font-light'
-                                                }`}
-                                        >
-                                            <span className="text-xl flex-shrink-0 w-8 text-center">{cat.icon}</span>
-                                            <span>{cat.label}</span>
-                                            {selectedCategory === cat.id && (
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto opacity-70 text-secondary"><path d="m9 18 6-6-6-6" /></svg>
-                                            )}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
+                            {/* Categories */}
+                            <div className="pt-6 border-t border-base-100">
+                                <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2 font-display">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><line x1="21" x2="14" y1="4" y2="4" /><line x1="10" x2="3" y1="4" y2="4" /><line x1="21" x2="12" y1="12" y2="12" /><line x1="8" x2="3" y1="12" y2="12" /><line x1="21" x2="16" y1="20" y2="20" /><line x1="12" x2="3" y1="20" y2="20" /><line x1="14" x2="14" y1="2" y2="6" /><line x1="8" x2="8" y1="10" y2="14" /><line x1="16" x2="16" y1="18" y2="22" /></svg>
+                                    หมวดหมู่
+                                </h3>
 
-                            {/* Popular Tags */}
-                            <div className="mt-8 pt-8 border-t border-base-100">
-                                <h4 className="text-sm font-bold text-base-content/80 mb-4 uppercase tracking-wider">แท็กยอดนิยม</h4>
-                                <div className="flex flex-wrap gap-2">
-                                    {['ผ้าทอ', 'อาหาร', 'ประเพณี', 'ศิลปะ', 'สมุนไพร', 'หัตถกรรม'].map((tag) => (
-                                        <Link
-                                            key={tag}
-                                            href={`/heritage?tag=${tag}`}
-                                            className="px-3 py-1.5 rounded-lg bg-slate-50 border border-base-200 text-xs font-medium text-base-content/60 hover:text-primary hover:border-secondary transition-colors"
-                                        >
-                                            #{tag}
-                                        </Link>
-                                    ))}
+                                <ul className="space-y-1">
+                                    {categories.map((cat) => {
+                                        // Build params: clear tag when selecting category
+                                        const catParams = new URLSearchParams()
+                                        if (cat.id !== 'all') catParams.set('category', cat.id)
+                                        // Tag is cleared when changing category
+
+                                        return (
+                                            <li key={cat.id}>
+                                                <Link
+                                                    href={cat.id === 'all' ? '/heritage' : `/heritage?${catParams.toString()}`}
+                                                    className={`flex items-center gap-3 p-3 rounded-xl transition-all ${selectedCategory === cat.id && !selectedTag
+                                                        ? 'bg-primary text-white shadow-md font-medium'
+                                                        : 'hover:bg-secondary/10 text-base-content/70 hover:text-primary font-light'
+                                                        }`}
+                                                >
+                                                    <span className="text-xl flex-shrink-0 w-8 text-center">{cat.icon}</span>
+                                                    <span>{cat.label}</span>
+                                                    {selectedCategory === cat.id && !selectedTag && (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto opacity-70 text-secondary"><path d="m9 18 6-6-6-6" /></svg>
+                                                    )}
+                                                </Link>
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+
+                                {/* All Tags */}
+                                <div className="mt-8 pt-8 border-t border-base-100">
+                                    <h4 className="text-sm font-bold text-base-content/80 mb-4 uppercase tracking-wider flex items-center justify-between">
+                                        <span>แท็กทั้งหมด</span>
+                                        {selectedTag && (
+                                            <Link
+                                                href="/heritage"
+                                                className="text-xs font-normal text-primary hover:underline flex items-center gap-1"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                                                ล้าง
+                                            </Link>
+                                        )}
+                                    </h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {tags.length > 0 ? (
+                                            tags.map((tag: any) => (
+                                                <Link
+                                                    key={tag.id}
+                                                    href={`/heritage?tag=${tag.slug}`}
+                                                    className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${selectedTag === tag.slug
+                                                        ? 'bg-primary text-white border-primary shadow-sm'
+                                                        : 'bg-slate-50 border-base-200 text-base-content/60 hover:text-primary hover:border-secondary'
+                                                        }`}
+                                                >
+                                                    #{tag.name}
+                                                </Link>
+                                            ))
+                                        ) : (
+                                            <p className="text-xs text-base-content/50 w-full text-center py-4">ยังไม่มีแท็ก</p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -113,9 +161,17 @@ export default async function HeritagePage({
 
                     {/* Main Content - Article Grid */}
                     <main className="lg:col-span-3 pb-12">
+                        {/* Active Filters Display */}
+                        <ActiveFilters />
+
                         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4 animate-fade-in-up delay-400">
                             <h2 className="text-2xl font-bold flex items-center gap-3 font-display text-primary">
-                                {categories.find(c => c.id === selectedCategory)?.label || 'ทั้งหมด'}
+                                {searchQuery
+                                    ? `🔍 "${searchQuery}"`
+                                    : selectedTag
+                                        ? `#${tags.find((t: any) => t.slug === selectedTag)?.name || selectedTag}`
+                                        : categories.find(c => c.id === selectedCategory)?.label || 'ทั้งหมด'
+                                }
                                 <span className="text-sm font-medium px-3 py-1 rounded-full bg-secondary/20 text-primary-dark">
                                     {filteredArticles.length} รายการ
                                 </span>
@@ -134,45 +190,65 @@ export default async function HeritagePage({
                         <div className="grid md:grid-cols-2 gap-6 animate-fade-in-up delay-500">
                             {filteredArticles.length > 0 ? filteredArticles.map((article: any, i: number) => {
                                 const imageUrl = article.coverImage?.url
-                                
+
                                 return (
-                                <Link
-                                    key={article.id || article.slug}
-                                    href={`/heritage/${article.slug || article.id}`}
-                                    className={`card-modern group bg-white rounded-3xl border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:border-secondary/50 transition-all duration-400 overflow-hidden flex flex-col h-full delay-${(i % 4) * 100}`}
-                                >
-                                    <figure className="aspect-[16/10] bg-slate-50 relative overflow-hidden flex-shrink-0 border-b border-base-100">
-                                        {imageUrl ? (
-                                            <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-700 ease-out">
-                                                <img src={imageUrl} alt={article.title} className="w-full h-full object-cover" />
+                                    <Link
+                                        key={article.id || article.slug}
+                                        href={`/heritage/${article.slug || article.id}`}
+                                        className={`card-modern group bg-white rounded-3xl border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:border-secondary/50 transition-all duration-400 overflow-hidden flex flex-col h-full delay-${(i % 4) * 100}`}
+                                    >
+                                        <figure className="aspect-[16/10] bg-slate-50 relative overflow-hidden flex-shrink-0 border-b border-base-100">
+                                            {imageUrl ? (
+                                                <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-700 ease-out">
+                                                    <img src={imageUrl} alt={article.title} className="w-full h-full object-cover" />
+                                                </div>
+                                            ) : (
+                                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/10 group-hover:scale-105 transition-transform duration-700 flex items-center justify-center">
+                                                    <span className="text-6xl drop-shadow-sm group-hover:-translate-y-2 transition-transform duration-500 delay-100">
+                                                        {categories.find(c => c.id === article.category)?.icon || '📄'}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </figure>
+                                        <div className="p-6 md:p-8 flex flex-col flex-grow">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <span className="text-[10px] font-bold px-2.5 py-1 rounded bg-secondary/20 text-primary uppercase tracking-widest">
+                                                    {categories.find(c => c.id === article.category)?.label || 'มรดกภูมิปัญญา'}
+                                                </span>
                                             </div>
-                                        ) : (
-                                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/10 group-hover:scale-105 transition-transform duration-700 flex items-center justify-center">
-                                            <span className="text-6xl drop-shadow-sm group-hover:-translate-y-2 transition-transform duration-500 delay-100">
-                                                {categories.find(c => c.id === article.category)?.icon || '📄'}
-                                            </span>
+                                            <h3 className="text-xl font-bold group-hover:text-primary transition-colors mb-3 leading-snug font-display">
+                                                {article.title}
+                                            </h3>
+                                            {article.excerpt && (
+                                                <p className="text-sm text-base-content/70 font-light line-clamp-2 mb-6 flex-grow">
+                                                    {article.excerpt}
+                                                </p>
+                                            )}
                                         </div>
-                                        )}
-                                    </figure>
-                                    <div className="p-6 md:p-8 flex flex-col flex-grow">
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <span className="text-[10px] font-bold px-2.5 py-1 rounded bg-secondary/20 text-primary uppercase tracking-widest">
-                                                {categories.find(c => c.id === article.category)?.label || 'มรดกภูมิปัญญา'}
-                                            </span>
-                                        </div>
-                                        <h3 className="text-xl font-bold group-hover:text-primary transition-colors mb-3 leading-snug font-display">
-                                            {article.title}
-                                        </h3>
-                                        {article.excerpt && (
-                                            <p className="text-sm text-base-content/70 font-light line-clamp-2 mb-6 flex-grow">
-                                                {article.excerpt}
-                                            </p>
-                                        )}
-                                    </div>
-                                </Link>
-                            )}) : (
+                                    </Link>
+                                )
+                            }) : (
                                 <div className="col-span-full text-center py-16 bg-white rounded-3xl border border-dashed border-base-200">
-                                    <p className="text-base-content/50">ไม่พบบทความมรดกภูมิปัญญาในหมวดหมู่ที่เลือก</p>
+                                    {searchQuery ? (
+                                        <>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 text-base-content/30">
+                                                <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+                                            </svg>
+                                            <h3 className="text-xl font-bold text-base-content/70 mb-2">ไม่พบบทความที่ค้นหา</h3>
+                                            <p className="text-base-content/50 mb-4">
+                                                ไม่พบบทความที่ตรงกับ &quot;{searchQuery}&quot;
+                                            </p>
+                                            <Link
+                                                href="/heritage"
+                                                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary-dark transition-colors"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                                                กลับไปดูบทความทั้งหมด
+                                            </Link>
+                                        </>
+                                    ) : (
+                                        <p className="text-base-content/50">ไม่พบบทความมรดกภูมิปัญญาในหมวดหมู่ที่เลือก</p>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -180,19 +256,52 @@ export default async function HeritagePage({
                         {/* Pagination */}
                         <div className="flex justify-center mt-16 animate-fade-in-up delay-700">
                             {totalPages > 1 && (
-                            <div className="inline-flex items-center justify-center p-1 bg-white rounded-full border border-base-200 shadow-sm">
-                                <Link href={`?category=${selectedCategory}&page=${currentPage - 1}`} className={`w-10 h-10 flex items-center justify-center rounded-full ${hasPrevPage ? 'text-base-content/70 hover:bg-secondary/10 transition-colors' : 'text-base-content/40 cursor-not-allowed pointer-events-none'}`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-                                </Link>
-                                
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                    <Link key={page} href={`?category=${selectedCategory}&page=${page}`} className={`w-10 h-10 flex items-center justify-center rounded-full font-medium ${currentPage === page ? 'bg-primary text-white shadow-sm' : 'text-base-content/70 hover:bg-secondary/10 transition-colors'}`}>{page}</Link>
-                                ))}
+                                <div className="inline-flex items-center justify-center p-1 bg-white rounded-full border border-base-200 shadow-sm">
+                                    {/* Build query string preserving both category and tag */}
+                                    {(() => {
+                                        const baseParams = new URLSearchParams()
+                                        if (selectedCategory && selectedCategory !== 'all') baseParams.set('category', selectedCategory)
+                                        if (selectedTag) baseParams.set('tag', selectedTag)
 
-                                <Link href={`?category=${selectedCategory}&page=${currentPage + 1}`} className={`w-10 h-10 flex items-center justify-center rounded-full ${hasNextPage ? 'text-base-content/70 hover:bg-secondary/10 transition-colors' : 'text-base-content/40 cursor-not-allowed pointer-events-none'}`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-                                </Link>
-                            </div>
+                                        const prevParams = new URLSearchParams(baseParams)
+                                        prevParams.set('page', String(currentPage - 1))
+
+                                        const nextParams = new URLSearchParams(baseParams)
+                                        nextParams.set('page', String(currentPage + 1))
+
+                                        return (
+                                            <>
+                                                <Link
+                                                    href={`?${prevParams.toString()}`}
+                                                    className={`w-10 h-10 flex items-center justify-center rounded-full ${hasPrevPage ? 'text-base-content/70 hover:bg-secondary/10 transition-colors' : 'text-base-content/40 cursor-not-allowed pointer-events-none'}`}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                                                </Link>
+
+                                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                                                    const pageParams = new URLSearchParams(baseParams)
+                                                    pageParams.set('page', String(page))
+                                                    return (
+                                                        <Link
+                                                            key={page}
+                                                            href={`?${pageParams.toString()}`}
+                                                            className={`w-10 h-10 flex items-center justify-center rounded-full font-medium ${currentPage === page ? 'bg-primary text-white shadow-sm' : 'text-base-content/70 hover:bg-secondary/10 transition-colors'}`}
+                                                        >
+                                                            {page}
+                                                        </Link>
+                                                    )
+                                                })}
+
+                                                <Link
+                                                    href={`?${nextParams.toString()}`}
+                                                    className={`w-10 h-10 flex items-center justify-center rounded-full ${hasNextPage ? 'text-base-content/70 hover:bg-secondary/10 transition-colors' : 'text-base-content/40 cursor-not-allowed pointer-events-none'}`}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                                                </Link>
+                                            </>
+                                        )
+                                    })()}
+                                </div>
                             )}
                         </div>
                     </main>
