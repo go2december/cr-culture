@@ -1,3 +1,12 @@
+> LEGACY SNAPSHOT NOTICE
+>
+> ไฟล์นี้เป็นเอกสารอ้างอิงย้อนหลัง (historical snapshot) และไม่ใช่แหล่งข้อมูล canonical ของโปรเจกต์ในปัจจุบัน
+>
+> สำหรับข้อมูลล่าสุด ให้ใช้งานไฟล์เหล่านี้แทน:
+> - docs/01_Project_Core/Site_Map_and_Workflow.md
+> - docs/01_Project_Core/Project_Roadmap.md
+> - STATUS.md
+
 นี่คือการออกแบบ **Site Map** และ **Workflow/Tasks** ที่มีความละเอียดและชัดเจน เพื่อให้นำไปป้อนคำสั่ง (Prompt) ให้กับ **Google Antigravity Agent** ทำงานได้อย่างไร้รอยต่อ
 
 **อัปเดตล่าสุด:** 15 มีนาคม 2569 **(ปัจจุบัน)**
