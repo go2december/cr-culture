@@ -1,0 +1,218 @@
+{
+  "main": {
+    "id": "811877a48fc5698b",
+    "type": "split",
+    "children": [
+      {
+        "id": "94721abbf008ce9e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5549c627c42a6624",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "1f753433cebb89f6",
+    "type": "split",
+    "children": [
+      {
+        "id": "2436cd5d1e57e486",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b976a83fcc46143f",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "13aa47b72f105fe3",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "47774faced74698a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "f2d6c183271e3807",
+    "type": "split",
+    "children": [
+      {
+        "id": "8bbe63cb07fdb3aa",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5d841a73687432f9",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "deba898831adb97e",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "dace6e3b8b9bfa36",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "a6285456e6d67a4b",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "ccff44fefa0107c0",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "5549c627c42a6624",
+  "lastOpenFiles": [
+    "docs/01_Project_Core/Skill_Routing_with_Obsidian.md",
+    "docs/02_Features/REAL_CONTENT_IMPORT_BATCH_2.md",
+    "docs/02_Features/REAL_CONTENT_IMPORT_BATCH_1.md",
+    "docs/02_Features/NEXT_FEATURE_KICKOFF.md",
+    "docs/05_Meeting_Notes/NEW_DECISIONS.md",
+    "Untitled.canvas",
+    "public/logo.png",
+    "CLAUDE.md",
+    "docs/05_Meeting_Notes/Archive/README.md",
+    "docs/05_Meeting_Notes/Archive",
+    "docs/05_Meeting_Notes/Sessions/README.md",
+    "docs/05_Meeting_Notes/Sessions/2026-04-16_obsidian-documentation-system.md",
+    "docs/05_Meeting_Notes/Sessions",
+    "docs/99_Templates/Decision_Log_Entry_Template.md",
+    "docs/05_Meeting_Notes/Decision_Log.md",
+    "docs/05_Meeting_Notes/README.md",
+    "docs/01_Project_Core/Site_Map_and_Workflow.md",
+    "docs/01_Project_Core/Project_Roadmap.md",
+    "docs/01_Project_Core/Development_Environment.md",
+    "docs/02_Features/Heritage_Tag_Filter.md",
+    "docs/02_Features/Heritage_Search.md",
+    "docs/02_Features/District_Committee_Profiles.md",
+    "docs/99_Templates/Workflow_Template.md",
+    "docs/99_Templates/Meeting_Note_Template.md",
+    "docs/99_Templates/Bug_Report_Template.md",
+    "docs/99_Templates/Page_Template.md",
+    "docs/99_Templates/Collection_Template.md",
+    "docs/01_Project_Core/Documentation_Workflow.md",
+    "docs/04_UI_UX/Design_Tokens.md",
+    "docs/03_Database/Schema.md",
+    "docs/99_Templates",
+    "docs/05_Meeting_Notes",
+    "docs/04_UI_UX",
+    "docs/03_Database",
+    "docs/02_Features",
+    "docs/01_Project_Core"
+  ]
+}

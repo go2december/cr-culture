@@ -1,0 +1,53 @@
+# CR-Culture Project Rules
+
+## 1. Project Overview
+- **Name**: สภาวัฒนธรรมจังหวัดเชียงราย (Cultural Council of Chiang Rai Province Website)
+- **Goal**: A web platform to showcase provincial activities, cultural heritage, and manage the 18 district networks.
+
+## 2. Tech Stack & Environment
+- **Framework**: Next.js 16.1.1 (App Router)
+- **CMS**: Payload CMS 3.0.0
+- **Database**: MongoDB (running via Docker)
+- **Styling**: Tailwind CSS 4.1.0 + daisyUI 5.5.14
+- **Node Version**: >= 20.0.0
+
+## 3. Directory Structure
+- `src/app/`: Frontend application using Next.js App Router.
+- `src/collections/`: Payload CMS backend schema definitions.
+- `src/payload.config.ts`: Central configuration for Payload CMS.
+- `docs/`: Obsidian vault containing detailed features, database schema, and design tokens.
+
+## 4. Context References (Load only when needed)
+- **Documentation Index**: `@docs/README.md`
+- **Documentation Workflow**: `@docs/01_Project_Core/Documentation_Workflow.md`
+- **Database/CMS Schema Details**: `@docs/03_Database/Schema.md`
+- **UI/UX & Design Tokens**: `@docs/04_UI_UX/Design_Tokens.md`
+- **Feature Specs**: Check `@docs/02_Features/`
+- **Project Status**: `@STATUS.md`
+
+## 5. Coding Standards
+- **Next.js**: Use App Router (`app/` directory), Server Components by default, and Client Components only when interactivity is needed.
+- **Language**: TypeScript is mandatory for all new files.
+- **Docker**: Always ensure the MongoDB container is running via `docker-compose.yml` during development.
+
+## 6. Preferred Local Skills for Windsurf
+- Source: `.agent/skills/`
+- Goal: use the smallest useful skill set first, then expand only when the task requires it.
+
+### Default Skill Set
+- `clean-code`
+- `lint-and-validate` (prefer `npm run lint` and `npx tsc --noEmit`)
+- `tailwind-patterns` (for UI styles, layout, design tokens)
+- `systematic-debugging` (for runtime bugs, `/admin` errors)
+
+### Conditional Skill Set (Do NOT use by default)
+- `nextjs-react-expert`: Only for performance work or bundle reduction.
+- `webapp-testing`: Only for critical path browser testing.
+- `ui-ux-pro-max`: Only for new pages or major UI refactors.
+- `architecture`: Only for structural refactors.
+- `api-patterns`: Only when editing API routes.
+
+### Token-Efficient Usage Policy
+- Start with project context from `.windsurfrules` and code inspection first.
+- Activate at most 1-2 relevant skills per task.
+- Treat `.windsurfrules`, `STATUS.md`, and direct source files as the primary context.

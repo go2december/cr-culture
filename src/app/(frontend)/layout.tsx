@@ -51,8 +51,9 @@ export default function FrontendLayout({
     return (
         <html lang="th" data-theme="lofi">
             <body className={`min-h-screen flex flex-col font-sans ${prompt.variable} ${charmonman.variable} ${notoSerifThai.variable}`}>
+                <a href="#main-content" className="skip-link">ข้ามไปยังเนื้อหาหลัก</a>
                 <Navbar />
-                <main className="flex-grow">
+                <main id="main-content" className="grow">
                     {children}
                 </main>
                 <Footer />

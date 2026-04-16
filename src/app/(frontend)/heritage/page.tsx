@@ -54,7 +54,7 @@ export default async function HeritagePage({
                         ความรู้และภูมิปัญญา
                     </div>
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight animate-fade-in-up delay-100 font-display">
-                        คลังมรดกภูมิปัญญา
+                        คลังมรดกภูมิปัญญาทางวัฒนธรรม
                     </h1>
                     <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-up delay-200">
                         รวบรวมและสงวนรักษามรดกทางวัฒนธรรม องค์ความรู้ และภูมิปัญญาท้องถิ่นอันทรงคุณค่าของจังหวัดเชียงราย
@@ -69,7 +69,7 @@ export default async function HeritagePage({
                 <div className="breadcrumbs text-sm text-base-content/60 font-light">
                     <ul>
                         <li><Link href="/" className="hover:text-primary transition-colors">หน้าแรก</Link></li>
-                        <li className="text-primary font-medium">คลังมรดกภูมิปัญญา</li>
+                        <li className="text-primary font-medium">คลังมรดกภูมิปัญญาทางวัฒนธรรม</li>
                     </ul>
                 </div>
             </div>
@@ -204,8 +204,8 @@ export default async function HeritagePage({
                                                 </div>
                                             ) : (
                                                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/10 group-hover:scale-105 transition-transform duration-700 flex items-center justify-center">
-                                                    <span className="text-6xl drop-shadow-sm group-hover:-translate-y-2 transition-transform duration-500 delay-100">
-                                                        {categories.find(c => c.id === article.category)?.icon || '📄'}
+                                                    <span className="text-primary/30 drop-shadow-sm group-hover:-translate-y-2 transition-transform duration-500 delay-100 [&>svg]:w-16 [&>svg]:h-16">
+                                                        {categories.find(c => c.id === article.category)?.icon || <BookOpen className="w-16 h-16 mx-auto" />}
                                                     </span>
                                                 </div>
                                             )}

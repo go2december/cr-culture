@@ -1,5 +1,6 @@
 import { Logo as Logo_0 } from '@/components/admin/Logo'
 import { Icon as Icon_0 } from '@/components/admin/Icon'
+import { CollectionCards as CollectionCards_0 } from '@payloadcms/ui/rsc'
 
 import { RscEntryLexicalCell as RscEntryLexicalCell_0 } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_0 } from '@payloadcms/richtext-lexical/rsc'
@@ -30,6 +31,7 @@ import { SubscriptFeatureClient as SubscriptFeatureClient_0 } from '@payloadcms/
 export const importMap = {
   "@/components/admin/Logo#Logo": Logo_0,
   "@/components/admin/Icon#Icon": Icon_0,
+  "@payloadcms/ui/rsc#CollectionCards": CollectionCards_0,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_0,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_0,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_0,

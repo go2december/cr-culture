@@ -75,6 +75,36 @@ body {
   color: var(--color-base-content);
   line-height: 1.8;
   font-weight: 300;
+  font-size: 16px;
+}
+
+/* Global keyboard accessibility */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role='button']:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* Skip link for keyboard users */
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-120%);
+  background: var(--color-primary);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 0 0 0.5rem 0;
+  z-index: 100;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
 }
 
 /* 🧩 Abstract SVG Masking (ลายกนก) */
@@ -267,5 +297,27 @@ body {
 
   to {
     opacity: 1;
+  }
+}
+
+/* Respect user motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-fade-in-up,
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .card-district,
+  .card-heritage,
+  .card-modern,
+  .btn-lanna,
+  .btn-accent-lanna {
+    transition: none !important;
   }
 }

@@ -45,27 +45,27 @@ export default async function ActivityDetailPage({
                     {activity.titleImage ? (
                         <>
                             <img src={activity.titleImage} alt={activity.title} className="w-full h-full object-cover mix-blend-overlay opacity-30" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/80 to-primary/50" />
+                            <div className="absolute inset-0 bg-linear-to-t from-primary via-primary/80 to-primary/50" />
                         </>
                     ) : (
                         <>
                             <div className="absolute inset-0 bg-black/20" />
-                            <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-gradient-to-bl from-white/10 to-transparent blur-[120px]" />
-                            <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-gradient-to-tr from-secondary/30 to-transparent blur-[130px]" />
+                            <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-white/10 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-secondary/30 to-transparent blur-[130px]" />
                         </>
                     )}
                 </div>
 
                 <div className="container mx-auto max-w-5xl px-4 relative z-10 text-white text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-medium shadow-sm mb-6 animate-fade-in-up">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-medium shadow-sm mb-6">
                         {activity.level === 'province' ? 'กิจกรรมระดับจังหวัด' : `กิจกรรมระดับอำเภอ ${activity.district || ''}`}
                     </div>
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight animate-fade-in-up delay-100 drop-shadow-md">
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight drop-shadow-md">
                         {activity.title}
                     </h1>
-                    <div className="flex flex-wrap justify-center items-center gap-4 text-sm opacity-90 animate-fade-in-up delay-200 font-light">
+                    <div className="flex flex-wrap justify-center items-center gap-4 text-sm opacity-90 font-light">
                         <span className="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
                             {dateObj.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
                             {endDateObj && ` - ${endDateObj.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}`}
                         </span>
@@ -73,7 +73,7 @@ export default async function ActivityDetailPage({
                             <>
                                 <span className="w-1 h-1 rounded-full bg-white/50" />
                                 <span className="flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
                                     {activity.location}
                                 </span>
                             </>
@@ -84,7 +84,7 @@ export default async function ActivityDetailPage({
 
             {/* Breadcrumb */}
             <div className="container mx-auto max-w-5xl px-4 py-6 relative z-20 -mt-8">
-                <div className="breadcrumbs text-sm bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-sm border border-base-200 inline-block text-base-content/60 font-light animate-fade-in-up delay-300">
+                <div className="breadcrumbs text-sm bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-sm border border-base-200 inline-block text-base-content/60 font-light">
                     <ul>
                         <li><Link href="/" className="hover:text-primary transition-colors">หน้าแรก</Link></li>
                         <li><Link href="/activities" className="hover:text-primary transition-colors">กิจกรรมสภาวัฒนธรรม</Link></li>
@@ -96,7 +96,7 @@ export default async function ActivityDetailPage({
             <div className="container mx-auto max-w-5xl px-4 py-8">
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Main Content */}
-                    <article className="lg:col-span-2 space-y-8 animate-fade-in-up delay-400">
+                    <article className="lg:col-span-2 space-y-8">
                         <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-8 lg:p-10">
                             {/* Summary */}
                             {activity.summary && (
@@ -115,7 +115,7 @@ export default async function ActivityDetailPage({
                             {activity.gallery.length > 0 && (
                             <div className="mt-12 pt-10 border-t border-base-100">
                                 <h3 className="text-2xl font-bold text-primary mb-8 flex items-center gap-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
                                     แกลเลอรี
                                 </h3>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -124,14 +124,18 @@ export default async function ActivityDetailPage({
                                         return (
                                         <div key={i} className="group relative aspect-square bg-slate-100 rounded-2xl border border-base-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/30 hover:shadow-md transition-all">
                                             {imageUrl ? (
-                                                <img src={imageUrl} alt={item.caption || "Gallery image"} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                <img src={imageUrl} alt={item.caption || "Gallery image"} className="w-full h-full object-cover transition-transform duration-500" />
                                             ) : (
-                                            <div className="text-center p-4 z-10 group-hover:scale-110 transition-transform duration-500">
-                                                <span className="text-4xl mb-3 block drop-shadow-sm">🖼️</span>
+                                            <div className="text-center p-4 z-10 transition-transform duration-500">
+                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="mx-auto text-primary/40">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                    <circle cx="9" cy="9" r="2" />
+                                                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                                                </svg>
                                             </div>
                                             )}
                                             {item.caption && (
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-end p-4">
+                                            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-end p-4">
                                                 <span className="text-sm font-medium text-white translate-y-2 group-hover:translate-y-0 transition-transform duration-300">{item.caption}</span>
                                             </div>
                                             )}
@@ -144,11 +148,11 @@ export default async function ActivityDetailPage({
                     </article>
 
                     {/* Sidebar */}
-                    <aside className="space-y-6 animate-fade-in-up delay-500">
+                    <aside className="space-y-6">
                         {/* Event Details widget */}
                         <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8">
                             <h3 className="text-lg font-bold text-primary mb-5 flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M12 2A10 10 0 1 0 22 12 10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z"/><path d="M12 7v5l3 3"/></svg>
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M12 2A10 10 0 1 0 22 12 10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z"/><path d="M12 7v5l3 3"/></svg>
                                 รายละเอียดกิจกรรม
                             </h3>
                             <ul className="space-y-4">
@@ -178,16 +182,16 @@ export default async function ActivityDetailPage({
                         {activity.district && activity.districtSlug && (
                             <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8">
                                 <h3 className="text-lg font-bold text-primary mb-5 flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
                                     เครือข่ายระดับอำเภอ
                                 </h3>
                                 <Link
                                     href={`/districts/${activity.districtSlug}`}
-                                    className="group block p-4 bg-slate-50 border border-base-200 rounded-2xl hover:border-primary/30 transition-colors"
+                                    className="group block min-h-11 p-4 bg-slate-50 border border-base-200 rounded-2xl hover:border-primary/30 transition-colors"
                                 >
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-base-200 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                                            📍
+                                        <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-base-200 flex items-center justify-center text-primary transition-transform">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
                                         </div>
                                         <div>
                                             <div className="text-xs font-semibold text-base-content/50 uppercase tracking-widest mb-1">สภาวัฒนธรรมอำเภอ</div>
@@ -202,7 +206,7 @@ export default async function ActivityDetailPage({
                         {relatedActivities.length > 0 && (
                         <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8">
                             <h3 className="text-lg font-bold text-primary mb-5 flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
                                 กิจกรรมอื่นๆ
                             </h3>
                             <ul className="space-y-3">
@@ -214,7 +218,7 @@ export default async function ActivityDetailPage({
                                             href={`/activities/${related.slug || related.id}`}
                                             className="group flex gap-4 p-3 bg-slate-50 border border-base-100 rounded-xl hover:bg-white hover:border-primary/20 hover:shadow-sm transition-all"
                                         >
-                                            <div className="w-14 h-14 bg-white border border-base-200 shadow-sm rounded-lg flex flex-col items-center justify-center flex-shrink-0 text-primary group-hover:border-primary/30 transition-colors">
+                                            <div className="w-14 h-14 bg-white border border-base-200 shadow-sm rounded-lg flex flex-col items-center justify-center shrink-0 text-primary group-hover:border-primary/30 transition-colors">
                                                 <span className="text-[10px] font-bold uppercase">{rDateObj.toLocaleDateString('th-TH', { month: 'short' })}</span>
                                                 <span className="font-bold text-lg leading-none">{rDateObj.getDate()}</span>
                                             </div>
@@ -232,7 +236,7 @@ export default async function ActivityDetailPage({
 
                         {/* Back to Activities */}
                         <Link href="/activities" className="btn btn-primary rounded-xl w-full flex items-center justify-center gap-2 group shadow-sm hover:shadow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-1 transition-transform"><path d="m15 18-6-6 6-6" /></svg>
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-1 transition-transform"><path d="m15 18-6-6 6-6" /></svg>
                             กลับไปยังกิจกรรมทั้งหมด
                         </Link>
                     </aside>
@@ -241,3 +245,5 @@ export default async function ActivityDetailPage({
         </div>
     )
 }
+
+
