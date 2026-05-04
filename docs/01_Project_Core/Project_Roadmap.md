@@ -1,17 +1,19 @@
 # Project Roadmap
 
 ## Purpose
-เอกสาร canonical สำหรับภาพรวมความคืบหน้า milestone หลักของโปรเจกต์ โดยใช้คู่กับ `STATUS.md` ซึ่งเป็นสถานะสั้นแบบปัจจุบัน
+เอกสาร canonical สำหรับภาพรวม milestone และ priority ระดับโปรเจกต์เท่านั้น
 
 ## Milestones
 1. **Environment & Infrastructure** — Complete
 2. **Data Schema & CMS** — Complete
 3. **Frontend & Theme** — Complete
 4. **Logic & Content Integration** — In Progress
-5. **Production Readiness** — Pending
+5. **Production Readiness** — In Progress
 
-## Current High-Level Progress
-จาก legacy progress report โปรเจกต์อยู่ในช่วงหลังบ้านเชื่อมข้อมูลและเตรียม content จริง โดยโครงสร้างหลักพร้อมใช้งานแล้ว
+## Current Roadmap Position
+- โครงสร้างหลักของระบบเสร็จแล้ว
+- งานปัจจุบันอยู่ที่ content integration, typed data-layer cleanup, และ production readiness
+- งานเชิง execution รายวันให้ดูใน `Site_Map_and_Workflow.md`
 
 ## Completed Foundations
 ### Environment & Infra
@@ -28,37 +30,24 @@
 - Public pages หลักสร้างครบ
 - Theme Modern Lanna และ utility classes พร้อมใช้
 - Navbar / Footer / Admin branding พร้อม
+- Shared media resolution, public-facing content typing, and current background-header visual language ถูกใช้กับหน้าหลักส่วนใหญ่แล้ว
 
-## Integration Status
-### Implemented
-- Home page content integration
-- Activities list/detail/calendar
-- District list/detail
-- Heritage listing and article detail
-- News listing/detail
-- About page global content
-- Board page integration
+## Milestone Priorities
+### Logic & Content Integration
+- Import ข้อมูลจริงของกรรมการ กิจกรรม บทความ และข่าว
+- ลดความหนาแน่นของ query logic ใน `src/lib/payload.ts` และค่อยๆ ย้ายไปสู่ typed public model mapping
+- เพิ่มการตรวจสอบ flow สำคัญหลังลงข้อมูลจริง
 
-### Still Ongoing
-- Import ข้อมูลจริง: กรรมการ กิจกรรม บทความ
-- ลดความหนาแน่นของ query logic ใน `src/lib/payload.ts`
-- image optimization
-- production readiness tasks
-
-## Current Priorities
-### High Priority
-- Import real content
-- Performance optimization for images/components
-- Production configuration readiness
-
-### Medium Priority
-- Refactor shared query logic
-- Continue canonical documentation migration
-- Add verification/testing around key flows
+### Production Readiness
+- ปิด health check และ Docker optimization
+- ทวน deployment configuration และ host/runtime parity
+- ติดตาม performance หลังข้อมูลจริงเพิ่มขึ้น
+- รักษา admin/runtime compatibility ให้เสถียรกับ Next.js + Turbopack
 
 ## How to Use This File
 - ใช้ไฟล์นี้เมื่ออยากรู้ภาพรวม roadmap และ milestone ระดับโปรเจกต์
-- ใช้ `STATUS.md` เมื่อต้องการดูสถานะล่าสุดแบบสั้นและ actionable
+- ใช้ `Site_Map_and_Workflow.md` เมื่อต้องการ workflow และ task ล่าสุดในที่เดียว
+- ใช้ `STATUS.md` เมื่อต้องการสถานะล่าสุดแบบสั้นรายรอบ
 
 ## Legacy Reference
 - `docs/guides/PROGRESS_REPORT.md`

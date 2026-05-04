@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getDistrictBySlug, getDistrictMembers, getActivities } from '@/lib/payload'
-import { BookOpen, CalendarHeart, MapPin } from 'lucide-react'
+import CmsImage from '@/components/CmsImage'
+import type { MediaLike } from '@/lib/media'
+import type { PublicDistrictContact, PublicDistrictMember } from '@/lib/public-organization'
 
 export default async function DistrictDetailPage({
     params,
@@ -19,19 +21,33 @@ export default async function DistrictDetailPage({
     }
 
     const rawMembers = await getDistrictMembers(String(districtData.id))
-    const members = rawMembers.length > 0 ? rawMembers.map((member: any) => ({
+    const typedMembers = rawMembers as unknown as Array<{
+        name: string
+        position?: { title?: string | null } | null
+        positionOrder?: number | null
+        image?: MediaLike
+        phone?: string | null
+        isActive?: boolean | null
+    }>
+    const members: PublicDistrictMember[] = typedMembers.length > 0 ? typedMembers.map((member) => ({
         name: member.name,
         position: member.position?.title || 'กรรมการ',
         order: member.positionOrder || 99,
         image: member.image,
         phone: member.phone,
         isActive: member.isActive
-    })).sort((a: any, b: any) => a.order - b.order) : []
+    })).sort((a, b) => a.order - b.order) : []
 
     const { docs: activities } = await getActivities({ level: 'district', districtId: String(districtData.id), limit: 5 })
 
     // Build the final district object to map safely
-    const district = {
+    type DistrictDetail = {
+        name: string
+        description: string
+        contact: PublicDistrictContact
+    }
+
+    const district: DistrictDetail = {
         name: districtData.name,
         description: districtData.description || `ศูนย์กลางส่งเสริมและอนุรักษ์มรดกภูมิปัญญาทางวัฒนธรรมประจำอำเภอ${districtData.name}`,
         contact: {
@@ -107,12 +123,14 @@ export default async function DistrictDetailPage({
                                     >
                                         {/* Profile Image - Top */}
                                         <div className="relative mb-4">
-                                            <div className="w-28 h-28 mx-auto rounded-full overflow-hidden border-4 border-white shadow-md transition-transform duration-300 bg-linear-to-br from-primary/10 to-secondary/10">
+                                            <div className="relative w-28 h-28 mx-auto rounded-full overflow-hidden border-4 border-white shadow-md transition-transform duration-300 bg-linear-to-br from-primary/10 to-secondary/10">
                                                 {member.image?.url ? (
-                                                    <img
+                                                    <CmsImage
                                                         src={member.image.url}
                                                         alt={member.name}
-                                                        className="w-full h-full object-cover"
+                                                        fill
+                                                        sizes="112px"
+                                                        className="object-cover"
                                                     />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-primary/40">
@@ -273,7 +291,12 @@ export default async function DistrictDetailPage({
                                 <li>
                                     <Link href="/heritage" className="flex min-h-11 items-center justify-between p-3 rounded-xl hover:bg-white/10 transition-colors group">
                                         <div className="flex items-center gap-3">
-                                            <span className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors"><BookOpen className="w-4 h-4" /></span>
+                                            <span className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors">
+                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                                                </svg>
+                                            </span>
                                             <span className="text-sm font-medium">คลังมรดกภูมิปัญญา</span>
                                         </div>
                                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
@@ -282,7 +305,15 @@ export default async function DistrictDetailPage({
                                 <li>
                                     <Link href="/activities" className="flex min-h-11 items-center justify-between p-3 rounded-xl hover:bg-white/10 transition-colors group">
                                         <div className="flex items-center gap-3">
-                                            <span className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors"><CalendarHeart className="w-4 h-4" /></span>
+                                            <span className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors">
+                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M8 2v4" />
+                                                    <path d="M16 2v4" />
+                                                    <rect width="18" height="18" x="3" y="4" rx="2" />
+                                                    <path d="M3 10h18" />
+                                                    <path d="m16 18-4-3-4 3" />
+                                                </svg>
+                                            </span>
                                             <span className="text-sm font-medium">กิจกรรมทั้งหมด</span>
                                         </div>
                                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
@@ -291,7 +322,12 @@ export default async function DistrictDetailPage({
                                 <li>
                                     <Link href="/districts" className="flex min-h-11 items-center justify-between p-3 rounded-xl hover:bg-white/10 transition-colors group">
                                         <div className="flex items-center gap-3">
-                                            <span className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors"><MapPin className="w-4 h-4" /></span>
+                                            <span className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors">
+                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                                                    <circle cx="12" cy="10" r="3" />
+                                                </svg>
+                                            </span>
                                             <span className="text-sm font-medium">อำเภออื่นๆ</span>
                                         </div>
                                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>

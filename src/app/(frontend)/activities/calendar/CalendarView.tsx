@@ -1,24 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-
-interface Activity {
-    id: string
-    title: string
-    slug: string
-    date: string
-    level: 'province' | 'district'
-    location?: string
-    coverImage?: { url?: string }
-    gallery?: { image?: { url?: string } }[]
-    district?: { name?: string }
-}
+import CmsImage from '@/components/CmsImage'
+import { resolveMediaAlt, resolveMediaUrl, type GalleryItemLike, type MediaLike } from '@/lib/media'
+import type { PublicCalendarActivity } from '@/lib/public-organization'
 
 interface CalendarViewProps {
     year: number
     month: number
-    activities: Activity[]
-    districtMap: Map<string, string>
+    activities: PublicCalendarActivity[]
+    districtMap: Map<string | number, string>
 }
 
 export default function CalendarView({ year, month, activities, districtMap }: CalendarViewProps) {
@@ -33,7 +24,7 @@ export default function CalendarView({ year, month, activities, districtMap }: C
     const adjustedFirstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1
 
     // จัดกลุ่มกิจกรรมตามวันที่
-    const activitiesByDate = new Map<string, Activity[]>()
+    const activitiesByDate = new Map<string, PublicCalendarActivity[]>()
     activities.forEach((activity) => {
         const dateKey = new Date(activity.date).getDate().toString()
         if (!activitiesByDate.has(dateKey)) {
@@ -207,7 +198,8 @@ export default function CalendarView({ year, month, activities, districtMap }: C
                         {activities
                             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                             .map((activity) => {
-                                const imageUrl = activity.coverImage?.url || activity.gallery?.[0]?.image?.url
+                                const imageUrl = resolveMediaUrl(activity.coverImage, activity.gallery)
+                                const imageAlt = resolveMediaAlt(activity.coverImage, activity.title, activity.gallery)
                                 const activityDate = new Date(activity.date)
 
                                 return (
@@ -217,10 +209,12 @@ export default function CalendarView({ year, month, activities, districtMap }: C
                                     >
                                         <div className="aspect-video bg-slate-200 relative overflow-hidden">
                                             {imageUrl ? (
-                                                <img
+                                                <CmsImage
                                                     src={imageUrl}
-                                                    alt={activity.title}
-                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                    alt={imageAlt}
+                                                    fill
+                                                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                                                    className="object-cover group-hover:scale-110 transition-transform duration-500"
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-4xl bg-linear-to-br from-primary/10 to-secondary/10">

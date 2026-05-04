@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { getAboutPage } from '@/lib/payload'
 
+type MissionItem = { text: string }
+
 // Default data ใช้เมื่อยังไม่มีข้อมูลใน CMS
 const defaults = {
     vision: 'เป็นองค์กรหลักในการขับเคลื่อนวัฒนธรรมท้องถิ่น ส่งเสริมและอนุรักษ์มรดกภูมิปัญญาล้านนา ให้คงอยู่อย่างยั่งยืนและสร้างคุณค่าสู่ชุมชน',
@@ -22,7 +24,7 @@ export default async function AboutPage() {
     // ใช้ข้อมูลจาก CMS ถ้ามี ไม่งั้นใช้ defaults
     const vision = aboutData?.vision || defaults.vision
     const missions = (aboutData?.missions && aboutData.missions.length > 0)
-        ? aboutData.missions
+        ? (aboutData.missions as MissionItem[])
         : defaults.missions
     
     // ประวัติ: ลอง historyPlain ก่อน แล้ว split เป็น paragraphs
@@ -34,21 +36,21 @@ export default async function AboutPage() {
     return (
         <div className="bg-slate-50 min-h-screen font-sans">
             {/* Elegant Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-slate-50">
+            <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-slate-50 accent-panel">
                 <div className="absolute inset-0 z-0 bg-lanna-pattern">
                     <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/15 to-transparent blur-[120px]" />
                     <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/10 to-transparent blur-[130px]" />
                 </div>
 
                 <div className="container mx-auto px-4 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6">
+                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6 reveal-soft">
                         <span className="w-2 h-2 rounded-full bg-accent" />
                         ข้อมูลองค์กร
                     </div>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight font-display">
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight font-display reveal-soft stagger-1">
                         เกี่ยวกับเรา
                     </h1>
-                    <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed">
+                    <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
                         ทำความรู้จักสภาวัฒนธรรมจังหวัดเชียงราย องค์กรแกนนำในการขับเคลื่อน อนุรักษ์ และสืบสานมรดกภูมิปัญญาล้านนา
                     </p>
                 </div>
@@ -66,7 +68,7 @@ export default async function AboutPage() {
 
                     <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
                         {/* Vision Card */}
-                        <div className="group relative bg-white rounded-3xl p-10 border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.05)] hover:shadow-xl hover:border-secondary/50 transition-all duration-500">
+                        <div className="group relative bg-white rounded-3xl p-10 border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.05)] hover:shadow-xl hover:border-secondary/50 transition-all duration-500 accent-orb reveal-soft stagger-1">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-secondary/10 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             <div className="relative z-10">
                                 <div className="w-20 h-20 mb-8 rounded-2xl bg-slate-50 border border-base-100 flex items-center justify-center text-primary group-hover:bg-white group-hover:border-secondary/20 group-hover:text-secondary-dark transition-all duration-500 shadow-sm">
@@ -80,7 +82,7 @@ export default async function AboutPage() {
                         </div>
 
                         {/* Mission Card */}
-                        <div className="group relative bg-white rounded-3xl p-10 border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.05)] hover:shadow-xl hover:border-secondary/50 transition-all duration-500">
+                        <div className="group relative bg-white rounded-3xl p-10 border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.05)] hover:shadow-xl hover:border-secondary/50 transition-all duration-500 accent-orb reveal-soft stagger-2">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-secondary/10 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             <div className="relative z-10">
                                 <div className="w-20 h-20 mb-8 rounded-2xl bg-slate-50 border border-base-100 flex items-center justify-center text-primary group-hover:bg-white group-hover:border-secondary/20 group-hover:text-secondary-dark transition-all duration-500 shadow-sm">
@@ -88,7 +90,7 @@ export default async function AboutPage() {
                                 </div>
                                 <h3 className="text-3xl font-bold mb-6 text-primary tracking-tight font-display group-hover:text-primary-dark transition-colors">พันธกิจ</h3>
                                 <ul className="text-base-content/70 space-y-4 font-light text-lg">
-                                    {missions.map((mission: any, i: number) => (
+                                    {missions.map((mission, i: number) => (
                                     <li key={i} className="flex items-start gap-3">
                                         <div className="mt-2 w-2 h-2 rounded-full bg-secondary shrink-0" />
                                         <span>{mission.text}</span>
@@ -101,9 +103,9 @@ export default async function AboutPage() {
                 </section>
 
                 {/* History */}
-                <section className="mb-24 relative">
+                <section className="mb-24 relative accent-panel">
                     <div className="bg-white rounded-3xl p-8 md:p-12 lg:p-16 shadow-[0_8px_30px_rgb(212,175,55,0.05)] border border-base-200">
-                        <div className="text-center mb-12 relative z-10">
+                        <div className="text-center mb-12 relative z-10 reveal-soft">
                             <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Our History</span>
                             <h2 className="section-header mb-0! text-primary font-display">ประวัติความเป็นมา</h2>
                         </div>
@@ -120,8 +122,8 @@ export default async function AboutPage() {
                 </section>
 
                 {/* Board Link CTA */}
-                <section className="text-center pb-12 relative">
-                    <div className="overflow-hidden rounded-3xl relative">
+                <section className="text-center pb-12 relative accent-panel">
+                    <div className="overflow-hidden rounded-3xl relative reveal-soft">
                         <div className="absolute inset-0 bg-primary opacity-10 mask-kanok" />
                         <div className="bg-linear-to-br from-slate-50/80 to-white/90 backdrop-blur-sm p-12 border border-secondary/20 relative z-10 shadow-sm">
                             <h2 className="text-3xl font-bold text-primary mb-4 font-display">ทำเนียบคณะกรรมการ</h2>

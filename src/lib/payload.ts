@@ -259,6 +259,18 @@ export const getAboutPage = cache(async () => {
 })
 
 /**
+ * ดึงค่าตั้งค่า hero ของหน้าเว็บหลัก
+ */
+export const getPageHeroes = cache(async () => {
+  const payload = await getPayloadClient()
+  const data = await payload.findGlobal({
+    slug: 'page-heroes',
+    depth: 1,
+  })
+  return data
+})
+
+/**
  * ดึงประธานสภาวัฒนธรรมของแต่ละอำเภอ (positionOrder = 1 หรือ order ต่ำสุด)
  */
 export const getDistrictChairmen = cache(async () => {

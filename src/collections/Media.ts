@@ -1,7 +1,32 @@
 import type { CollectionConfig } from 'payload'
 
+const optimizeImageUploadToWebp = ({ req, operation }: { req: any; operation: string }) => {
+    if (operation !== 'create' && operation !== 'update') {
+        return
+    }
+
+    const file = req.file
+
+    if (!file?.mimeType?.startsWith('image/')) {
+        return
+    }
+
+    const originalName = file.name ?? 'image'
+    const baseName = originalName.replace(/\.[^.]+$/, '')
+
+    file.name = `${baseName}.webp`
+    file.extension = 'webp'
+    file.mimeType = 'image/webp'
+}
+
 export const Media: CollectionConfig = {
     slug: 'media',
+    access: {
+        read: () => true,
+    },
+    hooks: {
+        beforeOperation: [optimizeImageUploadToWebp],
+    },
     admin: {
         group: 'ระบบ',
         description: 'คลังสื่อและไฟล์',
@@ -32,6 +57,12 @@ export const Media: CollectionConfig = {
                 position: 'centre',
             },
         ],
+        formatOptions: {
+            format: 'webp',
+            options: {
+                quality: 82,
+            },
+        },
         adminThumbnail: 'thumbnail',
         mimeTypes: [
             'image/*',

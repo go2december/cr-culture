@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState, useEffect, useRef } from 'react'
+import { useDeferredValue, useEffect, useState, useTransition } from 'react'
 
 export default function SearchBox({
     placeholder = 'ค้นหาบทความ...',
@@ -11,47 +11,41 @@ export default function SearchBox({
     const router = useRouter()
     const searchParams = useSearchParams()
     const [query, setQuery] = useState(searchParams.get('search') || '')
-    const debounceRef = useRef<NodeJS.Timeout | null>(null)
+    const deferredQuery = useDeferredValue(query)
+    const [, startTransition] = useTransition()
 
-    const handleSearch = (value: string) => {
-        setQuery(value)
+    useEffect(() => {
+        setQuery(searchParams.get('search') || '')
+    }, [searchParams])
 
-        // Debounce search (300ms delay)
-        if (debounceRef.current) {
-            clearTimeout(debounceRef.current)
+    useEffect(() => {
+        const currentSearch = searchParams.get('search') || ''
+        const normalizedQuery = deferredQuery.trim()
+
+        if (normalizedQuery === currentSearch) {
+            return
         }
 
-        debounceRef.current = setTimeout(() => {
-            const params = new URLSearchParams(searchParams.toString())
+        const params = new URLSearchParams(searchParams.toString())
 
-            if (value.trim()) {
-                params.set('search', value.trim())
-                params.set('page', '1')  // Reset to first page when searching
-            } else {
-                params.delete('search')
-            }
+        if (normalizedQuery) {
+            params.set('search', normalizedQuery)
+            params.set('page', '1')
+        } else {
+            params.delete('search')
+            params.delete('page')
+        }
 
-            const queryString = params.toString()
-            router.push(`/heritage${queryString ? `?${queryString}` : ''}`)
-        }, 300)
-    }
+        const queryString = params.toString()
+
+        startTransition(() => {
+            router.replace(`/heritage${queryString ? `?${queryString}` : ''}`, { scroll: false })
+        })
+    }, [deferredQuery, router, searchParams, startTransition])
 
     const handleClear = () => {
         setQuery('')
-        const params = new URLSearchParams(searchParams.toString())
-        params.delete('search')
-        const queryString = params.toString()
-        router.push(`/heritage${queryString ? `?${queryString}` : ''}`)
     }
-
-    // Cleanup on unmount
-    useEffect(() => {
-        return () => {
-            if (debounceRef.current) {
-                clearTimeout(debounceRef.current)
-            }
-        }
-    }, [])
 
     return (
         <div className="relative group">
@@ -64,7 +58,7 @@ export default function SearchBox({
             <input
                 type="text"
                 value={query}
-                onChange={(e) => handleSearch(e.target.value)}
+                onChange={(e) => setQuery(e.target.value)}
                 placeholder={placeholder}
                 className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-base-200 
                          bg-slate-50 focus:bg-white

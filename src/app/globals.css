@@ -2,6 +2,7 @@
 
 @plugin "daisyui" {
   themes: light;
+  exclude: properties, radialprogress;
 }
 
 /* 🎨 Modern Lanna Theme for CR-Culture */
@@ -71,11 +72,39 @@ h6 {
 }
 
 body {
+  position: relative;
   background-color: var(--color-base-100);
   color: var(--color-base-content);
   line-height: 1.8;
   font-weight: 300;
   font-size: 16px;
+  overflow-x: hidden;
+}
+
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: auto;
+  width: 28rem;
+  height: 28rem;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.18;
+  filter: blur(60px);
+  animation: drift-slow 18s ease-in-out infinite alternate;
+}
+
+body::before {
+  top: -10rem;
+  right: -8rem;
+  background: radial-gradient(circle at center, rgb(212 175 55 / 0.18), transparent 70%);
+}
+
+body::after {
+  bottom: -12rem;
+  left: -10rem;
+  background: radial-gradient(circle at center, rgb(200 50 40 / 0.16), transparent 72%);
 }
 
 /* Global keyboard accessibility */
@@ -105,6 +134,37 @@ select:focus-visible,
 
 .skip-link:focus-visible {
   transform: translateY(0);
+}
+
+/* Global section rhythm */
+main > section {
+  position: relative;
+}
+
+main > section + section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(12rem, 24vw);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(212 175 55 / 0.55), transparent);
+  pointer-events: none;
+}
+
+main > section + section::after {
+  content: '';
+  position: absolute;
+  top: -0.4rem;
+  left: 50%;
+  width: 0.55rem;
+  height: 0.55rem;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgb(200 50 40 / 0.85), rgb(212 175 55 / 0.35));
+  box-shadow: 0 0 0 0.4rem rgb(212 175 55 / 0.08);
+  pointer-events: none;
 }
 
 /* 🧩 Abstract SVG Masking (ลายกนก) */
@@ -170,6 +230,105 @@ select:focus-visible,
   background: var(--color-secondary);
   margin: 1rem auto 0;
   border-radius: 4px;
+}
+
+/* Visual accents & motion helpers */
+.accent-panel {
+  position: relative;
+  isolation: isolate;
+}
+
+.accent-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.25));
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.accent-orb {
+  position: relative;
+}
+
+.accent-orb::after {
+  content: '';
+  position: absolute;
+  inset: auto;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgb(212 175 55 / 0.22), transparent 70%);
+  filter: blur(14px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.float-slow {
+  animation: floatSlow 8s ease-in-out infinite;
+}
+
+.float-gentle {
+  animation: floatGentle 10s ease-in-out infinite;
+}
+
+.reveal-soft {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: revealSoft 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stagger-1 {
+  animation-delay: 0.08s;
+}
+
+.stagger-2 {
+  animation-delay: 0.16s;
+}
+
+.stagger-3 {
+  animation-delay: 0.24s;
+}
+
+.stagger-4 {
+  animation-delay: 0.32s;
+}
+
+@keyframes drift-slow {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(0, 1.5rem, 0) scale(1.08);
+  }
+}
+
+@keyframes floatSlow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes floatGentle {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-6px) translateX(4px);
+  }
+}
+
+@keyframes revealSoft {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Card Styles */

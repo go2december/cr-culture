@@ -1,7 +1,10 @@
 import Link from 'next/link'
-import { getHeritageBlogs, getTags } from '@/lib/payload'
+import { getHeritageBlogs, getPageHeroes, getTags } from '@/lib/payload'
+import { resolveMediaAlt, resolveMediaUrl, type MediaLike } from '@/lib/media'
+import type { PublicHeritage, PublicTag } from '@/lib/public-content'
 import SearchBox from '@/components/heritage/SearchBox'
 import ActiveFilters from '@/components/heritage/ActiveFilters'
+import CmsImage from '@/components/CmsImage'
 
 const categories = [
     { id: 'all', label: 'ทั้งหมด', icon: '📚' },
@@ -33,35 +36,80 @@ export default async function HeritagePage({
         getTags()
     ])
 
-    const filteredArticles = blogResponse.docs || []
+    const filteredArticles = (blogResponse.docs || []) as PublicHeritage[]
     const totalPages = blogResponse.totalPages || 1
     const hasNextPage = blogResponse.hasNextPage || false
     const hasPrevPage = blogResponse.hasPrevPage || false
-    const tags = tagsData || []
+    const tags = (tagsData || []) as PublicTag[]
+    const pageHeroes = await getPageHeroes().catch(() => null)
+    const hero = pageHeroes?.heritage || {}
+    const heroMedia = hero.heroImage as MediaLike
+    const heroImageUrl = resolveMediaUrl(heroMedia)
+    const heroImageAlt = resolveMediaAlt(heroMedia, (hero.title as string) || 'คลังมรดกภูมิปัญญา')
+    const hasHeroImage = Boolean(heroImageUrl)
 
     return (
         <div className="bg-slate-50 min-h-screen font-sans">
-            {/* Elegant Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-slate-50">
-                <div className="absolute inset-0 z-0 bg-lanna-pattern">
-                    <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-gradient-to-bl from-secondary/15 to-transparent blur-[120px]" />
-                    <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-gradient-to-tr from-accent/10 to-transparent blur-[130px]" />
-                </div>
+            <section className={`relative overflow-hidden ${hasHeroImage ? 'pt-32 pb-24 lg:pt-40 lg:pb-30 accent-panel min-h-[52vh] flex items-end' : 'pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-50 accent-panel'}`}>
+                {hasHeroImage ? (
+                    <>
+                        <div className="absolute inset-0 z-0">
+                            <CmsImage
+                                src={heroImageUrl!}
+                                alt={heroImageAlt}
+                                fill
+                                sizes="100vw"
+                                className="object-cover object-top"
+                                priority
+                            />
+                            <div className="absolute inset-0 bg-linear-to-r from-primary/88 via-primary/70 to-primary/42" />
+                            <div className="absolute inset-0 bg-lanna-pattern opacity-20" />
+                            <div className="absolute top-0 right-[-10%] w-[50%] h-[70%] rounded-full bg-linear-to-bl from-secondary/18 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[60%] rounded-full bg-linear-to-tr from-accent/14 to-transparent blur-[130px]" />
+                        </div>
 
-                <div className="container mx-auto px-4 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6 animate-fade-in-up">
-                        <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                        ความรู้และภูมิปัญญา
-                    </div>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight animate-fade-in-up delay-100 font-display">
-                        คลังมรดกภูมิปัญญาทางวัฒนธรรม
-                    </h1>
-                    <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-up delay-200">
-                        รวบรวมและสงวนรักษามรดกทางวัฒนธรรม องค์ความรู้ และภูมิปัญญาท้องถิ่นอันทรงคุณค่าของจังหวัดเชียงราย
-                    </p>
-                </div>
+                        <div className="container mx-auto max-w-7xl px-4 relative z-20">
+                            <div className="max-w-4xl text-left">
+                                <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium shadow-sm mb-6 bg-white/14 backdrop-blur-md border border-white/20 text-white reveal-soft">
+                                            <span className="w-2 h-2 rounded-full bg-accent" />
+                                            {(hero.eyebrow as string) || 'ความรู้และภูมิปัญญา'}
+                                </div>
 
-                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-50 to-transparent z-10" />
+                                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-white tracking-tight font-display leading-[1.05] drop-shadow-lg reveal-soft stagger-1">
+                                            {(hero.title as string) || 'คลังมรดกภูมิปัญญาทางวัฒนธรรม'}
+                                </h1>
+
+                                <div className="w-24 h-1 rounded-full bg-linear-to-r from-secondary via-accent/60 to-transparent mb-6 reveal-soft stagger-2" />
+
+                                <p className="text-lg md:text-xl text-white/82 max-w-3xl font-light leading-relaxed reveal-soft stagger-2">
+                                            {(hero.subtitle as string) || 'รวบรวมและสงวนรักษามรดกทางวัฒนธรรม องค์ความรู้ และภูมิปัญญาท้องถิ่นอันทรงคุณค่าของจังหวัดเชียงราย'}
+                                </p>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="absolute inset-0 z-0 bg-lanna-pattern">
+                            <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/15 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/10 to-transparent blur-[130px]" />
+                        </div>
+
+                        <div className="container mx-auto max-w-7xl px-4 relative z-20 text-center">
+                            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6 reveal-soft">
+                                <span className="w-2 h-2 rounded-full bg-accent" />
+                                {(hero.eyebrow as string) || 'ความรู้และภูมิปัญญา'}
+                            </div>
+                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight reveal-soft stagger-1 font-display">
+                                {(hero.title as string) || 'คลังมรดกภูมิปัญญาทางวัฒนธรรม'}
+                            </h1>
+                            <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
+                                {(hero.subtitle as string) || 'รวบรวมและสงวนรักษามรดกทางวัฒนธรรม องค์ความรู้ และภูมิปัญญาท้องถิ่นอันทรงคุณค่าของจังหวัดเชียงราย'}
+                            </p>
+                        </div>
+                    </>
+                )}
+
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-slate-50 to-transparent z-10" />
             </section>
 
             {/* Breadcrumb - Subtle & Clean */}
@@ -77,8 +125,8 @@ export default async function HeritagePage({
             <div className="container mx-auto max-w-7xl px-4 py-8 pb-24">
                 <div className="grid lg:grid-cols-4 gap-8">
                     {/* Sidebar - Filters */}
-                    <aside className="lg:col-span-1 animate-fade-in-up delay-300">
-                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 sticky top-28 space-y-6">
+                    <aside className="lg:col-span-1 reveal-soft stagger-1">
+                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 sticky top-28 space-y-6 accent-panel">
                             {/* Search Box */}
                             <div>
                                 <h3 className="text-sm font-bold text-base-content/80 mb-3 uppercase tracking-wider flex items-center gap-2">
@@ -111,7 +159,7 @@ export default async function HeritagePage({
                                                         : 'hover:bg-secondary/10 text-base-content/70 hover:text-primary font-light'
                                                         }`}
                                                 >
-                                                    <span className="text-xl flex-shrink-0 w-8 text-center">{cat.icon}</span>
+                                                    <span className="text-xl shrink-0 w-8 text-center">{cat.icon}</span>
                                                     <span>{cat.label}</span>
                                                     {selectedCategory === cat.id && !selectedTag && (
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto opacity-70 text-secondary"><path d="m9 18 6-6-6-6" /></svg>
@@ -138,7 +186,7 @@ export default async function HeritagePage({
                                     </h4>
                                     <div className="flex flex-wrap gap-2">
                                         {tags.length > 0 ? (
-                                            tags.map((tag: any) => (
+                                            tags.map((tag) => (
                                                 <Link
                                                     key={tag.id}
                                                     href={`/heritage?tag=${tag.slug}`}
@@ -164,12 +212,12 @@ export default async function HeritagePage({
                         {/* Active Filters Display */}
                         <ActiveFilters />
 
-                        <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4 animate-fade-in-up delay-400">
+                        <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4 reveal-soft stagger-2">
                             <h2 className="text-2xl font-bold flex items-center gap-3 font-display text-primary">
                                 {searchQuery
                                     ? `🔍 "${searchQuery}"`
                                     : selectedTag
-                                        ? `#${tags.find((t: any) => t.slug === selectedTag)?.name || selectedTag}`
+                                        ? `#${tags.find((t) => t.slug === selectedTag)?.name || selectedTag}`
                                         : categories.find(c => c.id === selectedCategory)?.label || 'ทั้งหมด'
                                 }
                                 <span className="text-sm font-medium px-3 py-1 rounded-full bg-secondary/20 text-primary-dark">
@@ -179,7 +227,7 @@ export default async function HeritagePage({
 
                             <div className="flex items-center gap-2">
                                 <span className="text-sm text-base-content/50 font-light">จัดเรียง:</span>
-                                <select className="bg-white border border-base-200 text-sm rounded-xl px-4 py-2 outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/50 appearance-none cursor-pointer pr-8 bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23caa635%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1em] bg-[right_0.5rem_center] bg-no-repeat shadow-sm">
+                                <select className="bg-white border border-base-200 text-sm rounded-xl px-4 py-2 outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/50 appearance-none cursor-pointer pr-8 bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23caa635%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-size-[1em] bg-position-[right_0.5rem_center] bg-no-repeat shadow-sm">
                                     <option>ล่าสุด</option>
                                     <option>ยอดนิยม</option>
                                     <option>ตัวอักษร ก-ฮ</option>
@@ -187,30 +235,41 @@ export default async function HeritagePage({
                             </div>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-6 animate-fade-in-up delay-500">
-                            {filteredArticles.length > 0 ? filteredArticles.map((article: any, i: number) => {
-                                const imageUrl = article.coverImage?.url
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {filteredArticles.length > 0 ? filteredArticles.map((article, i: number) => {
+                                const imageUrl = resolveMediaUrl(article.coverImage)
 
                                 return (
                                     <Link
                                         key={article.id || article.slug}
                                         href={`/heritage/${article.slug || article.id}`}
-                                        className={`card-modern group bg-white rounded-3xl border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:border-secondary/50 transition-all duration-400 overflow-hidden flex flex-col h-full delay-${(i % 4) * 100}`}
+                                        className={`card-modern group bg-white rounded-3xl border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:border-secondary/50 transition-all duration-400 overflow-hidden flex flex-col h-full reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}
                                     >
-                                        <figure className="aspect-[16/10] bg-slate-50 relative overflow-hidden flex-shrink-0 border-b border-base-100">
+                                        <figure className="aspect-16/10 bg-slate-50 relative overflow-hidden shrink-0 border-b border-base-100">
                                             {imageUrl ? (
                                                 <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-700 ease-out">
-                                                    <img src={imageUrl} alt={article.title} className="w-full h-full object-cover" />
+                                                    <CmsImage
+                                                        src={imageUrl}
+                                                        alt={article.title}
+                                                        fill
+                                                        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                                                        className="object-cover"
+                                                    />
                                                 </div>
                                             ) : (
-                                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/10 group-hover:scale-105 transition-transform duration-700 flex items-center justify-center">
+                                                <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-secondary/10 group-hover:scale-105 transition-transform duration-700 flex items-center justify-center">
                                                     <span className="text-primary/30 drop-shadow-sm group-hover:-translate-y-2 transition-transform duration-500 delay-100 [&>svg]:w-16 [&>svg]:h-16">
-                                                        {categories.find(c => c.id === article.category)?.icon || <BookOpen className="w-16 h-16 mx-auto" />}
+                                                        {categories.find(c => c.id === article.category)?.icon || (
+                                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto">
+                                                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                                                            </svg>
+                                                        )}
                                                     </span>
                                                 </div>
                                             )}
                                         </figure>
-                                        <div className="p-6 md:p-8 flex flex-col flex-grow">
+                                        <div className="p-6 md:p-8 flex flex-col grow">
                                             <div className="flex items-center gap-2 mb-4">
                                                 <span className="text-[10px] font-bold px-2.5 py-1 rounded bg-secondary/20 text-primary uppercase tracking-widest">
                                                     {categories.find(c => c.id === article.category)?.label || 'มรดกภูมิปัญญา'}
@@ -220,7 +279,7 @@ export default async function HeritagePage({
                                                 {article.title}
                                             </h3>
                                             {article.excerpt && (
-                                                <p className="text-sm text-base-content/70 font-light line-clamp-2 mb-6 flex-grow">
+                                                <p className="text-sm text-base-content/70 font-light line-clamp-2 mb-6 grow">
                                                     {article.excerpt}
                                                 </p>
                                             )}
@@ -254,7 +313,7 @@ export default async function HeritagePage({
                         </div>
 
                         {/* Pagination */}
-                        <div className="flex justify-center mt-16 animate-fade-in-up delay-700">
+                        <div className="flex justify-center mt-16 reveal-soft stagger-4">
                             {totalPages > 1 && (
                                 <div className="inline-flex items-center justify-center p-1 bg-white rounded-full border border-base-200 shadow-sm">
                                     {/* Build query string preserving both category and tag */}

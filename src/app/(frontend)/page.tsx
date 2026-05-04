@@ -1,19 +1,55 @@
 import Link from 'next/link'
-import { getActivities, getDistricts, getNews } from '@/lib/payload'
+import { getActivities, getDistricts, getNews, getPageHeroes } from '@/lib/payload'
+import { resolveMediaAlt, resolveMediaUrl, type MediaLike } from '@/lib/media'
+import type { PublicActivity, PublicDistrict, PublicNews } from '@/lib/public-content'
+import CmsImage from '@/components/CmsImage'
 
 export default async function Home() {
-    // Fetch data from Payload API
-    const { docs: activitiesData } = await getActivities({ limit: 3 })
-    const { docs: newsData } = await getNews({ limit: 3 })
-    const districtsData = await getDistricts()
+    const [activitiesResponse, newsResponse, districtsData] = await Promise.all([
+        getActivities({ limit: 3 }),
+        getNews({ limit: 3 }),
+        getDistricts(),
+    ])
+    const pageHeroes = await getPageHeroes().catch(() => null)
+    const homeHero = pageHeroes?.home || {}
+    const homeHeroMedia = homeHero.heroImage as MediaLike
+
+    const { docs: activitiesData } = activitiesResponse
+    const { docs: newsData } = newsResponse
+    const publicActivities = (activitiesData || []) as PublicActivity[]
+    const publicNews = (newsData || []) as PublicNews[]
+    const publicDistricts = districtsData as PublicDistrict[]
+    const featuredActivity = publicActivities[0]
+    const featuredNews = publicNews[0]
+    const homeHeroImageUrl = resolveMediaUrl(homeHeroMedia)
+    const homeHeroImageAlt = resolveMediaAlt(homeHeroMedia, homeHero.title || 'ภาพพื้นหลังหน้าหลัก')
+    const liveStats = [
+        { label: 'เครือข่ายอำเภอ', value: String(publicDistricts.length), hint: 'เชื่อมโยงชุมชนทั่วจังหวัด' },
+        { label: 'กิจกรรมล่าสุด', value: String(publicActivities.length), hint: 'เรื่องราวที่กำลังเกิดขึ้น' },
+        { label: 'ข่าวสารล่าสุด', value: String(publicNews.length), hint: 'ประกาศและความเคลื่อนไหว' },
+    ]
 
     return (
         <div className="overflow-hidden bg-base-100 font-sans">
-            {/* Majestic Hero Section with Modern Lanna Concept */}
+            {/* Majestic Hero Section with Background Header */}
             <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-stone-50">
-                {/* Geometric Red Background Pattern */}
-                <div 
-                    className="absolute inset-0 z-0 opacity-[0.08] pointer-events-none"
+                {homeHeroImageUrl && (
+                    <div className="absolute inset-0 z-0">
+                        <CmsImage
+                            src={homeHeroImageUrl}
+                            alt={homeHeroImageAlt}
+                            fill
+                            sizes="100vw"
+                            className="object-cover object-center"
+                            priority
+                        />
+                    </div>
+                )}
+
+                <div className={`absolute inset-0 z-0 ${homeHeroImageUrl ? 'bg-linear-to-r from-primary/90 via-primary/72 to-primary/44' : 'bg-linear-to-br from-stone-50 via-white to-stone-100'}`} />
+
+                <div
+                    className={`absolute inset-0 z-0 pointer-events-none ${homeHeroImageUrl ? 'opacity-[0.12]' : 'opacity-[0.08]'}`}
                     style={{
                         backgroundImage: `linear-gradient(45deg, #A03C3C 25%, transparent 25%, transparent 75%, #A03C3C 75%, #A03C3C),
                                           linear-gradient(135deg, #A03C3C 25%, transparent 25%, transparent 75%, #A03C3C 75%, #A03C3C)`,
@@ -21,42 +57,92 @@ export default async function Home() {
                         backgroundPosition: '0 0, 20px 0'
                     }}
                 />
-                
-                {/* Soft gradient overlays to blend the pattern and ensure text readability */}
-                <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-red-900/10 to-transparent blur-[120px]" />
-                <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-secondary/5 to-transparent blur-[130px]" />
+
+                <div className={`absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full blur-[120px] ${homeHeroImageUrl ? 'bg-linear-to-bl from-secondary/20 to-transparent' : 'bg-linear-to-bl from-red-900/10 to-transparent'}`} />
+                <div className={`absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full blur-[130px] ${homeHeroImageUrl ? 'bg-linear-to-tr from-accent/18 to-transparent' : 'bg-linear-to-tr from-secondary/5 to-transparent'}`} />
 
                 <div className="container mx-auto px-4 z-10 pt-32 pb-24 flex flex-col items-center">
-                    <div className="max-w-5xl mx-auto text-center">
-                        <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/60 backdrop-blur-md border border-red-900/10 text-sm font-medium text-stone-700 shadow-sm mb-12 uppercase tracking-widest">
-                            <span className="w-2 h-2 rounded-full bg-[#A03C3C]" />
-                            <span className="text-[#A03C3C] font-bold">Modern Lanna</span> <span className="text-stone-300 px-1">|</span> รากเหง้าที่ร่วมสมัย
+                    <div className="grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] w-full max-w-7xl">
+                        <div className="max-w-3xl mx-auto lg:mx-0 text-center lg:text-left">
+                            <div className={`inline-flex items-center gap-3 px-6 py-2.5 rounded-full backdrop-blur-md text-sm font-medium shadow-sm mb-10 uppercase tracking-widest ${homeHeroImageUrl ? 'bg-white/14 border border-white/20 text-white' : 'bg-white/60 border border-red-900/10 text-stone-700'}`}>
+                                <span className="w-2 h-2 rounded-full bg-[#A03C3C]" />
+                                <span className={`${homeHeroImageUrl ? 'text-secondary' : 'text-[#A03C3C]'} font-bold`}>{homeHero.eyebrow || 'Modern Lanna'}</span> <span className={`${homeHeroImageUrl ? 'text-white/30' : 'text-stone-300'} px-1`}>|</span> <span className={homeHeroImageUrl ? 'text-white/80' : ''}>รากเหง้าที่ร่วมสมัย</span>
+                            </div>
+
+                            <h1 className={`text-5xl md:text-7xl lg:text-8xl font-bold mb-8 tracking-tight leading-[1.05] font-display ${homeHeroImageUrl ? 'text-white drop-shadow-lg' : 'text-stone-800'}`}>
+                                {homeHero.title || 'สภาวัฒนธรรม จังหวัดเชียงราย'}
+                            </h1>
+
+                            <p className={`text-xl md:text-2xl lg:text-3xl mb-10 max-w-3xl mx-auto lg:mx-0 font-light leading-relaxed ${homeHeroImageUrl ? 'text-white/82' : 'text-stone-600'}`}>
+                                {homeHero.subtitle || 'เมืองศิลปิน ถิ่นวัฒนธรรม ส่งเสริมและอนุรักษ์มรดกล้านนา เชื่อมโยงอดีตสู่ปัจจุบันอย่างยั่งยืนเพื่อชนรุ่นหลัง'}
+                            </p>
+
+                            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-5">
+                                <Link href="/districts" className="group relative w-full sm:w-auto overflow-hidden rounded-full bg-linear-to-r from-[#A03C3C] to-[#8A2B2B] px-10 py-5 text-center text-lg font-bold text-white shadow-lg transition-colors hover:brightness-110 hover:shadow-xl hover:shadow-[#A03C3C]/30">
+                                    <span className="relative z-10 flex items-center justify-center gap-3">
+                                        เครือข่าย 18 อำเภอ
+                                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1.5 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                    </span>
+                                </Link>
+                                <Link href="/heritage" className={`w-full sm:w-auto text-center rounded-full px-10 py-5 text-lg font-medium shadow-sm transition-all ${homeHeroImageUrl ? 'border border-white/20 bg-white/12 text-white hover:bg-white/18' : 'border border-stone-200 bg-white text-stone-700 hover:bg-stone-50 hover:border-stone-300 hover:text-[#A03C3C]'}`}>
+                                    คลังมรดกภูมิปัญญา
+                                </Link>
+                            </div>
+
+                            <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                {liveStats.map((stat) => (
+                                    <div key={stat.label} className={`rounded-2xl p-4 shadow-sm text-left backdrop-blur-sm ${homeHeroImageUrl ? 'border border-white/20 bg-white/12' : 'border border-white/70 bg-white/75'}`}>
+                                        <div className={`text-3xl font-bold leading-none ${homeHeroImageUrl ? 'text-white' : 'text-primary'}`}>{stat.value}</div>
+                                        <div className={`text-sm font-semibold mt-2 ${homeHeroImageUrl ? 'text-white/90' : 'text-stone-700'}`}>{stat.label}</div>
+                                        <div className={`text-xs mt-1 leading-relaxed ${homeHeroImageUrl ? 'text-white/70' : 'text-stone-500'}`}>{stat.hint}</div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-10 tracking-tight text-stone-800 leading-[1.1] font-display">
-                            สภาวัฒนธรรม <br />
-                            <span className="text-transparent bg-clip-text bg-linear-to-r from-[#8A2B2B] via-[#A03C3C] to-[#C35252] font-normal relative">
-                                จังหวัดเชียงราย
-                                {/* Sparkle Effect */}
-                                <svg aria-hidden="true" className="absolute -top-4 -right-8 w-10 h-10 text-[#A03C3C]/60" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6h8l-6.4 4.7 2.4 7.7-6.4-4.7-6.4 4.7 2.4-7.7-6.4-4.7h8z"/></svg>
-                            </span>
-                        </h1>
+                        <div className="relative w-full max-w-2xl mx-auto lg:mx-0">
+                            <div className={`absolute -inset-6 blur-2xl rounded-4xl ${homeHeroImageUrl ? 'bg-linear-to-br from-secondary/12 via-white/5 to-accent/10' : 'bg-linear-to-br from-[#A03C3C]/10 via-secondary/10 to-primary/10'}`} />
+                            <div className={`relative overflow-hidden rounded-4xl border backdrop-blur-xl shadow-[0_20px_80px_rgba(27,42,73,0.15)] ${homeHeroImageUrl ? 'border-white/20 bg-white/10' : 'border-white/70 bg-white/75'}`}>
+                                <div className="p-6 md:p-8">
+                                    <div className="flex items-center justify-between gap-4 mb-6">
+                                        <div>
+                                            <span className={`text-xs font-bold uppercase tracking-[0.25em] ${homeHeroImageUrl ? 'text-white/80' : 'text-secondary-dark'}`}>Live Overview</span>
+                                            <h2 className={`text-2xl md:text-3xl font-bold mt-2 font-display ${homeHeroImageUrl ? 'text-white' : 'text-primary'}`}>{homeHero.title || 'ภาพรวมการเคลื่อนไหวล่าสุด'}</h2>
+                                        </div>
+                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${homeHeroImageUrl ? 'bg-white/15 text-white border border-white/20 backdrop-blur-md' : 'bg-secondary/10 text-secondary-dark'}`}>
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                                <path d="M4 4h16v16H4z" />
+                                                <path d="M8 8h8" />
+                                            </svg>
+                                        </div>
+                                    </div>
 
-                        <p className="text-xl md:text-2xl lg:text-3xl mb-16 text-stone-600 max-w-3xl mx-auto font-light leading-relaxed">
-                            เมืองศิลปิน ถิ่นวัฒนธรรม ส่งเสริมและอนุรักษ์มรดกล้านนา <br className="hidden md:block" />
-                            เชื่อมโยงอดีตสู่ปัจจุบันอย่างยั่งยืนเพื่อชนรุ่นหลัง
-                        </p>
+                                    <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+                                        <div className={`rounded-2xl p-5 shadow-lg ${homeHeroImageUrl ? 'bg-white/15 text-white border border-white/20 backdrop-blur-md' : 'bg-linear-to-br from-primary to-primary-dark text-white shadow-primary/20'}`}>
+                                            <div className="text-xs uppercase tracking-[0.25em] text-white/70 font-semibold">เครือข่ายอำเภอ</div>
+                                            <div className="mt-3 text-4xl font-bold leading-none">{publicDistricts.length}</div>
+                                            <p className="mt-3 text-sm text-white/80 leading-relaxed">เชื่อมโยงเครือข่ายชุมชน วัฒนธรรม และกิจกรรมทั่วจังหวัด</p>
+                                        </div>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                            <Link href="/districts" className="group relative w-full sm:w-auto overflow-hidden rounded-full bg-linear-to-r from-[#A03C3C] to-[#8A2B2B] px-10 py-5 text-center text-lg font-bold text-white shadow-lg transition-colors hover:brightness-110 hover:shadow-xl hover:shadow-[#A03C3C]/30">
-                                <span className="relative z-10 flex items-center justify-center gap-3">
-                                    เครือข่าย 18 อำเภอ
-                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1.5 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                                </span>
-                            </Link>
-                            <Link href="/heritage" className="w-full sm:w-auto text-center rounded-full border border-stone-200 bg-white px-10 py-5 text-lg font-medium text-stone-700 shadow-sm transition-all hover:bg-stone-50 hover:border-stone-300 hover:text-[#A03C3C]">
-                                คลังมรดกภูมิปัญญา
-                            </Link>
+                                        <div className={`rounded-2xl p-5 ${homeHeroImageUrl ? 'bg-white/12 border border-white/20 backdrop-blur-md text-white' : 'bg-white border border-base-200'}`}>
+                                            <div className={`text-xs uppercase tracking-[0.25em] font-semibold ${homeHeroImageUrl ? 'text-white/80' : 'text-secondary-dark'}`}>กิจกรรมล่าสุด</div>
+                                            <h3 className={`mt-3 text-lg font-bold line-clamp-2 font-display ${homeHeroImageUrl ? 'text-white' : 'text-primary'}`}>{featuredActivity?.title || 'ยังไม่มีข้อมูลกิจกรรม'}</h3>
+                                            <p className={`mt-2 text-sm line-clamp-3 ${homeHeroImageUrl ? 'text-white/80' : 'text-base-content/60'}`}>
+                                                {featuredActivity?.excerpt || 'กำลังรอข้อมูลกิจกรรมเพื่อแสดงเรื่องราวที่กำลังเกิดขึ้น'}
+                                            </p>
+                                        </div>
+
+                                        <div className={`rounded-2xl p-5 ${homeHeroImageUrl ? 'bg-white/12 border border-white/20 backdrop-blur-md text-white' : 'bg-slate-50 border border-base-200'}`}>
+                                            <div className={`text-xs uppercase tracking-[0.25em] font-semibold ${homeHeroImageUrl ? 'text-white/80' : 'text-accent'}`}>ข่าวล่าสุด</div>
+                                            <h3 className={`mt-3 text-lg font-bold line-clamp-2 font-display ${homeHeroImageUrl ? 'text-white' : 'text-primary'}`}>{featuredNews?.title || 'ยังไม่มีข้อมูลข่าวสาร'}</h3>
+                                            <p className={`mt-2 text-sm line-clamp-3 ${homeHeroImageUrl ? 'text-white/80' : 'text-base-content/60'}`}>
+                                                {featuredNews?.excerpt || 'กำลังรอข่าวสารใหม่เพื่ออัปเดตความเคลื่อนไหวของสภาวัฒนธรรม'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -150,10 +236,10 @@ export default async function Home() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {activitiesData && activitiesData.length > 0 ? activitiesData.map((item: any, i) => {
+                        {publicActivities.length > 0 ? publicActivities.map((item, i) => {
                             const dateObj = new Date(item.date)
                             const formattedDate = dateObj.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })
-                            const imageUrl = item.titleImage?.url || item.gallery?.[0]?.image?.url
+                            const imageUrl = resolveMediaUrl(item.coverImage, item.gallery)
                             const description = item.excerpt || 'กิจกรรมสภาวัฒนธรรมจังหวัดเชียงราย'
 
                             return (
@@ -161,7 +247,14 @@ export default async function Home() {
                                 <div className="aspect-16/10 bg-base-200 relative overflow-hidden shrink-0">
                                     {imageUrl ? (
                                         <div className="absolute inset-0 transition-transform duration-300 ease-out">
-                                            <img src={imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                                            <CmsImage
+                                                src={imageUrl}
+                                                alt={item.title}
+                                                fill
+                                                sizes="(min-width: 1024px) 30vw, (min-width: 768px) 33vw, 100vw"
+                                                className="object-cover"
+                                                priority={i === 0}
+                                            />
                                             <div className="absolute inset-0 bg-linear-to-t from-primary/80 via-primary/20 to-transparent" />
                                         </div>
                                     ) : (
@@ -227,8 +320,8 @@ export default async function Home() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {newsData && newsData.length > 0 ? newsData.map((news: any, i) => {
-                            const dateObj = new Date(news.date || news.createdAt)
+                        {publicNews.length > 0 ? publicNews.map((news, i) => {
+                            const dateObj = new Date(news.date || news.createdAt || new Date().toISOString())
                             const formattedDate = dateObj.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })
                             
                             const typeConfig = {
@@ -280,7 +373,7 @@ export default async function Home() {
                     </p>
 
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
-                        {districtsData && districtsData.length > 0 ? districtsData.map((district: any, i) => (
+                        {publicDistricts.length > 0 ? publicDistricts.map((district, i) => (
                             <Link
                                 key={district.id || i}
                                 href={`/districts/${district.slug || district.name.toLowerCase().replace(/\s+/g, '-')}`}

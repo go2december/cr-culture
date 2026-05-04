@@ -1,37 +1,45 @@
 import Link from 'next/link'
 import { getDistricts } from '@/lib/payload'
+import type { PublicDistrictSummary } from '@/lib/public-organization'
 
 export default async function DistrictsPage() {
     const rawDistricts = await getDistricts() || []
+    const typedDistricts = rawDistricts as Array<{
+        id: string | number
+        name: string
+        slug?: string | null
+        description?: string | null
+    }>
     
     // Fallback static data just in case db is completely empty
-    const districts = rawDistricts.length > 0 ? rawDistricts.map((d: any) => ({
-        name: d.name,
-        slug: d.slug || d.name.toLowerCase().replace(/\s+/g, '-'),
-        description: d.description || 'เครือข่ายศูนย์วัฒนธรรมระดับอำเภอ'
+    const districts: PublicDistrictSummary[] = typedDistricts.length > 0 ? typedDistricts.map((district) => ({
+        id: district.id,
+        name: district.name,
+        slug: district.slug || district.name.toLowerCase().replace(/\s+/g, '-'),
+        description: district.description || 'เครือข่ายศูนย์วัฒนธรรมระดับอำเภอ'
     })) : [
-        { name: 'เมืองเชียงราย', slug: 'muang-chiang-rai', description: 'ศูนย์กลางจังหวัดเชียงราย' },
-        { name: 'เวียงชัย', slug: 'wiang-chai', description: 'อำเภอเวียงชัย' },
+        { id: 'muang-chiang-rai', name: 'เมืองเชียงราย', slug: 'muang-chiang-rai', description: 'ศูนย์กลางจังหวัดเชียงราย' },
+        { id: 'wiang-chai', name: 'เวียงชัย', slug: 'wiang-chai', description: 'อำเภอเวียงชัย' },
     ]
 
     return (
         <div className="bg-slate-50 min-h-screen font-sans">
             {/* Elegant Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-slate-50">
+            <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-slate-50 accent-panel">
                 <div className="absolute inset-0 z-0 bg-lanna-pattern">
                     <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/15 to-transparent blur-[120px]" />
                     <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/10 to-transparent blur-[130px]" />
                 </div>
 
                 <div className="container mx-auto px-4 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6">
+                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6 reveal-soft">
                         <span className="w-2 h-2 rounded-full bg-secondary" />
                         เครือข่ายระดับอำเภอ
                     </div>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight font-display">
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight reveal-soft stagger-1 font-display">
                         เครือข่ายสภาวัฒนธรรมอำเภอ
                     </h1>
-                    <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed">
+                    <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
                         เชื่อมต่อและประสานความร่วมมือกับเครือข่ายสภาวัฒนธรรมครอบคลุมพื้นที่ 18 อำเภอ ในจังหวัดเชียงราย
                     </p>
                 </div>
@@ -53,11 +61,11 @@ export default async function DistrictsPage() {
             <section className="py-12 px-4 md:px-8 pb-24 relative z-20">
                 <div className="container mx-auto max-w-7xl">
                     <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-                        {districts.map((district: any, i: number) => (
+                        {districts.map((district, i: number) => (
                             <Link
                                 key={district.slug || i}
                                 href={`/districts/${district.slug}`}
-                                className={`card-modern group bg-white rounded-2xl border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:-translate-y-1 hover:border-secondary/50 transition-all duration-400 p-6 flex flex-col items-center text-center relative overflow-hidden delay-${(i % 6) * 100}`}
+                                className={`card-modern group bg-white rounded-2xl border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:-translate-y-1 hover:border-secondary/50 transition-all duration-400 p-6 flex flex-col items-center text-center relative overflow-hidden reveal-soft ${i % 6 === 0 ? 'stagger-1' : i % 6 === 1 ? 'stagger-2' : i % 6 === 2 ? 'stagger-3' : i % 6 === 3 ? 'stagger-4' : i % 6 === 4 ? 'stagger-1' : 'stagger-2'}`}
                             >
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-secondary/10 to-transparent rounded-tr-2xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
 
@@ -78,10 +86,10 @@ export default async function DistrictsPage() {
             </section>
 
             {/* Map Section Placeholder */}
-            <section className="py-24 px-4 md:px-8 bg-white border-t border-base-200 relative overflow-hidden">
+            <section className="py-24 px-4 md:px-8 bg-white border-t border-base-200 relative overflow-hidden accent-panel">
                 <div className="absolute inset-0 opacity-[0.02] mask-kanok bg-primary pointer-events-none" />
                 <div className="container mx-auto max-w-5xl text-center relative z-10">
-                    <div className="text-center mb-12">
+                    <div className="text-center mb-12 reveal-soft">
                         <span className="text-accent font-semibold tracking-widest text-sm uppercase mb-3 block">Chiang Rai Map</span>
                         <h2 className="section-header mb-0! text-primary font-display">แผนที่จังหวัดเชียงราย</h2>
                     </div>

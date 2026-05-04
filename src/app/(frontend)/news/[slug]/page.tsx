@@ -1,7 +1,10 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getNewsBySlug, getNews } from '@/lib/payload'
-import ShareButtons from '@/components/ShareButtons'
+import { resolveMediaUrl, type GalleryItemLike } from '@/lib/media'
+import type { PublicNews } from '@/lib/public-content'
+import CmsImage from '@/components/CmsImage'
+import DeferredShareButtons from '@/components/DeferredShareButtons'
 
 const typeConfig = {
     general: { label: 'ข่าวทั่วไป', icon: <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" /><path d="M18 14h-8" /><path d="M15 18h-5" /><path d="M10 6h8v4h-8V6Z" /></svg>, color: 'text-primary bg-primary/10 border-primary/20' },
@@ -26,59 +29,103 @@ export default async function NewsDetailPage({
     const config = typeConfig[newsData.type as keyof typeof typeConfig] || typeConfig.general
     const dateObj = new Date(newsData.date || newsData.createdAt)
 
-    const news = {
+    const news: PublicNews & { contentHtml: string; gallery: GalleryItemLike[] } = {
+        id: newsData.id,
+        slug: newsData.slug,
         title: newsData.title,
         type: newsData.type,
         date: newsData.date || newsData.createdAt,
         summary: newsData.summary || newsData.excerpt,
         contentHtml: newsData.content_html || newsData.summary || '<p>ไม่มีเนื้อหาเพิ่มเติม</p>',
-        titleImage: newsData.titleImage?.url,
+        coverImage: newsData.coverImage,
         gallery: newsData.gallery || [],
     }
 
+    const heroImageUrl = resolveMediaUrl(news.coverImage)
+    const hasHeroImage = Boolean(heroImageUrl)
+
     // Fetch related news (same type, max 3)
     const relatedResponse = await getNews({ type: news.type, limit: 4 })
-    const relatedNews = relatedResponse.docs?.filter((doc: any) => doc.id !== newsData.id).slice(0, 3) || []
+    const relatedNews = ((relatedResponse.docs || []) as PublicNews[]).filter((doc) => doc.id !== newsData.id).slice(0, 3)
 
     return (
         <div className="bg-slate-50 min-h-screen pb-24 font-sans">
-            {/* Hero Banner Section */}
-            <section className="relative pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden bg-white border-b border-base-200">
-                {news.titleImage && (
-                    <div className="absolute inset-0 z-0">
-                        <img src={news.titleImage} alt={news.title} className="w-full h-full object-cover opacity-[0.03] grayscale" />
-                    </div>
-                )}
+            <section className={`relative overflow-hidden ${hasHeroImage ? 'pt-32 pb-24 lg:pt-40 lg:pb-30 accent-panel min-h-[52vh] flex items-end' : 'pt-32 pb-24 lg:pt-40 lg:pb-32 bg-white border-b border-base-200 accent-panel'}`}>
                 <div className="absolute inset-0 z-0 bg-linear-to-br from-slate-50/90 to-white/90">
                     <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/10 to-transparent blur-[120px]" />
                     <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-primary/10 to-transparent blur-[130px]" />
                 </div>
 
-                <div className="container mx-auto max-w-4xl px-4 relative z-10 text-center">
-                    <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-sm font-medium shadow-sm mb-6 ${config.color.replace('border-', 'border border-')} bg-white`}>
-                        {config.icon}
-                        {config.label}
-                    </div>
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight text-primary leading-tight max-w-3xl mx-auto">
-                        {news.title}
-                    </h1>
-                    <div className="flex justify-center items-center gap-4 text-sm text-base-content/60 font-medium">
-                        <div className="flex items-center gap-1.5">
-                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
-                            {dateObj.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
+                {hasHeroImage ? (
+                    <>
+                        <div className="absolute inset-0 z-0">
+                            <CmsImage
+                                src={heroImageUrl!}
+                                alt={news.title}
+                                fill
+                                sizes="100vw"
+                                className="object-cover object-top"
+                                priority
+                            />
+                            <div className="absolute inset-0 bg-linear-to-r from-primary/88 via-primary/68 to-primary/36" />
+                            <div className="absolute inset-0 bg-lanna-pattern opacity-20" />
+                            <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/18 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/14 to-transparent blur-[130px]" />
                         </div>
-                        <div className="w-1 h-1 rounded-full bg-base-300" />
-                        <div className="flex items-center gap-1.5">
-                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" /></svg>
-                            สภาวัฒนธรรมเชียงราย
+
+                        <div className="container mx-auto max-w-5xl px-4 relative z-10">
+                            <div className="max-w-4xl text-left">
+                                <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-sm font-medium shadow-sm mb-6 bg-white/12 backdrop-blur-md text-white reveal-soft ${config.color.replace('text-', 'border-white/20 text-white ').replace(/bg-[^ ]+/, '')}`}>
+                                    {config.icon}
+                                    {config.label}
+                                </div>
+                                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight text-white leading-tight font-display max-w-4xl drop-shadow-lg reveal-soft stagger-1">
+                                    {news.title}
+                                </h1>
+                                <div className="w-24 h-1 rounded-full bg-linear-to-r from-secondary via-accent/60 to-transparent mb-6 reveal-soft stagger-2" />
+                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/78 font-medium reveal-soft stagger-2">
+                                    <div className="flex items-center gap-1.5">
+                                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
+                                        {dateObj.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                    </div>
+                                    <div className="hidden sm:block w-1 h-1 rounded-full bg-white/40" />
+                                    <div className="flex items-center gap-1.5">
+                                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" /></svg>
+                                        สภาวัฒนธรรมเชียงราย
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <div className="container mx-auto max-w-4xl px-4 relative z-10 text-center">
+                        <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-sm font-medium shadow-sm mb-6 reveal-soft ${config.color.replace('border-', 'border border-')} bg-white`}>
+                            {config.icon}
+                            {config.label}
+                        </div>
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight text-primary leading-tight max-w-3xl mx-auto reveal-soft stagger-1 font-display">
+                            {news.title}
+                        </h1>
+                        <div className="flex justify-center items-center gap-4 text-sm text-base-content/60 font-medium reveal-soft stagger-2 flex-wrap">
+                            <div className="flex items-center gap-1.5">
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
+                                {dateObj.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
+                            </div>
+                            <div className="w-1 h-1 rounded-full bg-base-300" />
+                            <div className="flex items-center gap-1.5">
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" /></svg>
+                                สภาวัฒนธรรมเชียงราย
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
+
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-slate-50 to-transparent z-10" />
             </section>
 
             {/* Breadcrumb Container */}
             <div className="container mx-auto max-w-4xl px-4 relative z-20 -mt-8 mb-8 flex justify-center">
-                <div className="bg-white/95 backdrop-blur-md px-4 sm:px-6 py-3 rounded-2xl shadow-sm border border-base-200 inline-flex items-center max-w-full overflow-hidden">
+                <div className="bg-white/95 backdrop-blur-md px-4 sm:px-6 py-3 rounded-2xl shadow-sm border border-base-200 inline-flex items-center max-w-full overflow-hidden reveal-soft">
                     <nav className="text-sm text-base-content/60 font-light w-full">
                         <ol className="flex items-center gap-2">
                             <li className="hidden sm:block"><Link href="/" className="hover:text-primary transition-colors whitespace-nowrap">หน้าแรก</Link></li>
@@ -92,16 +139,24 @@ export default async function NewsDetailPage({
             </div>
 
             <div className="container mx-auto max-w-4xl px-4 pb-12">
-                <article className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 sm:p-10 lg:p-12 mb-12">
+                <article className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 sm:p-10 lg:p-12 mb-12 accent-panel">
                     {/* Share Bar */}
-                    <div className="flex items-center justify-between pb-6 mb-8 border-b border-base-100">
+                    <div className="flex items-center justify-between pb-6 mb-8 border-b border-base-100 reveal-soft">
                         <span className="text-sm font-semibold text-base-content/50 uppercase tracking-widest">แชร์ข่าวสาร</span>
-                        <ShareButtons title={news.title} />
+                        <DeferredShareButtons title={news.title} />
                     </div>
 
-                    {news.titleImage && (
+                    {heroImageUrl && (
                         <figure className="mb-10 rounded-2xl overflow-hidden shadow-sm border border-base-200 bg-slate-50">
-                            <img src={news.titleImage} alt={news.title} className="w-full h-auto object-cover max-h-150" />
+                            <CmsImage
+                                src={heroImageUrl}
+                                alt={news.title}
+                                width={1600}
+                                height={900}
+                                sizes="(min-width: 1024px) 896px, 100vw"
+                                className="w-full h-auto object-cover max-h-150"
+                                priority
+                            />
                         </figure>
                     )}
 
@@ -121,18 +176,24 @@ export default async function NewsDetailPage({
 
                     {/* Gallery */}
                     {news.gallery.length > 0 && (
-                        <div className="mt-12 pt-10 border-t border-base-100">
+                        <div className="mt-12 pt-10 border-t border-base-100 reveal-soft stagger-1">
                             <h3 className="text-2xl font-bold text-primary mb-8 flex items-center gap-3">
                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
                                 แกลเลอรี
                             </h3>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                {news.gallery.map((item: any, i: number) => {
-                                    const imageUrl = item.image?.url
+                                {news.gallery.filter((item): item is NonNullable<GalleryItemLike> & { caption?: string | null } => Boolean(item)).map((item, i: number) => {
+                                    const imageUrl = resolveMediaUrl(item.image)
                                     return (
                                         <div key={i} className="group relative aspect-square bg-slate-100 rounded-2xl border border-base-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/30 hover:shadow-md transition-all">
                                             {imageUrl ? (
-                                                <img src={imageUrl} alt={item.caption || "Gallery image"} className="w-full h-full object-cover transition-transform duration-500" />
+                                                <CmsImage
+                                                    src={imageUrl}
+                                                    alt={item.caption || 'Gallery image'}
+                                                    fill
+                                                    sizes="(min-width: 768px) 33vw, 50vw"
+                                                    className="object-cover transition-transform duration-500"
+                                                />
                                             ) : (
                                                 <div className="text-center p-4 z-10 transition-transform duration-500">
                                                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="mx-auto text-primary/40">
@@ -156,7 +217,7 @@ export default async function NewsDetailPage({
 
                     {/* Action buttons based on type */}
                     {news.type === 'document' && (
-                        <div className="mt-12 p-8 rounded-2xl bg-sky-50 border border-sky-100 flex flex-col sm:flex-row items-center justify-between gap-6">
+                        <div className="mt-12 p-8 rounded-2xl bg-sky-50 border border-sky-100 flex flex-col sm:flex-row items-center justify-between gap-6 reveal-soft stagger-2">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center">
                                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /></svg>
@@ -176,15 +237,16 @@ export default async function NewsDetailPage({
 
                 {/* Related News */}
                 {relatedNews.length > 0 && (
-                    <div>
+                    <div className="reveal-soft">
                         <h3 className="text-2xl font-bold font-display text-primary mb-6 flex items-center gap-3">
                             <span className="w-8 h-px bg-primary/30" />
                             ข่าวสารที่เกี่ยวข้อง
                             <span className="w-8 h-px bg-primary/30" />
                         </h3>
                         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-                            {relatedNews.map((related: any) => {
+                            {relatedNews.map((related) => {
                                 const rConfig = typeConfig[related.type as keyof typeof typeConfig] || typeConfig.general
+                                const relatedDate = related.date || related.createdAt || new Date().toISOString()
                                 return (
                                 <Link key={related.slug || related.id} href={`/news/${related.slug || related.id}`} className="group bg-white p-5 rounded-2xl border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.04)] hover:shadow-lg hover:border-secondary/30 transition-all flex flex-col h-full">
                                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest mb-4 w-fit ${rConfig.color.replace('border-', 'border border-')}`}>
@@ -195,7 +257,7 @@ export default async function NewsDetailPage({
                                     </h4>
                                     <div className="mt-auto pt-4 border-t border-base-100 flex items-center text-xs font-medium text-base-content/50">
                                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
-                                        {new Date(related.date || related.createdAt).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                        {new Date(relatedDate).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
                                     </div>
                                 </Link>
                             )})}

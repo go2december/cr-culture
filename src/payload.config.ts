@@ -6,25 +6,35 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 // Collections
-import { Users } from './collections/Users.ts'
-import { ProvincialBoard } from './collections/ProvincialBoard.ts'
-import { BoardPositions } from './collections/BoardPositions.ts'
-import { DistrictBoardPositions } from './collections/DistrictBoardPositions.ts'
-import { Districts } from './collections/Districts.ts'
-import { DistrictMembers } from './collections/DistrictMembers.ts'
-import { Activities } from './collections/Activities.ts'
-import { HeritageBlog } from './collections/HeritageBlog.ts'
-import { Tags } from './collections/Tags.ts'
-import { News } from './collections/News.ts'
-import { Media } from './collections/Media.ts'
+import { Users } from './collections/Users'
+import { ProvincialBoard } from './collections/ProvincialBoard'
+import { BoardPositions } from './collections/BoardPositions'
+import { DistrictBoardPositions } from './collections/DistrictBoardPositions'
+import { Districts } from './collections/Districts'
+import { DistrictMembers } from './collections/DistrictMembers'
+import { Activities } from './collections/Activities'
+import { HeritageBlog } from './collections/HeritageBlog'
+import { Tags } from './collections/Tags'
+import { News } from './collections/News'
+import { Media } from './collections/Media'
 
 // Globals
-import { AboutPage } from './globals/AboutPage.ts'
+import { AboutPage } from './globals/AboutPage'
+import { PageHeroes } from './globals/PageHeroes'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const localOrigins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3001',
+]
+const configuredServerUrl = process.env.NEXT_PUBLIC_SERVER_URL || process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000'
+const configuredOrigins = [configuredServerUrl, ...localOrigins]
 
 export default buildConfig({
+    serverURL: configuredServerUrl,
     admin: {
         user: Users.slug,
         meta: {
@@ -60,6 +70,7 @@ export default buildConfig({
     ],
     globals: [
         AboutPage,
+        PageHeroes,
     ],
     secret: process.env.PAYLOAD_SECRET || 'cr-culture-secret-key',
     typescript: {
@@ -69,9 +80,7 @@ export default buildConfig({
         url: process.env.DATABASE_URI || 'mongodb://localhost:27017/crculture',
     }),
     sharp,
-    cors: [
-        'http://localhost:3000',
-    ],
+    cors: Array.from(new Set(configuredOrigins)),
     upload: {
         limits: {
             fileSize: 10000000, // 10MB

@@ -1,6 +1,10 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getActivityBySlug, getActivities } from '@/lib/payload'
+import { resolveMediaUrl } from '@/lib/media'
+import type { GalleryItemLike } from '@/lib/media'
+import type { PublicActivity } from '@/lib/public-content'
+import CmsImage from '@/components/CmsImage'
 
 export default async function ActivityDetailPage({
     params,
@@ -16,8 +20,15 @@ export default async function ActivityDetailPage({
         return notFound()
     }
 
-    const activity = {
+    const activity: Omit<PublicActivity, 'district' | 'gallery'> & {
+        contentHtml: string
+        district: string | null
+        districtSlug: string | null
+        gallery: GalleryItemLike[]
+    } = {
         title: activityData.title,
+        id: activityData.id,
+        slug: activityData.slug,
         level: activityData.level,
         district: typeof activityData.district?.name === 'string' ? activityData.district.name : null,
         districtSlug: typeof activityData.district?.slug === 'string' ? activityData.district.slug : null,
@@ -26,13 +37,15 @@ export default async function ActivityDetailPage({
         location: activityData.location,
         summary: activityData.summary || activityData.excerpt,
         contentHtml: activityData.content_html || activityData.summary || '<p>ไม่มีเนื้อหาเพิ่มเติม</p>',
-        titleImage: activityData.titleImage?.url,
+        coverImage: activityData.coverImage,
         gallery: activityData.gallery || [],
     }
 
+    const heroImageUrl = resolveMediaUrl(activity.coverImage, activity.gallery)
+
     // Related activities
     const { docs: relatedDocs } = await getActivities({ level: activity.level, limit: 4 })
-    const relatedActivities = relatedDocs.filter((doc: any) => doc.id !== activityData.id).slice(0, 3)
+    const relatedActivities = (relatedDocs as PublicActivity[]).filter((doc) => doc.id !== activityData.id).slice(0, 3)
 
     const dateObj = new Date(activity.date)
     const endDateObj = activity.endDate ? new Date(activity.endDate) : null
@@ -40,11 +53,18 @@ export default async function ActivityDetailPage({
     return (
         <div className="bg-slate-50 min-h-screen pb-24">
             {/* Hero Section */}
-            <section className="relative pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden bg-primary">
+            <section className="relative pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden bg-primary accent-panel">
                 <div className="absolute inset-0 z-0">
-                    {activity.titleImage ? (
+                    {heroImageUrl ? (
                         <>
-                            <img src={activity.titleImage} alt={activity.title} className="w-full h-full object-cover mix-blend-overlay opacity-30" />
+                            <CmsImage
+                                src={heroImageUrl}
+                                alt={activity.title}
+                                fill
+                                sizes="100vw"
+                                className="object-cover mix-blend-overlay opacity-30"
+                                priority
+                            />
                             <div className="absolute inset-0 bg-linear-to-t from-primary via-primary/80 to-primary/50" />
                         </>
                     ) : (
@@ -57,13 +77,13 @@ export default async function ActivityDetailPage({
                 </div>
 
                 <div className="container mx-auto max-w-5xl px-4 relative z-10 text-white text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-medium shadow-sm mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-medium shadow-sm mb-6 reveal-soft">
                         {activity.level === 'province' ? 'กิจกรรมระดับจังหวัด' : `กิจกรรมระดับอำเภอ ${activity.district || ''}`}
                     </div>
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight drop-shadow-md">
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight drop-shadow-md reveal-soft stagger-1">
                         {activity.title}
                     </h1>
-                    <div className="flex flex-wrap justify-center items-center gap-4 text-sm opacity-90 font-light">
+                    <div className="flex flex-wrap justify-center items-center gap-4 text-sm opacity-90 font-light reveal-soft stagger-2">
                         <span className="flex items-center gap-2">
                             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
                             {dateObj.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -84,7 +104,7 @@ export default async function ActivityDetailPage({
 
             {/* Breadcrumb */}
             <div className="container mx-auto max-w-5xl px-4 py-6 relative z-20 -mt-8">
-                <div className="breadcrumbs text-sm bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-sm border border-base-200 inline-block text-base-content/60 font-light">
+                <div className="breadcrumbs text-sm bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-sm border border-base-200 inline-block text-base-content/60 font-light reveal-soft">
                     <ul>
                         <li><Link href="/" className="hover:text-primary transition-colors">หน้าแรก</Link></li>
                         <li><Link href="/activities" className="hover:text-primary transition-colors">กิจกรรมสภาวัฒนธรรม</Link></li>
@@ -96,11 +116,11 @@ export default async function ActivityDetailPage({
             <div className="container mx-auto max-w-5xl px-4 py-8">
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Main Content */}
-                    <article className="lg:col-span-2 space-y-8">
-                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-8 lg:p-10">
+                    <article className="lg:col-span-2 space-y-8 reveal-soft stagger-1">
+                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-8 lg:p-10 accent-panel">
                             {/* Summary */}
                             {activity.summary && (
-                            <div className="p-6 bg-primary/5 rounded-2xl border-l-4 border-primary mb-8 text-lg text-primary-dark font-medium leading-relaxed">
+                            <div className="p-6 bg-primary/5 rounded-2xl border-l-4 border-primary mb-8 text-lg text-primary-dark font-medium leading-relaxed reveal-soft">
                                 {activity.summary}
                             </div>
                             )}
@@ -113,18 +133,24 @@ export default async function ActivityDetailPage({
 
                             {/* Gallery */}
                             {activity.gallery.length > 0 && (
-                            <div className="mt-12 pt-10 border-t border-base-100">
+                            <div className="mt-12 pt-10 border-t border-base-100 reveal-soft stagger-1">
                                 <h3 className="text-2xl font-bold text-primary mb-8 flex items-center gap-3">
                                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
                                     แกลเลอรี
                                 </h3>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                    {activity.gallery.map((item: any, i: number) => {
-                                        const imageUrl = item.image?.url
+                                    {activity.gallery.filter((item): item is NonNullable<GalleryItemLike> => Boolean(item)).map((item, i: number) => {
+                                        const imageUrl = resolveMediaUrl(item.image)
                                         return (
-                                        <div key={i} className="group relative aspect-square bg-slate-100 rounded-2xl border border-base-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/30 hover:shadow-md transition-all">
+                                                <div key={i} className="group relative aspect-square bg-slate-100 rounded-2xl border border-base-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/30 hover:shadow-md transition-all reveal-soft">
                                             {imageUrl ? (
-                                                <img src={imageUrl} alt={item.caption || "Gallery image"} className="w-full h-full object-cover transition-transform duration-500" />
+                                                <CmsImage
+                                                    src={imageUrl}
+                                                    alt={item.caption || 'Gallery image'}
+                                                    fill
+                                                    sizes="(min-width: 768px) 33vw, 50vw"
+                                                    className="object-cover transition-transform duration-500"
+                                                />
                                             ) : (
                                             <div className="text-center p-4 z-10 transition-transform duration-500">
                                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="mx-auto text-primary/40">
@@ -148,9 +174,9 @@ export default async function ActivityDetailPage({
                     </article>
 
                     {/* Sidebar */}
-                    <aside className="space-y-6">
+                    <aside className="space-y-6 reveal-soft stagger-2">
                         {/* Event Details widget */}
-                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8">
+                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8 accent-panel">
                             <h3 className="text-lg font-bold text-primary mb-5 flex items-center gap-2">
                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M12 2A10 10 0 1 0 22 12 10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z"/><path d="M12 7v5l3 3"/></svg>
                                 รายละเอียดกิจกรรม
@@ -180,7 +206,7 @@ export default async function ActivityDetailPage({
 
                         {/* Related District */}
                         {activity.district && activity.districtSlug && (
-                            <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8">
+                            <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8 accent-panel">
                                 <h3 className="text-lg font-bold text-primary mb-5 flex items-center gap-2">
                                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
                                     เครือข่ายระดับอำเภอ
@@ -204,13 +230,13 @@ export default async function ActivityDetailPage({
 
                         {/* Related Activities */}
                         {relatedActivities.length > 0 && (
-                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8">
+                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8 accent-panel">
                             <h3 className="text-lg font-bold text-primary mb-5 flex items-center gap-2">
                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
                                 กิจกรรมอื่นๆ
                             </h3>
                             <ul className="space-y-3">
-                                {relatedActivities.map((related: any, i: number) => {
+                                {relatedActivities.map((related, i: number) => {
                                     const rDateObj = new Date(related.date)
                                     return (
                                     <li key={i}>

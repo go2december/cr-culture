@@ -3,14 +3,14 @@ import Image from 'next/image'
 
 export default function Footer() {
     return (
-        <footer className="bg-slate-50 border-t border-base-200">
-            {/* Gold Accent Line */}
-            <div className="gold-accent" />
+        <footer className="bg-slate-50 border-t border-base-200 relative overflow-hidden">
+            <div className="h-px bg-linear-to-r from-transparent via-secondary/70 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-24 bg-linear-to-b from-secondary/5 to-transparent pointer-events-none" />
 
             <div className="container mx-auto max-w-7xl px-4 py-20">
                 <div className="grid md:grid-cols-4 gap-12">
                     {/* Brand & Contact */}
-                    <div className="md:col-span-1">
+                    <div className="md:col-span-1 reveal-soft">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-16 h-16 relative rounded-full overflow-hidden flex items-center justify-center shadow-sm border border-base-200 bg-white">
                                 <Image src="/logo.png" alt="โลโก้สภาวัฒนธรรม" fill sizes="64px" className="object-contain p-1" />
@@ -44,7 +44,7 @@ export default function Footer() {
                     </div>
 
                     {/* Quick Links */}
-                    <div>
+                    <div className="reveal-soft stagger-1">
                         <h4 className="font-bold text-[15px] mb-5 text-primary tracking-wide">ลิงก์ด่วน</h4>
                         <ul className="space-y-3">
                             <li><Link href="/about" className="text-[15px] text-base-content/60 hover:text-primary transition-colors inline-block font-light">เกี่ยวกับเรา</Link></li>
@@ -55,7 +55,7 @@ export default function Footer() {
                     </div>
 
                     {/* Heritage Categories */}
-                    <div>
+                    <div className="reveal-soft stagger-2">
                         <h4 className="font-bold text-[15px] mb-5 text-primary tracking-wide">มรดกภูมิปัญญา</h4>
                         <ul className="space-y-3">
                             <li><Link href="/heritage?category=1" className="text-[15px] text-base-content/60 hover:text-primary transition-colors inline-block font-light">มรดกภูมิปัญญา</Link></li>
@@ -66,7 +66,7 @@ export default function Footer() {
                     </div>
 
                     {/* Contact Info */}
-                    <div>
+                    <div className="reveal-soft stagger-3">
                         <h4 className="font-bold text-[15px] mb-5 text-primary tracking-wide">ติดต่อเรา</h4>
                         <ul className="space-y-4">
                             <li className="flex items-start gap-3">
@@ -97,7 +97,7 @@ export default function Footer() {
             </div>
 
             {/* Copyright */}
-            <div className="border-t border-base-200 py-6 bg-white/50">
+            <div className="border-t border-base-200 py-6 bg-white/50 relative">
                 <div className="container mx-auto max-w-7xl px-4 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-sm text-base-content/50 font-light">
                         © 2026 สภาวัฒนธรรมจังหวัดเชียงราย. สงวนลิขสิทธิ์.

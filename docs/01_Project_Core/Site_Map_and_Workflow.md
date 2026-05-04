@@ -1,46 +1,69 @@
-# Site Map and Workflow
+# Site Map, Workflow, and Tasks
 
 ## Purpose
-เอกสาร canonical สำหรับภาพรวม site map, ขอบเขต public/admin system, และ workflow ระดับ milestone ของโปรเจกต์
+เอกสาร canonical ฉบับเดียวสำหรับ 3 เรื่อง: ขอบเขตระบบ, workflow ระดับโปรเจกต์, และ task ปัจจุบันแบบย่อ
 
-## Public Website Site Map
-### 1. Home
-- Hero section
-- Latest provincial activities
-- Cultural heritage highlights
-- Quick access to district network
+## Current State
+- Milestone 1: Environment & Infrastructure - Complete
+- Milestone 2: Data Schema & CMS - Complete
+- Milestone 3: Frontend & Theme - Complete
+- Milestone 4: Logic & Content Integration - In Progress
+- Milestone 5: Production Readiness - In Progress
 
-### 2. About
-- Provincial board members
+## Current Tasks
+### Now
+- Execute real content import batch แรกสำหรับ board, activities, heritage, และ news
+- Refactor `src/lib/payload.ts` ให้ลด query concentration และคืนค่าที่สอดคล้องกับ shared public models มากขึ้น
+- Close production-readiness gap ที่เหลือ เช่น health check, Docker optimization, และ admin/runtime parity
+
+### Next
+- Add verification around key content flows after real data import
+- Continue performance tuning where content volume increases
+- Review remaining admin maintenance surfaces after the recent import-map compatibility fix
+
+### Done Recently
+- Core public pages and admin routes are implemented
+- CMS schema and main collections are in place
+- Frontend UX/a11y audit on key public pages is complete
+- Shared media handling was hardened for Payload uploads, public access, localhost URL normalization, and WebP output
+- Shared public content and organization types were added to reduce `any` usage across the frontend
+- Home, list pages, and content detail headers were standardized around the current background-header direction
+- Production build passed after Payload/Next configuration fixes, frontend type cleanup, and Payload admin import-map compatibility fixes
+
+## Public Site Map
+### Home
+- Hero
+- Latest activities
+- Heritage highlights
+- District quick access
+
+### About
+- Provincial board
 - Vision, mission, history
 
-### 3. Activities
-- Provincial activities listing
-- Activity calendar
-- Activity detail pages
+### Activities
+- Activity listing
+- Calendar
+- Detail pages
 
-### 4. District Network
-- District listing page
-- District detail page
-  - district information
-  - committee members
-  - district-level activities
+### District Network
+- District listing
+- District detail: info, committee members, district activities
 
-### 5. Heritage
-- Heritage listing with filters
-- Heritage detail page
-- Category, tag, and search-based discovery
+### Heritage
+- Listing with filters/search
+- Detail page
+- Category and tag discovery
 
-### 6. News & PR
-- General news
-- Video media
-- Downloadable documents
-- News detail page
+### News & PR
+- News listing
+- Media/documents
+- Detail page
 
-### 7. Contact
+### Contact
 - Contact page
 
-## Admin System Scope
+## Admin Scope
 Payload CMS manages:
 - users
 - board-positions
@@ -55,27 +78,7 @@ Payload CMS manages:
 - media
 - about-page global
 
-## Delivery Milestones
-1. Environment & Infra
-2. Data Schema & CMS
-3. Frontend & Theme
-4. Logic & Content Integration
-5. Production Readiness
-
-## Current State Summary
-- Site structure is broadly implemented
-- CMS schema is established
-- Core pages exist
-- Integration is mostly complete
-- Remaining work centers on real content import, optimization, and production readiness
-
-## Remaining Work Themes
-- Content import and editorial population
-- Performance tuning
-- Deployment hardening
-- Continued documentation cleanup
-
-## Relationship Snapshot
+## Data Relationship Snapshot
 - `BoardPositions <- ProvincialBoard.position`
 - `DistrictBoardPositions <- DistrictMembers.position`
 - `Districts <- DistrictMembers.district`
@@ -84,10 +87,15 @@ Payload CMS manages:
 - `Tags <- HeritageBlog.tags`
 - `Media <- multiple content/image fields`
 
-## How to Use This File
-- ใช้เพื่อทำความเข้าใจขอบเขตระบบแบบ top-down
-- ใช้ร่วมกับ `Project_Roadmap.md` สำหรับมุมมอง milestone
-- ใช้ร่วมกับ `Schema.md` สำหรับความสัมพันธ์เชิง implementation
+## Use This File When
+- ต้องการดูภาพรวมระบบแบบสั้น
+- ต้องการดู workflow และ task ล่าสุดในที่เดียว
+- ต้องการรู้ว่าตอนนี้ project ทำถึงไหนและควรทำอะไรต่อ
+
+## Supporting References
+- `STATUS.md` สำหรับสถานะย่อรายรอบล่าสุด
+- `Project_Roadmap.md` สำหรับ milestone view แยกเฉพาะ roadmap
+- `Schema.md` สำหรับรายละเอียดความสัมพันธ์เชิง implementation
 
 ## Legacy Reference
 - `docs/workflow/task-and-workflow.md`

@@ -1,7 +1,10 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getHeritageBlogBySlug, getHeritageBlogs } from '@/lib/payload'
-import ShareButtons from '@/components/ShareButtons'
+import { resolveMediaUrl, type GalleryItemLike } from '@/lib/media'
+import type { PublicHeritage, PublicTag } from '@/lib/public-content'
+import CmsImage from '@/components/CmsImage'
+import DeferredShareButtons from '@/components/DeferredShareButtons'
 
 export default async function HeritageArticlePage({
     params,
@@ -24,7 +27,17 @@ export default async function HeritageArticlePage({
         { id: 'local-wisdom', label: 'ปราชญ์ชาวบ้าน', icon: '👨‍🏫' },
     ]
 
-    const article = {
+    const article: PublicHeritage & {
+        categoryLabel: string
+        relatedDistrict: string | null
+        relatedDistrictSlug: string | null
+        viewCount: number
+        contentHtml: string
+        tags: string[]
+        gallery: GalleryItemLike[]
+    } = {
+        id: articleData.id,
+        slug: articleData.slug,
         title: articleData.title,
         category: articleData.category || 'intangible-heritage',
         categoryLabel: categories.find(c => c.id === articleData.category)?.label || 'มรดกภูมิปัญญา',
@@ -33,50 +46,98 @@ export default async function HeritageArticlePage({
         viewCount: 1234, // Mock if views are not tracked
         excerpt: articleData.excerpt || '',
         contentHtml: articleData.content_html || articleData.excerpt || '<p>ไม่มีเนื้อหา</p>',
-        tags: articleData.tags?.map((t: any) => typeof t === 'string' ? t : t?.name) || [],
+        tags: ((articleData.tags || []) as Array<string | PublicTag>).map((tag) => typeof tag === 'string' ? tag : tag?.name).filter((tag): tag is string => Boolean(tag)),
         relatedDistrict: typeof articleData.district?.name === 'string' ? articleData.district.name : null,
         relatedDistrictSlug: typeof articleData.district?.slug === 'string' ? articleData.district.slug : null,
+        coverImage: articleData.coverImage,
         gallery: articleData.gallery || [],
     }
 
+    const heroImageUrl = resolveMediaUrl(article.coverImage, article.gallery)
+    const hasHeroImage = Boolean(heroImageUrl)
+
     // Fetch related articles (mock simple related fetch for now, taking latest 3 of same category)
     const relatedResponse = await getHeritageBlogs({ category: article.category, limit: 4 })
-    const relatedArticles = relatedResponse.docs?.filter((doc: any) => doc.id !== articleData.id).slice(0, 3) || []
+    const relatedArticles = ((relatedResponse.docs || []) as PublicHeritage[]).filter((doc) => doc.id !== articleData.id).slice(0, 3)
 
     return (
         <div className="bg-slate-50 min-h-screen pb-24">
-            {/* Hero Section */}
-            <section className="relative pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden bg-primary">
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute inset-0 bg-black/20" />
-                    <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-gradient-to-bl from-white/10 to-transparent blur-[120px]" />
-                    <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-gradient-to-tr from-secondary/30 to-transparent blur-[130px]" />
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_,#000_70%,transparent_100%)]" />
-                </div>
+            <section className={`relative overflow-hidden ${hasHeroImage ? 'pt-32 pb-24 lg:pt-40 lg:pb-30 accent-panel min-h-[52vh] flex items-end' : 'pt-32 pb-24 lg:pt-40 lg:pb-32 bg-primary accent-panel'}`}>
+                {hasHeroImage ? (
+                    <>
+                        <div className="absolute inset-0 z-0">
+                            <CmsImage
+                                src={heroImageUrl!}
+                                alt={article.title}
+                                fill
+                                sizes="100vw"
+                                className="object-cover object-top"
+                                priority
+                            />
+                            <div className="absolute inset-0 bg-linear-to-r from-primary/88 via-primary/70 to-primary/42" />
+                            <div className="absolute inset-0 bg-lanna-pattern opacity-20" />
+                            <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/18 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/14 to-transparent blur-[130px]" />
+                        </div>
 
-                <div className="container mx-auto max-w-5xl px-4 relative z-10 text-white text-center">
-                    <Link
-                        href={`/heritage?category=${article.category}`}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-medium shadow-sm mb-6 hover:bg-white/30 transition-colors animate-fade-in-up"
-                    >
-                        {article.categoryLabel}
-                    </Link>
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight animate-fade-in-up delay-100 drop-shadow-md">
-                        {article.title}
-                    </h1>
-                    <div className="flex flex-wrap justify-center items-center gap-4 text-sm opacity-90 animate-fade-in-up delay-200 font-light">
-                        <span className="flex items-center gap-2">โดย {article.author}</span>
-                        <span className="w-1 h-1 rounded-full bg-white/50" />
-                        <span>{new Date(article.createdAt).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                        <span className="w-1 h-1 rounded-full bg-white/50" />
-                        <span className="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg> {article.viewCount.toLocaleString()} ครั้ง</span>
-                    </div>
-                </div>
+                        <div className="container mx-auto max-w-5xl px-4 relative z-10">
+                            <div className="max-w-4xl text-left">
+                                <Link
+                                    href={`/heritage?category=${article.category}`}
+                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/12 backdrop-blur-md border border-white/20 text-sm font-medium text-white shadow-sm mb-6 hover:bg-white/18 transition-colors reveal-soft"
+                                >
+                                    {article.categoryLabel}
+                                </Link>
+                                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight text-white reveal-soft stagger-1 font-display leading-[1.05] drop-shadow-lg">
+                                    {article.title}
+                                </h1>
+                                <div className="w-24 h-1 rounded-full bg-linear-to-r from-secondary via-accent/60 to-transparent mb-6 reveal-soft stagger-2" />
+                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/78 font-medium reveal-soft stagger-2">
+                                    <span className="flex items-center gap-2">โดย {article.author}</span>
+                                    <span className="hidden sm:block w-1 h-1 rounded-full bg-white/40" />
+                                    <span>{new Date(article.createdAt).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                                    <span className="hidden sm:block w-1 h-1 rounded-full bg-white/40" />
+                                    <span className="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg> {article.viewCount.toLocaleString()} ครั้ง</span>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="absolute inset-0 z-0">
+                            <div className="absolute inset-0 bg-black/20" />
+                            <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-white/10 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-secondary/30 to-transparent blur-[130px]" />
+                            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-size-[40px_40px] mask-[radial-gradient(ellipse_50%_50%_at_50%,#000_70%,transparent_100%)]" />
+                        </div>
+
+                        <div className="container mx-auto max-w-5xl px-4 relative z-10 text-white text-center">
+                            <Link
+                                href={`/heritage?category=${article.category}`}
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-medium shadow-sm mb-6 hover:bg-white/30 transition-colors reveal-soft"
+                            >
+                                {article.categoryLabel}
+                            </Link>
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight drop-shadow-md reveal-soft stagger-1 font-display">
+                                {article.title}
+                            </h1>
+                            <div className="flex flex-wrap justify-center items-center gap-4 text-sm opacity-90 reveal-soft stagger-2 font-light">
+                                <span className="flex items-center gap-2">โดย {article.author}</span>
+                                <span className="w-1 h-1 rounded-full bg-white/50" />
+                                <span>{new Date(article.createdAt).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                                <span className="w-1 h-1 rounded-full bg-white/50" />
+                                <span className="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg> {article.viewCount.toLocaleString()} ครั้ง</span>
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-slate-50 to-transparent z-10" />
             </section>
 
             {/* Breadcrumb */}
             <div className="container mx-auto max-w-5xl px-4 py-6 relative z-20 -mt-8">
-                <div className="breadcrumbs text-sm bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-sm border border-base-200 inline-block text-base-content/60 font-light animate-fade-in-up delay-300">
+                <div className="breadcrumbs text-sm bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-sm border border-base-200 inline-block text-base-content/60 font-light reveal-soft stagger-1">
                     <ul>
                         <li><Link href="/" className="hover:text-primary transition-colors">หน้าแรก</Link></li>
                         <li><Link href="/heritage" className="hover:text-primary transition-colors">คลังมรดกภูมิปัญญา</Link></li>
@@ -88,10 +149,10 @@ export default async function HeritageArticlePage({
             <div className="container mx-auto max-w-5xl px-4 py-8">
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Main Content */}
-                    <article className="lg:col-span-2 space-y-8 animate-fade-in-up delay-400">
-                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-8 lg:p-10">
+                    <article className="lg:col-span-2 space-y-8 reveal-soft stagger-2">
+                        <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-8 lg:p-10 accent-panel">
                             {/* Tags */}
-                            <div className="flex flex-wrap gap-2 mb-8">
+                            <div className="flex flex-wrap gap-2 mb-8 reveal-soft">
                                 {article.tags.map((tag: string) => (
                                     <Link
                                         key={tag}
@@ -104,7 +165,7 @@ export default async function HeritageArticlePage({
                             </div>
 
                             {/* Excerpt */}
-                            <div className="p-6 bg-primary/5 rounded-2xl border-l-4 border-primary mb-8 text-lg text-primary-dark font-medium leading-relaxed">
+                            <div className="p-6 bg-primary/5 rounded-2xl border-l-4 border-primary mb-8 text-lg text-primary-dark font-medium leading-relaxed reveal-soft stagger-1">
                                 {article.excerpt}
                             </div>
 
@@ -122,19 +183,25 @@ export default async function HeritageArticlePage({
                                         แกลเลอรี
                                     </h3>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                        {article.gallery.map((item: any, i: number) => {
-                                            const imageUrl = item.image?.url
+                                        {article.gallery.filter((item): item is NonNullable<GalleryItemLike> & { caption?: string | null } => Boolean(item)).map((item, i: number) => {
+                                            const imageUrl = resolveMediaUrl(item.image)
                                             return (
                                                 <div key={i} className="group relative aspect-square bg-slate-100 rounded-2xl border border-base-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/30 hover:shadow-md transition-all">
                                                     {imageUrl ? (
-                                                        <img src={imageUrl} alt={item.caption || "Gallery image"} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                        <CmsImage
+                                                            src={imageUrl}
+                                                            alt={item.caption || 'Gallery image'}
+                                                            fill
+                                                            sizes="(min-width: 768px) 33vw, 50vw"
+                                                            className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                                        />
                                                     ) : (
                                                         <div className="text-center p-4 z-10 group-hover:scale-110 transition-transform duration-500">
                                                             <span className="text-4xl mb-3 block drop-shadow-sm">🖼️</span>
                                                         </div>
                                                     )}
                                                     {item.caption && (
-                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-end p-4">
+                                                        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-end p-4">
                                                             <span className="text-sm font-medium text-white translate-y-2 group-hover:translate-y-0 transition-transform duration-300">{item.caption}</span>
                                                         </div>
                                                     )}
@@ -148,15 +215,15 @@ export default async function HeritageArticlePage({
                             {/* Share */}
                             <div className="mt-12 pt-8 border-t border-base-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <h4 className="font-semibold text-base-content/80">แชร์บทความนี้</h4>
-                                <ShareButtons title={articleData.title} /></div>
+                                <DeferredShareButtons title={articleData.title} /></div>
                         </div>
                     </article>
 
                     {/* Sidebar */}
-                    <aside className="space-y-6 animate-fade-in-up delay-500">
+                    <aside className="space-y-6 reveal-soft stagger-3">
                         {/* Related District */}
                         {article.relatedDistrict && (
-                            <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8">
+                            <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8 accent-panel">
                                 <h3 className="text-lg font-bold text-primary mb-5 flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
                                     อำเภอที่เกี่ยวข้อง
@@ -180,19 +247,19 @@ export default async function HeritageArticlePage({
 
                         {/* Related Articles */}
                         {relatedArticles.length > 0 && (
-                            <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8">
+                            <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8 accent-panel">
                                 <h3 className="text-lg font-bold text-primary mb-5 flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
                                     บทความที่เกี่ยวข้อง
                                 </h3>
                                 <ul className="space-y-3">
-                                    {relatedArticles.map((related: any, i: number) => (
+                                    {relatedArticles.map((related, i: number) => (
                                         <li key={i}>
                                             <Link
                                                 href={`/heritage/${related.slug || related.id}`}
                                                 className="group flex gap-4 p-3 bg-slate-50 border border-base-100 rounded-xl hover:bg-white hover:border-primary/20 hover:shadow-sm transition-all"
                                             >
-                                                <div className="w-12 h-12 bg-base-200 rounded-lg flex items-center justify-center flex-shrink-0 text-xl group-hover:bg-primary/5 transition-colors">
+                                                <div className="w-12 h-12 bg-base-200 rounded-lg flex items-center justify-center shrink-0 text-xl group-hover:bg-primary/5 transition-colors">
                                                     📄
                                                 </div>
                                                 <div className="flex flex-col justify-center">

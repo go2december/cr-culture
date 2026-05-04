@@ -74,7 +74,8 @@ export default function Navbar() {
 
     return (
         <div className="fixed top-0 inset-x-0 z-50 px-4 py-4 transition-all duration-300">
-            <nav className="mx-auto max-w-7xl rounded-2xl bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <nav className="mx-auto max-w-7xl rounded-2xl bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative">
+                <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-secondary/70 to-transparent" />
                 <div className="px-5 sm:px-8">
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
@@ -177,7 +178,7 @@ export default function Navbar() {
                                 </svg>
                             </button>
                             <div className="hidden sm:block w-px h-6 bg-base-200"></div>
-                            <Link href="/admin" onClick={handleClick} className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary-dark transition-all shadow-[0_4px_14px_0_rgba(27,42,73,0.39)] hover:shadow-[0_6px_20px_rgba(27,42,73,0.23)] hover:-translate-y-0.5">
+                            <Link href="/admin" onClick={handleClick} className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary-dark transition-all shadow-[0_4px_14px_0_rgba(27,42,73,0.39)] hover:shadow-[0_6px_20px_rgba(27,42,73,0.23)] hover:-translate-y-0.5 active:translate-y-0">
                                 เข้าสู่ระบบ
                             </Link>
                         </div>

@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import { getActivities, getDistricts } from '@/lib/payload'
 import CalendarView from './CalendarView'
+import type { GalleryItemLike, MediaLike } from '@/lib/media'
+import type { PublicCalendarActivity } from '@/lib/public-organization'
+import type { PublicDistrictSummary } from '@/lib/public-organization'
 
 export default async function ActivityCalendarPage(props: {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
@@ -10,10 +13,10 @@ export default async function ActivityCalendarPage(props: {
     const month = Number(searchParams?.month) || new Date().getMonth() + 1
 
     const activitiesResponse = await getActivities({ limit: 100, page: 1 })
-    const allActivities = activitiesResponse.docs
+    const allActivities = activitiesResponse.docs as PublicCalendarActivity[]
 
     // กรองกิจกรรมเฉพาะในเดือนที่เลือก
-    const filteredActivities = allActivities.filter((activity: any) => {
+    const filteredActivities = allActivities.filter((activity) => {
         const activityDate = new Date(activity.date)
         return (
             activityDate.getFullYear() === year &&
@@ -21,8 +24,8 @@ export default async function ActivityCalendarPage(props: {
         )
     })
 
-    const districts = await getDistricts()
-    const districtMap = new Map(districts.map((d: any) => [d.id, d.name]))
+    const districts = (await getDistricts()) as PublicDistrictSummary[]
+    const districtMap = new Map(districts.map((district) => [district.id, district.name]))
 
     return (
         <div className="bg-slate-50 min-h-screen font-sans">
@@ -75,7 +78,7 @@ export default async function ActivityCalendarPage(props: {
                 <CalendarView
                     year={year}
                     month={month}
-                    activities={filteredActivities as any[]}
+                    activities={filteredActivities}
                     districtMap={districtMap}
                 />
             </div>
