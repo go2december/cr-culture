@@ -27,7 +27,7 @@ export default async function NewsDetailPage({
     }
 
     const config = typeConfig[newsData.type as keyof typeof typeConfig] || typeConfig.general
-    const dateObj = new Date(newsData.date || newsData.createdAt)
+    const dateObj = new Date(newsData.date || newsData.createdAt || new Date().toISOString())
 
     const news: PublicNews & { contentHtml: string; gallery: GalleryItemLike[] } = {
         id: newsData.id,

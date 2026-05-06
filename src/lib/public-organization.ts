@@ -4,7 +4,14 @@ export interface PublicDistrictSummary {
     id: string | number
     name: string
     slug: string
+    code?: string | null
     description?: string | null
+    latitude?: number | null
+    longitude?: number | null
+    address?: string | null
+    phoneNumber?: string | null
+    email?: string | null
+    facebook?: string | null
 }
 
 export interface PublicDistrictContact {

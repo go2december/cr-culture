@@ -1,29 +1,69 @@
 import Link from 'next/link'
+import { getPageHeroes } from '@/lib/payload'
+import CmsImage from '@/components/CmsImage'
+import { resolveMediaAlt, resolveMediaUrl, type MediaLike } from '@/lib/media'
 
-export default function ContactPage() {
+export default async function ContactPage() {
+    const pageHeroes = await getPageHeroes().catch(() => null)
+    const hero = pageHeroes?.contact || {}
+    const heroMedia = hero.heroImage as MediaLike
+    const heroImageUrl = resolveMediaUrl(heroMedia)
+    const heroImageAlt = resolveMediaAlt(heroMedia, (hero.title as string) || 'ภาพพื้นหลังหน้าติดต่อเรา')
+    const hasHeroImage = Boolean(heroImageUrl)
+
     return (
         <div className="bg-slate-50 min-h-screen font-sans">
-            {/* Elegant Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-slate-50 accent-panel">
-                <div className="absolute inset-0 z-0 bg-lanna-pattern">
-                    <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/15 to-transparent blur-[120px]" />
-                    <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/10 to-transparent blur-[130px]" />
-                </div>
+            {/* Hero Section */}
+            <section className={`relative overflow-hidden ${hasHeroImage ? 'pt-32 pb-24 lg:pt-40 lg:pb-30 accent-panel min-h-[52vh] flex items-end' : 'pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-50 accent-panel'}`}>
+                {hasHeroImage ? (
+                    <>
+                        <div className="absolute inset-0 z-0">
+                            <CmsImage src={heroImageUrl!} alt={heroImageAlt} fill sizes="100vw" className="object-cover object-top" priority />
+                            <div className="absolute inset-0 bg-linear-to-r from-primary/88 via-primary/70 to-primary/40" />
+                            <div className="absolute inset-0 bg-lanna-pattern opacity-20" />
+                            <div className="absolute top-0 right-[-10%] w-[50%] h-[70%] rounded-full bg-linear-to-bl from-secondary/18 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[60%] rounded-full bg-linear-to-tr from-accent/14 to-transparent blur-[130px]" />
+                        </div>
 
-                <div className="container mx-auto px-4 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6 reveal-soft">
-                        <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                        ติดต่อเรา
-                    </div>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight reveal-soft stagger-1 font-display">
-                        ติดต่อสภาวัฒนธรรม
-                    </h1>
-                    <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
-                        สอบถามข้อมูล หรือประสานงานเครือข่ายวัฒนธรรมจังหวัดเชียงราย ผ่านช่องทางด้านล่าง
-                    </p>
-                </div>
+                        <div className="container mx-auto max-w-7xl px-4 relative z-20">
+                            <div className="max-w-4xl text-left">
+                                <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium shadow-sm mb-6 bg-white/14 backdrop-blur-md border border-white/20 text-white reveal-soft">
+                                    <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                                    {(hero.eyebrow as string) || 'ติดต่อเรา'}
+                                </div>
+                                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight reveal-soft stagger-1 font-display text-white leading-[1.05] drop-shadow-lg">
+                                    {(hero.title as string) || 'ติดต่อสภาวัฒนธรรม'}
+                                </h1>
+                                <div className="w-24 h-1 rounded-full bg-linear-to-r from-secondary via-accent/60 to-transparent mb-6 reveal-soft stagger-2" />
+                                <p className="text-lg md:text-xl max-w-3xl font-light leading-relaxed text-white/82 reveal-soft stagger-2">
+                                    {(hero.subtitle as string) || 'สอบถามข้อมูล หรือประสานงานเครือข่ายวัฒนธรรมจังหวัดเชียงราย ผ่านช่องทางด้านล่าง'}
+                                </p>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="absolute inset-0 z-0 bg-lanna-pattern">
+                            <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/15 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/10 to-transparent blur-[130px]" />
+                        </div>
 
-                <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-slate-50 to-transparent z-10" />
+                        <div className="container mx-auto max-w-7xl px-4 relative z-10 text-center">
+                            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6 reveal-soft">
+                                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                                {(hero.eyebrow as string) || 'ติดต่อเรา'}
+                            </div>
+                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight reveal-soft stagger-1 font-display">
+                                {(hero.title as string) || 'ติดต่อสภาวัฒนธรรม'}
+                            </h1>
+                            <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
+                                {(hero.subtitle as string) || 'สอบถามข้อมูล หรือประสานงานเครือข่ายวัฒนธรรมจังหวัดเชียงราย ผ่านช่องทางด้านล่าง'}
+                            </p>
+                        </div>
+                    </>
+                )}
+
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-slate-50 to-transparent z-10" />
             </section>
 
             {/* Breadcrumb */}

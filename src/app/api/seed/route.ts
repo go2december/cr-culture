@@ -444,9 +444,125 @@ export async function GET() {
       // Global may already be up to date
     }
 
+    // ============================================================
+    // 11. PageHeroes Global
+    // ============================================================
+    try {
+      const existingPageHeroes = await payload.findGlobal({ slug: 'page-heroes' }).catch(() => null)
+      await payload.updateGlobal({
+        slug: 'page-heroes',
+        data: {
+          ...(existingPageHeroes || {}),
+          home: {
+            ...(existingPageHeroes?.home || {}),
+            eyebrow: 'Modern Lanna',
+            title: 'สภาวัฒนธรรม จังหวัดเชียงราย',
+            subtitle: 'เมืองศิลปิน ถิ่นวัฒนธรรม ส่งเสริมและอนุรักษ์มรดกล้านนา เชื่อมโยงอดีตสู่ปัจจุบันอย่างยั่งยืนเพื่อชนรุ่นหลัง',
+          },
+          activities: {
+            ...(existingPageHeroes?.activities || {}),
+            eyebrow: 'กิจกรรมและประเพณี',
+            title: 'กิจกรรมสภาวัฒนธรรมจังหวัดเชียงราย',
+            subtitle: 'รวมข่าวสารกิจกรรมและงานประเพณีท้องถิ่นที่จัดโดยสภาวัฒนธรรมจังหวัดเชียงรายและเครือข่ายระดับอำเภอ',
+          },
+          activitiesCalendar: {
+            ...(existingPageHeroes?.activitiesCalendar || {}),
+            eyebrow: 'ปฏิทินกิจกรรม',
+            title: 'ปฏิทินกิจกรรมสภาวัฒนธรรมจังหวัดเชียงราย',
+            subtitle: 'ติดตามกิจกรรมและงานประเพณีท้องถิ่นล่วงหน้า',
+          },
+          about: {
+            ...(existingPageHeroes?.about || {}),
+            eyebrow: 'ข้อมูลองค์กร',
+            title: 'เกี่ยวกับเรา',
+            subtitle: 'ทำความรู้จักสภาวัฒนธรรมจังหวัดเชียงราย องค์กรแกนนำในการขับเคลื่อน อนุรักษ์ และสืบสานมรดกภูมิปัญญาล้านนา',
+          },
+          aboutBoard: {
+            ...(existingPageHeroes?.aboutBoard || {}),
+            eyebrow: 'บุคลากร',
+            title: 'คณะกรรมการจังหวัด',
+            subtitle: 'ทำเนียบคณะบริหารและกรรมการสภาวัฒนธรรมจังหวัดเชียงราย ผู้นำในการขับเคลื่อนงานด้านวัฒนธรรม',
+          },
+          news: {
+            ...(existingPageHeroes?.news || {}),
+            eyebrow: 'อัปเดตล่าสุด',
+            title: 'ข่าวสารและประชาสัมพันธ์',
+            subtitle: 'ติดตามความเคลื่อนไหว ประกาศ และข่าวสารล่าสุดจากสภาวัฒนธรรมจังหวัดเชียงราย',
+          },
+          heritage: {
+            ...(existingPageHeroes?.heritage || {}),
+            eyebrow: 'ความรู้และภูมิปัญญา',
+            title: 'คลังมรดกภูมิปัญญาทางวัฒนธรรม',
+            subtitle: 'รวบรวมและสงวนรักษามรดกทางวัฒนธรรม องค์ความรู้ และภูมิปัญญาท้องถิ่นอันทรงคุณค่าของจังหวัดเชียงราย',
+          },
+          districts: {
+            ...(existingPageHeroes?.districts || {}),
+            eyebrow: 'เครือข่ายระดับอำเภอ',
+            title: 'เครือข่ายสภาวัฒนธรรมอำเภอ',
+            subtitle: 'เชื่อมต่อและประสานความร่วมมือกับเครือข่ายสภาวัฒนธรรมครอบคลุมพื้นที่ 18 อำเภอ ในจังหวัดเชียงราย',
+          },
+          contact: {
+            ...(existingPageHeroes?.contact || {}),
+            eyebrow: 'ติดต่อเรา',
+            title: 'ติดต่อสภาวัฒนธรรม',
+            subtitle: 'สอบถามข้อมูล หรือประสานงานเครือข่ายวัฒนธรรมจังหวัดเชียงราย ผ่านช่องทางด้านล่าง',
+          },
+        },
+      })
+    } catch {
+      // Global may already be up to date
+    }
+
+    const [districtStats, activityStats, heritageStats, newsStats, pageHeroesStats] = await Promise.all([
+      payload.find({ collection: 'districts', limit: 1 }),
+      payload.find({ collection: 'activities', limit: 1 }),
+      payload.find({ collection: 'heritage-blog', limit: 1 }),
+      payload.find({ collection: 'news', limit: 1 }),
+      payload.findGlobal({ slug: 'page-heroes' }).catch(() => null),
+    ])
+
+    const verificationChecks = [
+      {
+        name: 'districts',
+        expected: districts.length,
+        actual: districtStats.totalDocs,
+        passed: districtStats.totalDocs >= districts.length,
+      },
+      {
+        name: 'activities',
+        expected: activities.length,
+        actual: activityStats.totalDocs,
+        passed: activityStats.totalDocs >= activities.length,
+      },
+      {
+        name: 'heritage blogs',
+        expected: heritageBlogs.length,
+        actual: heritageStats.totalDocs,
+        passed: heritageStats.totalDocs >= heritageBlogs.length,
+      },
+      {
+        name: 'news',
+        expected: newsItems.length,
+        actual: newsStats.totalDocs,
+        passed: newsStats.totalDocs >= newsItems.length,
+      },
+      {
+        name: 'page heroes',
+        expected: 1,
+        actual: pageHeroesStats ? 1 : 0,
+        passed: Boolean(pageHeroesStats?.home?.title && pageHeroesStats?.districts?.title && pageHeroesStats?.contact?.title),
+      },
+    ]
+
+    const verificationPassed = verificationChecks.every((check) => check.passed)
+
     return NextResponse.json({
       success: true,
       message: '✅ Seed ข้อมูลตัวอย่างทั้งหมดเรียบร้อยแล้ว!',
+      verification: {
+        passed: verificationPassed,
+        checks: verificationChecks,
+      },
       summary: {
         boardPositions: positions.length,
         districtBoardPositions: distPositions.length,

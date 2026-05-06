@@ -1,5 +1,7 @@
 import Link from 'next/link'
-import { getAboutPage } from '@/lib/payload'
+import { getAboutPage, getPageHeroes } from '@/lib/payload'
+import { resolveMediaAlt, resolveMediaUrl, type MediaLike } from '@/lib/media'
+import CmsImage from '@/components/CmsImage'
 
 type MissionItem = { text: string }
 
@@ -20,6 +22,7 @@ const defaults = {
 
 export default async function AboutPage() {
     const aboutData = await getAboutPage().catch(() => null)
+    const pageHeroes = await getPageHeroes().catch(() => null)
 
     // ใช้ข้อมูลจาก CMS ถ้ามี ไม่งั้นใช้ defaults
     const vision = aboutData?.vision || defaults.vision
@@ -32,30 +35,75 @@ export default async function AboutPage() {
     const historyParagraphs = historyText
         ? historyText.split('\n').filter((p: string) => p.trim().length > 0)
         : defaults.historyParagraphs
+    const hero = pageHeroes?.about || {}
+    const heroMedia = hero.heroImage as MediaLike
+    const heroImageUrl = resolveMediaUrl(heroMedia)
+    const heroImageAlt = resolveMediaAlt(heroMedia, (hero.title as string) || 'ภาพพื้นหลังหน้าเกี่ยวกับเรา')
+    const hasHeroImage = Boolean(heroImageUrl)
 
     return (
         <div className="bg-slate-50 min-h-screen font-sans">
-            {/* Elegant Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-slate-50 accent-panel">
-                <div className="absolute inset-0 z-0 bg-lanna-pattern">
-                    <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/15 to-transparent blur-[120px]" />
-                    <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/10 to-transparent blur-[130px]" />
-                </div>
+            {/* Hero Section */}
+            <section className={`relative overflow-hidden ${hasHeroImage ? 'pt-32 pb-24 lg:pt-40 lg:pb-30 accent-panel min-h-[52vh] flex items-end' : 'pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-50 accent-panel'}`}>
+                {hasHeroImage ? (
+                    <>
+                        <div className="absolute inset-0 z-0">
+                            <CmsImage
+                                src={heroImageUrl!}
+                                alt={heroImageAlt}
+                                fill
+                                sizes="100vw"
+                                className="object-cover object-top"
+                                priority
+                            />
+                            <div className="absolute inset-0 bg-linear-to-r from-primary/88 via-primary/70 to-primary/40" />
+                            <div className="absolute inset-0 bg-lanna-pattern opacity-20" />
+                            <div className="absolute top-0 right-[-10%] w-[50%] h-[70%] rounded-full bg-linear-to-bl from-secondary/18 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[60%] rounded-full bg-linear-to-tr from-accent/14 to-transparent blur-[130px]" />
+                        </div>
 
-                <div className="container mx-auto px-4 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6 reveal-soft">
-                        <span className="w-2 h-2 rounded-full bg-accent" />
-                        ข้อมูลองค์กร
-                    </div>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight font-display reveal-soft stagger-1">
-                        เกี่ยวกับเรา
-                    </h1>
-                    <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
-                        ทำความรู้จักสภาวัฒนธรรมจังหวัดเชียงราย องค์กรแกนนำในการขับเคลื่อน อนุรักษ์ และสืบสานมรดกภูมิปัญญาล้านนา
-                    </p>
-                </div>
+                        <div className="container mx-auto max-w-7xl px-4 relative z-20">
+                            <div className="max-w-4xl text-left">
+                                <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium shadow-sm mb-6 bg-white/14 backdrop-blur-md border border-white/20 text-white reveal-soft">
+                                    <span className="w-2 h-2 rounded-full bg-accent" />
+                                    {(hero.eyebrow as string) || 'ข้อมูลองค์กร'}
+                                </div>
 
-                <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-slate-50 to-transparent z-10" />
+                                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight font-display text-white leading-[1.05] drop-shadow-lg reveal-soft stagger-1">
+                                    {(hero.title as string) || 'เกี่ยวกับเรา'}
+                                </h1>
+
+                                <div className="w-24 h-1 rounded-full bg-linear-to-r from-secondary via-accent/60 to-transparent mb-6 reveal-soft stagger-2" />
+
+                                <p className="text-lg md:text-xl max-w-3xl font-light leading-relaxed text-white/82 reveal-soft stagger-2">
+                                    {(hero.subtitle as string) || 'ทำความรู้จักสภาวัฒนธรรมจังหวัดเชียงราย องค์กรแกนนำในการขับเคลื่อน อนุรักษ์ และสืบสานมรดกภูมิปัญญาล้านนา'}
+                                </p>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="absolute inset-0 z-0 bg-lanna-pattern">
+                            <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/15 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/10 to-transparent blur-[130px]" />
+                        </div>
+
+                        <div className="container mx-auto max-w-7xl px-4 relative z-20 text-center">
+                            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6 reveal-soft">
+                                <span className="w-2 h-2 rounded-full bg-accent" />
+                                {(hero.eyebrow as string) || 'ข้อมูลองค์กร'}
+                            </div>
+                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight font-display reveal-soft stagger-1">
+                                {(hero.title as string) || 'เกี่ยวกับเรา'}
+                            </h1>
+                            <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
+                                {(hero.subtitle as string) || 'ทำความรู้จักสภาวัฒนธรรมจังหวัดเชียงราย องค์กรแกนนำในการขับเคลื่อน อนุรักษ์ และสืบสานมรดกภูมิปัญญาล้านนา'}
+                            </p>
+                        </div>
+                    </>
+                )}
+
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-slate-50 to-transparent z-10" />
             </section>
 
             <div className="container mx-auto max-w-5xl px-4 py-20 relative z-20">

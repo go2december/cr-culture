@@ -1,14 +1,22 @@
 import Link from 'next/link'
-import { getDistricts } from '@/lib/payload'
+import { getDistricts, getPageHeroes } from '@/lib/payload'
+import CmsImage from '@/components/CmsImage'
+import { resolveMediaAlt, resolveMediaUrl, type MediaLike } from '@/lib/media'
+import { resolveDistrictMapPoint } from '@/lib/district-map'
+import DistrictMap from '@/components/districts/DistrictMapClient'
 import type { PublicDistrictSummary } from '@/lib/public-organization'
 
 export default async function DistrictsPage() {
+    const pageHeroes = await getPageHeroes().catch(() => null)
     const rawDistricts = await getDistricts() || []
     const typedDistricts = rawDistricts as Array<{
         id: string | number
         name: string
         slug?: string | null
+        code?: string | null
         description?: string | null
+        latitude?: number | null
+        longitude?: number | null
     }>
     
     // Fallback static data just in case db is completely empty
@@ -16,35 +24,74 @@ export default async function DistrictsPage() {
         id: district.id,
         name: district.name,
         slug: district.slug || district.name.toLowerCase().replace(/\s+/g, '-'),
-        description: district.description || 'เครือข่ายศูนย์วัฒนธรรมระดับอำเภอ'
+        code: district.code ?? null,
+        description: district.description || 'เครือข่ายศูนย์วัฒนธรรมระดับอำเภอ',
+        latitude: district.latitude ?? null,
+        longitude: district.longitude ?? null,
     })) : [
-        { id: 'muang-chiang-rai', name: 'เมืองเชียงราย', slug: 'muang-chiang-rai', description: 'ศูนย์กลางจังหวัดเชียงราย' },
-        { id: 'wiang-chai', name: 'เวียงชัย', slug: 'wiang-chai', description: 'อำเภอเวียงชัย' },
+        { id: 'muang-chiang-rai', name: 'เมืองเชียงราย', slug: 'muang-chiang-rai', code: '5701', description: 'ศูนย์กลางจังหวัดเชียงราย' },
+        { id: 'wiang-chai', name: 'เวียงชัย', slug: 'wiang-chai', code: '5710', description: 'อำเภอเวียงชัย' },
     ]
+    const hero = pageHeroes?.districts || {}
+    const heroMedia = hero.heroImage as MediaLike
+    const heroImageUrl = resolveMediaUrl(heroMedia)
+    const heroImageAlt = resolveMediaAlt(heroMedia, (hero.title as string) || 'ภาพพื้นหลังหน้าเครือข่ายอำเภอ')
+    const hasHeroImage = Boolean(heroImageUrl)
+    const mapPoints = districts.map(resolveDistrictMapPoint)
 
     return (
         <div className="bg-slate-50 min-h-screen font-sans">
-            {/* Elegant Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-slate-50 accent-panel">
-                <div className="absolute inset-0 z-0 bg-lanna-pattern">
-                    <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/15 to-transparent blur-[120px]" />
-                    <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/10 to-transparent blur-[130px]" />
-                </div>
+            {/* Hero Section */}
+            <section className={`relative overflow-hidden ${hasHeroImage ? 'pt-32 pb-24 lg:pt-40 lg:pb-30 accent-panel min-h-[52vh] flex items-end' : 'pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-50 accent-panel'}`}>
+                {hasHeroImage ? (
+                    <>
+                        <div className="absolute inset-0 z-0">
+                            <CmsImage src={heroImageUrl!} alt={heroImageAlt} fill sizes="100vw" className="object-cover object-top" priority />
+                            <div className="absolute inset-0 bg-linear-to-r from-primary/88 via-primary/70 to-primary/40" />
+                            <div className="absolute inset-0 bg-lanna-pattern opacity-20" />
+                            <div className="absolute top-0 right-[-10%] w-[50%] h-[70%] rounded-full bg-linear-to-bl from-secondary/18 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[60%] rounded-full bg-linear-to-tr from-accent/14 to-transparent blur-[130px]" />
+                        </div>
 
-                <div className="container mx-auto px-4 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6 reveal-soft">
-                        <span className="w-2 h-2 rounded-full bg-secondary" />
-                        เครือข่ายระดับอำเภอ
-                    </div>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight reveal-soft stagger-1 font-display">
-                        เครือข่ายสภาวัฒนธรรมอำเภอ
-                    </h1>
-                    <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
-                        เชื่อมต่อและประสานความร่วมมือกับเครือข่ายสภาวัฒนธรรมครอบคลุมพื้นที่ 18 อำเภอ ในจังหวัดเชียงราย
-                    </p>
-                </div>
+                        <div className="container mx-auto max-w-7xl px-4 relative z-20">
+                            <div className="max-w-4xl text-left">
+                                <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium shadow-sm mb-6 bg-white/14 backdrop-blur-md border border-white/20 text-white reveal-soft">
+                                    <span className="w-2 h-2 rounded-full bg-secondary" />
+                                    {(hero.eyebrow as string) || 'เครือข่ายระดับอำเภอ'}
+                                </div>
+                                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight font-display text-white leading-[1.05] drop-shadow-lg reveal-soft stagger-1">
+                                    {(hero.title as string) || 'เครือข่ายสภาวัฒนธรรมอำเภอ'}
+                                </h1>
+                                <div className="w-24 h-1 rounded-full bg-linear-to-r from-secondary via-accent/60 to-transparent mb-6 reveal-soft stagger-2" />
+                                <p className="text-lg md:text-xl max-w-3xl font-light leading-relaxed text-white/82 reveal-soft stagger-2">
+                                    {(hero.subtitle as string) || 'เชื่อมต่อและประสานความร่วมมือกับเครือข่ายสภาวัฒนธรรมครอบคลุมพื้นที่ 18 อำเภอ ในจังหวัดเชียงราย'}
+                                </p>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="absolute inset-0 z-0 bg-lanna-pattern">
+                            <div className="absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full bg-linear-to-bl from-secondary/15 to-transparent blur-[120px]" />
+                            <div className="absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full bg-linear-to-tr from-accent/10 to-transparent blur-[130px]" />
+                        </div>
 
-                <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-slate-50 to-transparent z-10" />
+                        <div className="container mx-auto max-w-7xl px-4 relative z-10 text-center">
+                            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-secondary/30 text-sm font-medium text-primary shadow-sm mb-6 reveal-soft">
+                                <span className="w-2 h-2 rounded-full bg-secondary" />
+                                {(hero.eyebrow as string) || 'เครือข่ายระดับอำเภอ'}
+                            </div>
+                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight reveal-soft stagger-1 font-display">
+                                {(hero.title as string) || 'เครือข่ายสภาวัฒนธรรมอำเภอ'}
+                            </h1>
+                            <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
+                                {(hero.subtitle as string) || 'เชื่อมต่อและประสานความร่วมมือกับเครือข่ายสภาวัฒนธรรมครอบคลุมพื้นที่ 18 อำเภอ ในจังหวัดเชียงราย'}
+                            </p>
+                        </div>
+                    </>
+                )}
+
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-slate-50 to-transparent z-10" />
             </section>
 
             {/* Breadcrumb - Subtle & Clean */}
@@ -85,22 +132,16 @@ export default async function DistrictsPage() {
                 </div>
             </section>
 
-            {/* Map Section Placeholder */}
+            {/* Interactive Map */}
             <section className="py-24 px-4 md:px-8 bg-white border-t border-base-200 relative overflow-hidden accent-panel">
                 <div className="absolute inset-0 opacity-[0.02] mask-kanok bg-primary pointer-events-none" />
-                <div className="container mx-auto max-w-5xl text-center relative z-10">
+                <div className="container mx-auto max-w-7xl text-center relative z-10">
                     <div className="text-center mb-12 reveal-soft">
                         <span className="text-accent font-semibold tracking-widest text-sm uppercase mb-3 block">Chiang Rai Map</span>
                         <h2 className="section-header mb-0! text-primary font-display">แผนที่จังหวัดเชียงราย</h2>
                     </div>
 
-                    <div className="bg-slate-50/80 backdrop-blur-md rounded-3xl border border-secondary/20 shadow-inner p-8 md:p-16 aspect-video flex flex-col items-center justify-center relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-size-[40px_40px]" />
-                        <div className="relative z-10 text-center text-primary/40 group-hover:text-secondary-dark transition-colors duration-500">
-                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-6 opacity-70 transition-transform duration-500"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" /><path d="M15 5.764v15" /><path d="M9 3.236v15" /></svg>
-                            <p className="text-lg font-medium font-display">Interactive Map Coming Soon</p>
-                        </div>
-                    </div>
+                    <DistrictMap points={mapPoints} />
                 </div>
             </section>
         </div>

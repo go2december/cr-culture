@@ -34,9 +34,9 @@ const menuItems = [
         href: '/heritage',
         submenu: [
             { label: 'ทั้งหมด', href: '/heritage' },
-            { label: 'มรดกภูมิปัญญา', href: '/heritage?category=1' },
-            { label: 'แหล่งเรียนรู้', href: '/heritage?category=2' },
-            { label: 'ปราชญ์ชาวบ้าน', href: '/heritage?category=3' },
+            { label: 'มรดกภูมิปัญญา', href: '/heritage?category=intangible-heritage' },
+            { label: 'แหล่งเรียนรู้', href: '/heritage?category=learning-resources' },
+            { label: 'ปราชญ์ชาวบ้าน', href: '/heritage?category=local-wisdom' },
             { label: 'ศูนย์เชียงรายศึกษา ↗', href: 'https://social.crru.ac.th/cr-studies-center', external: true },
         ],
     },

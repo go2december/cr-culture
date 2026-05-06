@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getDistrictBySlug, getDistrictMembers, getActivities } from '@/lib/payload'
 import CmsImage from '@/components/CmsImage'
-import type { MediaLike } from '@/lib/media'
 import type { PublicDistrictContact, PublicDistrictMember } from '@/lib/public-organization'
 
 export default async function DistrictDetailPage({
@@ -20,23 +19,7 @@ export default async function DistrictDetailPage({
         return notFound()
     }
 
-    const rawMembers = await getDistrictMembers(String(districtData.id))
-    const typedMembers = rawMembers as unknown as Array<{
-        name: string
-        position?: { title?: string | null } | null
-        positionOrder?: number | null
-        image?: MediaLike
-        phone?: string | null
-        isActive?: boolean | null
-    }>
-    const members: PublicDistrictMember[] = typedMembers.length > 0 ? typedMembers.map((member) => ({
-        name: member.name,
-        position: member.position?.title || 'กรรมการ',
-        order: member.positionOrder || 99,
-        image: member.image,
-        phone: member.phone,
-        isActive: member.isActive
-    })).sort((a, b) => a.order - b.order) : []
+    const members = (await getDistrictMembers(String(districtData.id)) || []).sort((a, b) => a.order - b.order)
 
     const { docs: activities } = await getActivities({ level: 'district', districtId: String(districtData.id), limit: 5 })
 

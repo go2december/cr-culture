@@ -1,11 +1,137 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { cache } from 'react'
+import type { MediaLike } from './media'
+import type { PublicActivity, PublicHeritage, PublicNews, PublicTag } from './public-content'
+import type { PublicBoardMember, PublicDistrictChairman, PublicDistrictMember, PublicDistrictSummary } from './public-organization'
+import {
+  mapActivity,
+  mapBoardMember,
+  mapDistrictChairman,
+  mapDistrictMember,
+  mapDistrictSummary,
+  mapHeritage,
+  mapNews,
+  mapTag,
+  type RawActivity,
+  type RawBoardMember,
+  type RawDistrictMember,
+  type RawDistrictSummary,
+  type RawHeritage,
+  type RawNews,
+  type RawTag,
+} from './payload-mappers'
 
-// ดึงอินสแตนซ์ของ Payload API (Singleton Pattern สำหร้บเรียกใช้หลายที่)
+// ดึงอินสแตนซ์ของ Payload API (Singleton Pattern สำหรับเรียกใช้หลายที่)
 export const getPayloadClient = cache(async () => {
   return await getPayload({ config })
 })
+
+type FindResponse<T> = {
+  docs: T[]
+  totalDocs?: number
+  totalPages?: number
+  page?: number
+  hasNextPage?: boolean
+  hasPrevPage?: boolean
+  nextPage?: number | null
+  prevPage?: number | null
+}
+
+type QueryWhere = Record<string, unknown>
+
+type CollectionSlug = 'provincial-board' | 'districts' | 'district-members' | 'activities' | 'heritage-blog' | 'tags' | 'news'
+
+type GlobalSlug = 'about-page' | 'page-heroes'
+
+export interface PublicAboutPage {
+  vision?: string | null
+  missions?: Array<{ text?: string | null }>
+  historyPlain?: string | null
+}
+
+export interface PageHeroContent {
+  eyebrow?: string | null
+  title?: string | null
+  subtitle?: string | null
+  heroImage?: MediaLike
+}
+
+export interface PageHeroesGlobal {
+  home?: PageHeroContent
+  activities?: PageHeroContent
+  activitiesCalendar?: PageHeroContent
+  about?: PageHeroContent
+  aboutBoard?: PageHeroContent
+  news?: PageHeroContent
+  heritage?: PageHeroContent
+  districts?: PageHeroContent
+  contact?: PageHeroContent
+}
+
+const mergeWhere = (...parts: Array<QueryWhere | undefined>) => {
+  const merged = Object.assign({}, ...parts.filter(Boolean))
+  return Object.keys(merged).length > 0 ? merged : undefined
+}
+
+async function findDocs<T>(collection: CollectionSlug, options: {
+  where?: QueryWhere
+  limit?: number
+  page?: number
+  sort?: string
+  depth?: number
+} = {}): Promise<FindResponse<T>> {
+  const payload = await getPayloadClient()
+  const response = await payload.find({
+    collection,
+    ...(options.where ? { where: options.where } : {}),
+    ...(options.limit !== undefined ? { limit: options.limit } : {}),
+    ...(options.page !== undefined ? { page: options.page } : {}),
+    ...(options.sort ? { sort: options.sort } : {}),
+    ...(options.depth !== undefined ? { depth: options.depth } : {}),
+  } as any)
+
+  return response as unknown as FindResponse<T>
+}
+
+async function findOne<T>(collection: CollectionSlug, where: QueryWhere, depth = 0): Promise<T | null> {
+  const response = await findDocs<T>(collection, {
+    where,
+    limit: 1,
+    depth,
+  })
+
+  return response.docs[0] || null
+}
+
+async function findMappedDocs<Raw, Public>(collection: CollectionSlug, options: {
+  where?: QueryWhere
+  limit?: number
+  page?: number
+  sort?: string
+  depth?: number
+} = {}, mapDoc: (doc: Raw) => Public): Promise<FindResponse<Public>> {
+  const response = await findDocs<Raw>(collection, options)
+
+  return {
+    ...response,
+    docs: response.docs.map(mapDoc),
+  }
+}
+
+async function findMappedOne<Raw, Public>(collection: CollectionSlug, where: QueryWhere, depth: number, mapDoc: (doc: Raw) => Public): Promise<Public | null> {
+  const response = await findOne<Raw>(collection, where, depth)
+
+  return response ? mapDoc(response) : null
+}
+
+async function findGlobal<T>(slug: GlobalSlug, depth = 0): Promise<T> {
+  const payload = await getPayloadClient()
+  return await payload.findGlobal({
+    slug,
+    depth,
+  }) as T
+}
 
 // === Utility Data Fetching Functions ===
 
@@ -13,106 +139,79 @@ export const getPayloadClient = cache(async () => {
  * ดึงข้อมูลสมาชิกสภาวัฒนธรรมจังหวัด (Provincial Board) ทั้งหมด
  */
 export const getProvincialBoard = cache(async () => {
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'provincial-board', // ใช้ชื่อ collection ให้ตรงกับ payload-types.ts หรือในไฟล์ Collection นิยามเอาไว้
+  const response = await findMappedDocs<RawBoardMember, PublicBoardMember>('provincial-board', {
     limit: 100,
-    sort: 'order', // เรียงตามลำดับความสำคัญ
-  })
-  return docs
+    sort: 'order',
+    depth: 2,
+  }, mapBoardMember)
+  return response.docs
 })
 
 /**
  * ดึงข้อมูลรายชื่อทั้ง 18 อำเภอ (Districts)
  */
 export const getDistricts = cache(async () => {
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'districts',
+  const response = await findMappedDocs<RawDistrictSummary, PublicDistrictSummary>('districts', {
     limit: 100,
     sort: 'order',
-  })
-  return docs
+    depth: 1,
+  }, mapDistrictSummary)
+  return response.docs
 })
 
 /**
  * ดึงข้อมูลอำเภอแบบเจาะจงด้วย slug
  */
 export const getDistrictBySlug = cache(async (slug: string) => {
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'districts',
-    where: {
-      slug: {
-        equals: slug,
-      },
+  return await findMappedOne<RawDistrictSummary, PublicDistrictSummary>('districts', {
+    slug: {
+      equals: slug,
     },
-    limit: 1,
-  })
-  return docs[0] || null
+  }, 1, mapDistrictSummary)
 })
 
 /**
  * ดึงกรรมการชุดอำเภอแบบเจาะจงอำเภอ
  */
 export const getDistrictMembers = cache(async (districtId: string) => {
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'district-members',
+  const response = await findMappedDocs<RawDistrictMember, PublicDistrictMember>('district-members', {
     where: {
       district: {
         equals: districtId,
       },
     },
     limit: 100,
-    sort: 'order', // ถ้าไม่มีจะเรียงตาม id / createdAt
-  })
-  return docs
+    sort: 'order',
+    depth: 2,
+  }, mapDistrictMember)
+  return response.docs
 })
 
 /**
  * ดึงกิจกรรมทั้งหมด (สามารถกรองตามระดับจังหวัด/อำเภอได้)
  */
 export const getActivities = cache(async (options?: { level?: 'province' | 'district', districtId?: string, limit?: number, page?: number }) => {
-  const payload = await getPayloadClient()
-
-  // สร้างเงื่อนไข Where แบบ Dynamic
-  const where: any = {}
-  if (options?.level) {
-    where.level = { equals: options.level }
-  }
-  if (options?.districtId) {
-    where.district = { equals: options.districtId }
-  }
-
-  const response = await payload.find({
-    collection: 'activities',
-    where: Object.keys(where).length > 0 ? where : undefined,
+  return await findMappedDocs<RawActivity, PublicActivity>('activities', {
+    where: mergeWhere(
+      options?.level ? { level: { equals: options.level } } : undefined,
+      options?.districtId ? { district: { equals: options.districtId } } : undefined,
+    ),
     limit: options?.limit || 6,
     page: options?.page || 1,
-    sort: '-date', // เรียงจากล่าสุดไปเก่าสุด
-    depth: 1, // ดึงข้อมูลลึก 1 ระดับเผื่อมีไฟล์รูปหรือ District แนบมาด้วย
-  })
-
-  return response
+    sort: '-date',
+    depth: 1,
+  }, mapActivity)
 })
 
 /**
  * ดึงกิจกรรมจาก slug
  */
 export const getActivityBySlug = cache(async (slug: string) => {
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'activities',
-    where: {
-      slug: {
-        equals: slug,
-      },
+  return await findMappedOne<RawActivity, PublicActivity>('activities', {
+    slug: {
+      equals: slug,
     },
-    limit: 1,
-    depth: 1,
-  })
-  return docs[0] || null
+  }, 1, mapActivity)
 })
 
 /**
@@ -121,52 +220,39 @@ export const getActivityBySlug = cache(async (slug: string) => {
 export const getHeritageBlogs = cache(async (options?: {
   category?: string,
   tagSlug?: string,
-  search?: string,      // NEW: Search keyword
+  search?: string,
   limit?: number,
   page?: number
 }) => {
-  const payload = await getPayloadClient()
+  let tagId: string | null = null
 
-  const where: any = {}
-  if (options?.category) {
-    where.category = { equals: options.category }
-  }
-
-  // กรองตาม tag (ต้องหา tag ID จาก slug ก่อน)
   if (options?.tagSlug) {
-    const tag = await payload.find({
-      collection: 'tags',
-      where: {
-        slug: {
-          equals: options.tagSlug,
-        },
+    const tag = await findMappedOne<RawTag, PublicTag>('tags', {
+      slug: {
+        equals: options.tagSlug,
       },
-      limit: 1,
-    })
+    }, 0, mapTag)
 
-    if (tag.docs.length > 0) {
-      where.tags = {
-        equals: tag.docs[0].id,
-      }
-    }
+    tagId = tag ? String(tag.id) : null
   }
 
-  const response = await payload.find({
-    collection: 'heritage-blog',
-    where: Object.keys(where).length > 0 ? where : undefined,
+  const response = await findMappedDocs<RawHeritage, PublicHeritage>('heritage-blog', {
+    where: mergeWhere(
+      options?.category ? { category: { equals: options.category } } : undefined,
+      tagId ? { tags: { equals: tagId } } : undefined,
+    ),
     limit: options?.limit || 12,
     page: options?.page || 1,
-    sort: '-createdAt', // บทความใหม่ล่าสุดขึ้นก่อน
+    sort: '-createdAt',
     depth: 1,
-  })
+  }, mapHeritage)
 
-  // Post-filtering สำหรับ search (ค้นหาใน title + excerpt)
   if (options?.search) {
     const searchKeyword = options.search.toLowerCase().trim()
-    response.docs = response.docs.filter((doc: any) => {
+    response.docs = response.docs.filter((doc) => {
       const title = doc.title?.toLowerCase() || ''
       const excerpt = doc.excerpt?.toLowerCase() || ''
-      const content = JSON.stringify(doc.content || '').toLowerCase()
+      const content = JSON.stringify((doc as { content?: unknown }).content || '').toLowerCase()
       return title.includes(searchKeyword) || excerpt.includes(searchKeyword) || content.includes(searchKeyword)
     })
     response.totalDocs = response.docs.length
@@ -179,111 +265,76 @@ export const getHeritageBlogs = cache(async (options?: {
  * ดึงแท็กทั้งหมด
  */
 export const getTags = cache(async () => {
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'tags',
+  const response = await findMappedDocs<RawTag, PublicTag>('tags', {
     limit: 100,
     sort: 'name',
-  })
-  return docs
+  }, mapTag)
+  return response.docs
 })
 
 /**
  * ดึงบทความเดียวเจาะจง
  */
 export const getHeritageBlogBySlug = cache(async (slug: string) => {
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'heritage-blog',
-    where: {
-      slug: {
-        equals: slug,
-      },
+  return await findMappedOne<RawHeritage, PublicHeritage>('heritage-blog', {
+    slug: {
+      equals: slug,
     },
-    limit: 1,
-    depth: 1,
-  })
-  return docs[0] || null
+  }, 1, mapHeritage)
 })
 
 /**
  * ดึงข่าวสาร
  */
 export const getNews = cache(async (options?: { type?: string, limit?: number, page?: number }) => {
-  const payload = await getPayloadClient()
-
-  const where: any = {}
-  if (options?.type) {
-    where.type = { equals: options.type }
-  }
-
-  const response = await payload.find({
-    collection: 'news',
-    where: Object.keys(where).length > 0 ? where : undefined,
+  return await findMappedDocs<RawNews, PublicNews>('news', {
+    where: mergeWhere(
+      options?.type ? { type: { equals: options.type } } : undefined,
+    ),
     limit: options?.limit || 12,
     page: options?.page || 1,
-    sort: '-date', // ข่าวล่าสุดขึ้นก่อน
+    sort: '-date',
     depth: 1,
-  })
-
-  return response
+  }, mapNews)
 })
 
 /**
  * ดึงข่าวสารเจาะจง
  */
 export const getNewsBySlug = cache(async (slug: string) => {
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'news',
-    where: {
-      slug: {
-        equals: slug,
-      },
+  return await findMappedOne<RawNews, PublicNews>('news', {
+    slug: {
+      equals: slug,
     },
-    limit: 1,
-    depth: 1,
-  })
-  return docs[0] || null
+  }, 1, mapNews)
 })
 
 /**
  * ดึงข้อมูลหน้าเกี่ยวกับเรา (Global)
  */
 export const getAboutPage = cache(async () => {
-  const payload = await getPayloadClient()
-  const data = await payload.findGlobal({
-    slug: 'about-page',
-  })
-  return data
+  return await findGlobal<PublicAboutPage>('about-page')
 })
 
 /**
  * ดึงค่าตั้งค่า hero ของหน้าเว็บหลัก
  */
 export const getPageHeroes = cache(async () => {
-  const payload = await getPayloadClient()
-  const data = await payload.findGlobal({
-    slug: 'page-heroes',
-    depth: 1,
-  })
-  return data
+  return await findGlobal<PageHeroesGlobal>('page-heroes', 1)
 })
 
 /**
  * ดึงประธานสภาวัฒนธรรมของแต่ละอำเภอ (positionOrder = 1 หรือ order ต่ำสุด)
  */
 export const getDistrictChairmen = cache(async () => {
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'district-members',
+  const response = await findMappedDocs<RawDistrictMember, PublicDistrictChairman>('district-members', {
     where: {
       positionOrder: { equals: 1 },
     },
     limit: 100,
     sort: 'positionOrder',
-    depth: 2, // ดึง district + position ลึก 2 ระดับ
-  })
-  return docs
+    depth: 2,
+  }, mapDistrictChairman)
+  return response.docs
 })
 

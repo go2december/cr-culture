@@ -38,13 +38,18 @@ cp .env.example .env
 docker compose up -d
 ```
 
-4. Or run locally:
+4. Start the production runtime parity stack:
+```bash
+docker compose --profile prod up -d app-prod
+```
+
+5. Or run locally:
 ```bash
 npm install
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000)
+6. Open [http://localhost:3000](http://localhost:3000)
 
 ## 📂 Project Structure
 

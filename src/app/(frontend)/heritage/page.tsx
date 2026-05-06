@@ -62,7 +62,7 @@ export default async function HeritagePage({
                                 className="object-cover object-top"
                                 priority
                             />
-                            <div className="absolute inset-0 bg-linear-to-r from-primary/88 via-primary/70 to-primary/42" />
+                            <div className="absolute inset-0 bg-linear-to-r from-primary/88 via-primary/70 to-primary/40" />
                             <div className="absolute inset-0 bg-lanna-pattern opacity-20" />
                             <div className="absolute top-0 right-[-10%] w-[50%] h-[70%] rounded-full bg-linear-to-bl from-secondary/18 to-transparent blur-[120px]" />
                             <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[60%] rounded-full bg-linear-to-tr from-accent/14 to-transparent blur-[130px]" />

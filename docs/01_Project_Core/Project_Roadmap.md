@@ -12,7 +12,7 @@
 
 ## Current Roadmap Position
 - โครงสร้างหลักของระบบเสร็จแล้ว
-- งานปัจจุบันอยู่ที่ content integration, typed data-layer cleanup, และ production readiness
+- งานปัจจุบันอยู่ที่ content integration, post-import verification, และ follow-up tuning จากข้อมูลจริง
 - งานเชิง execution รายวันให้ดูใน `Site_Map_and_Workflow.md`
 
 ## Completed Foundations
@@ -30,19 +30,18 @@
 - Public pages หลักสร้างครบ
 - Theme Modern Lanna และ utility classes พร้อมใช้
 - Navbar / Footer / Admin branding พร้อม
-- Shared media resolution, public-facing content typing, and current background-header visual language ถูกใช้กับหน้าหลักส่วนใหญ่แล้ว
+- Shared media resolution, public-facing content typing, current background-header visual language, and typed public model mapping ถูกใช้กับหน้าหลักส่วนใหญ่แล้ว
 
 ## Milestone Priorities
 ### Logic & Content Integration
 - Import ข้อมูลจริงของกรรมการ กิจกรรม บทความ และข่าว
-- ลดความหนาแน่นของ query logic ใน `src/lib/payload.ts` และค่อยๆ ย้ายไปสู่ typed public model mapping
 - เพิ่มการตรวจสอบ flow สำคัญหลังลงข้อมูลจริง
+- ทวนข้อมูลที่ import เข้ามาแล้วและเติมความครบถ้วนของ content ตาม feature specs
 
 ### Production Readiness
-- ปิด health check และ Docker optimization
-- ทวน deployment configuration และ host/runtime parity
 - ติดตาม performance หลังข้อมูลจริงเพิ่มขึ้น
 - รักษา admin/runtime compatibility ให้เสถียรกับ Next.js + Turbopack
+- ปรับ deployment/runtime notes เฉพาะเมื่อมี gap ใหม่จากการใช้งานจริง
 
 ## How to Use This File
 - ใช้ไฟล์นี้เมื่ออยากรู้ภาพรวม roadmap และ milestone ระดับโปรเจกต์

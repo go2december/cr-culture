@@ -23,16 +23,11 @@ export default async function Home() {
     const featuredNews = publicNews[0]
     const homeHeroImageUrl = resolveMediaUrl(homeHeroMedia)
     const homeHeroImageAlt = resolveMediaAlt(homeHeroMedia, homeHero.title || 'ภาพพื้นหลังหน้าหลัก')
-    const liveStats = [
-        { label: 'เครือข่ายอำเภอ', value: String(publicDistricts.length), hint: 'เชื่อมโยงชุมชนทั่วจังหวัด' },
-        { label: 'กิจกรรมล่าสุด', value: String(publicActivities.length), hint: 'เรื่องราวที่กำลังเกิดขึ้น' },
-        { label: 'ข่าวสารล่าสุด', value: String(publicNews.length), hint: 'ประกาศและความเคลื่อนไหว' },
-    ]
 
     return (
         <div className="overflow-hidden bg-base-100 font-sans">
             {/* Majestic Hero Section with Background Header */}
-            <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-stone-50">
+            <section className="relative overflow-hidden min-h-screen flex items-center accent-panel">
                 {homeHeroImageUrl && (
                     <div className="absolute inset-0 z-0">
                         <CmsImage
@@ -40,28 +35,22 @@ export default async function Home() {
                             alt={homeHeroImageAlt}
                             fill
                             sizes="100vw"
-                            className="object-cover object-center"
+                            className="object-cover object-top"
                             priority
                         />
                     </div>
                 )}
 
-                <div className={`absolute inset-0 z-0 ${homeHeroImageUrl ? 'bg-linear-to-r from-primary/90 via-primary/72 to-primary/44' : 'bg-linear-to-br from-stone-50 via-white to-stone-100'}`} />
+                <div className={`absolute inset-0 z-0 ${homeHeroImageUrl ? 'bg-linear-to-r from-primary/88 via-primary/70 to-primary/40' : 'bg-linear-to-br from-stone-50 via-white to-stone-100'}`} />
+                <div className={`absolute inset-0 z-0 ${homeHeroImageUrl ? 'bg-lanna-pattern opacity-20' : 'bg-lanna-pattern opacity-8'}`} />
+                {homeHeroImageUrl && (
+                    <>
+                        <div className="absolute top-0 right-[-10%] w-[50%] h-[70%] rounded-full bg-linear-to-bl from-secondary/18 to-transparent blur-[120px]" />
+                        <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[60%] rounded-full bg-linear-to-tr from-accent/14 to-transparent blur-[130px]" />
+                    </>
+                )}
 
-                <div
-                    className={`absolute inset-0 z-0 pointer-events-none ${homeHeroImageUrl ? 'opacity-[0.12]' : 'opacity-[0.08]'}`}
-                    style={{
-                        backgroundImage: `linear-gradient(45deg, #A03C3C 25%, transparent 25%, transparent 75%, #A03C3C 75%, #A03C3C),
-                                          linear-gradient(135deg, #A03C3C 25%, transparent 25%, transparent 75%, #A03C3C 75%, #A03C3C)`,
-                        backgroundSize: '40px 40px',
-                        backgroundPosition: '0 0, 20px 0'
-                    }}
-                />
-
-                <div className={`absolute top-0 right-[-10%] w-[60%] h-[70%] rounded-full blur-[120px] ${homeHeroImageUrl ? 'bg-linear-to-bl from-secondary/20 to-transparent' : 'bg-linear-to-bl from-red-900/10 to-transparent'}`} />
-                <div className={`absolute bottom-[-20%] left-[-10%] w-[70%] h-[60%] rounded-full blur-[130px] ${homeHeroImageUrl ? 'bg-linear-to-tr from-accent/18 to-transparent' : 'bg-linear-to-tr from-secondary/5 to-transparent'}`} />
-
-                <div className="container mx-auto px-4 z-10 pt-32 pb-24 flex flex-col items-center">
+                <div className="container mx-auto px-4 relative z-10 pt-32 pb-24 lg:pt-40 lg:pb-30 flex flex-col items-center">
                     <div className="grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] w-full max-w-7xl">
                         <div className="max-w-3xl mx-auto lg:mx-0 text-center lg:text-left">
                             <div className={`inline-flex items-center gap-3 px-6 py-2.5 rounded-full backdrop-blur-md text-sm font-medium shadow-sm mb-10 uppercase tracking-widest ${homeHeroImageUrl ? 'bg-white/14 border border-white/20 text-white' : 'bg-white/60 border border-red-900/10 text-stone-700'}`}>
@@ -89,15 +78,6 @@ export default async function Home() {
                                 </Link>
                             </div>
 
-                            <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                {liveStats.map((stat) => (
-                                    <div key={stat.label} className={`rounded-2xl p-4 shadow-sm text-left backdrop-blur-sm ${homeHeroImageUrl ? 'border border-white/20 bg-white/12' : 'border border-white/70 bg-white/75'}`}>
-                                        <div className={`text-3xl font-bold leading-none ${homeHeroImageUrl ? 'text-white' : 'text-primary'}`}>{stat.value}</div>
-                                        <div className={`text-sm font-semibold mt-2 ${homeHeroImageUrl ? 'text-white/90' : 'text-stone-700'}`}>{stat.label}</div>
-                                        <div className={`text-xs mt-1 leading-relaxed ${homeHeroImageUrl ? 'text-white/70' : 'text-stone-500'}`}>{stat.hint}</div>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
 
                         <div className="relative w-full max-w-2xl mx-auto lg:mx-0">
@@ -148,7 +128,7 @@ export default async function Home() {
                 </div>
 
                 {/* Elegant Bottom Edge Curve or Gradient */}
-                <div className="absolute bottom-0 left-0 right-0 h-48 bg-linear-to-t from-white to-transparent z-10 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 right-0 h-24 z-10 bg-linear-to-t from-white to-transparent pointer-events-none" />
             </section>
 
             {/* Cultural Heritage Highlights */}

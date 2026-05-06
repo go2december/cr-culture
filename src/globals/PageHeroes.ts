@@ -12,6 +12,36 @@ const defaultActivities = {
     subtitle: 'รวมข่าวสารกิจกรรมและงานประเพณีท้องถิ่นที่จัดโดยสภาวัฒนธรรมจังหวัดเชียงรายและเครือข่ายระดับอำเภอ',
 }
 
+const defaultActivitiesCalendar = {
+    eyebrow: 'ปฏิทินกิจกรรม',
+    title: 'ปฏิทินกิจกรรมสภาวัฒนธรรมจังหวัดเชียงราย',
+    subtitle: 'ติดตามกิจกรรมและงานประเพณีท้องถิ่นล่วงหน้า',
+}
+
+const defaultAbout = {
+    eyebrow: 'ข้อมูลองค์กร',
+    title: 'เกี่ยวกับเรา',
+    subtitle: 'ทำความรู้จักสภาวัฒนธรรมจังหวัดเชียงราย องค์กรแกนนำในการขับเคลื่อน อนุรักษ์ และสืบสานมรดกภูมิปัญญาล้านนา',
+}
+
+const defaultAboutBoard = {
+    eyebrow: 'บุคลากร',
+    title: 'คณะกรรมการจังหวัด',
+    subtitle: 'ทำเนียบคณะบริหารและกรรมการสภาวัฒนธรรมจังหวัดเชียงราย ผู้นำในการขับเคลื่อนงานด้านวัฒนธรรม',
+}
+
+const defaultDistricts = {
+    eyebrow: 'เครือข่ายระดับอำเภอ',
+    title: 'เครือข่ายสภาวัฒนธรรมอำเภอ',
+    subtitle: 'เชื่อมต่อและประสานความร่วมมือกับเครือข่ายสภาวัฒนธรรมครอบคลุมพื้นที่ 18 อำเภอ ในจังหวัดเชียงราย',
+}
+
+const defaultContact = {
+    eyebrow: 'ติดต่อเรา',
+    title: 'ติดต่อสภาวัฒนธรรม',
+    subtitle: 'สอบถามข้อมูล หรือประสานงานเครือข่ายวัฒนธรรมจังหวัดเชียงราย ผ่านช่องทางด้านล่าง',
+}
+
 const defaultNews = {
     eyebrow: 'อัปเดตล่าสุด',
     title: 'ข่าวสารและประชาสัมพันธ์',
@@ -43,8 +73,13 @@ const cleanupReplacedHeroUploads = async ({ doc, originalDoc, req }: any) => {
     const heroPaths = [
         ['home', 'heroImage'],
         ['activities', 'heroImage'],
+        ['activitiesCalendar', 'heroImage'],
+        ['about', 'heroImage'],
+        ['aboutBoard', 'heroImage'],
         ['news', 'heroImage'],
         ['heritage', 'heroImage'],
+        ['districts', 'heroImage'],
+        ['contact', 'heroImage'],
     ]
 
     const nextIds = new Set(
@@ -77,7 +112,7 @@ const cleanupReplacedHeroUploads = async ({ doc, originalDoc, req }: any) => {
 
 export const PageHeroes: GlobalConfig = {
     slug: 'page-heroes',
-    label: 'Hero Images',
+    label: 'ภาพประกอบส่วนหัว',
     admin: {
         group: 'เนื้อหาเว็บไซต์',
         description: 'จัดการรูปและข้อความ hero ของหน้าแรก กิจกรรม ข่าว และมรดกภูมิปัญญา',
@@ -155,6 +190,108 @@ export const PageHeroes: GlobalConfig = {
             ],
         },
         {
+            name: 'activitiesCalendar',
+            type: 'group',
+            label: 'หน้าปฏิทินกิจกรรม',
+            fields: [
+                {
+                    name: 'eyebrow',
+                    type: 'text',
+                    label: 'ป้ายกำกับ',
+                    defaultValue: defaultActivitiesCalendar.eyebrow,
+                },
+                {
+                    name: 'title',
+                    type: 'text',
+                    label: 'หัวเรื่อง',
+                    defaultValue: defaultActivitiesCalendar.title,
+                },
+                {
+                    name: 'subtitle',
+                    type: 'textarea',
+                    label: 'คำอธิบาย',
+                    defaultValue: defaultActivitiesCalendar.subtitle,
+                },
+                {
+                    name: 'heroImage',
+                    type: 'upload',
+                    relationTo: 'media',
+                    label: 'รูปภาพ hero',
+                    admin: {
+                        description: 'ใช้แสดงใน hero ของหน้าปฏิทินกิจกรรม',
+                    },
+                },
+            ],
+        },
+        {
+            name: 'about',
+            type: 'group',
+            label: 'หน้าเกี่ยวกับเรา',
+            fields: [
+                {
+                    name: 'eyebrow',
+                    type: 'text',
+                    label: 'ป้ายกำกับ',
+                    defaultValue: defaultAbout.eyebrow,
+                },
+                {
+                    name: 'title',
+                    type: 'text',
+                    label: 'หัวเรื่อง',
+                    defaultValue: defaultAbout.title,
+                },
+                {
+                    name: 'subtitle',
+                    type: 'textarea',
+                    label: 'คำอธิบาย',
+                    defaultValue: defaultAbout.subtitle,
+                },
+                {
+                    name: 'heroImage',
+                    type: 'upload',
+                    relationTo: 'media',
+                    label: 'รูปภาพ hero',
+                    admin: {
+                        description: 'ใช้แสดงใน hero ของหน้าเกี่ยวกับเรา',
+                    },
+                },
+            ],
+        },
+        {
+            name: 'aboutBoard',
+            type: 'group',
+            label: 'หน้าคณะกรรมการจังหวัด',
+            fields: [
+                {
+                    name: 'eyebrow',
+                    type: 'text',
+                    label: 'ป้ายกำกับ',
+                    defaultValue: defaultAboutBoard.eyebrow,
+                },
+                {
+                    name: 'title',
+                    type: 'text',
+                    label: 'หัวเรื่อง',
+                    defaultValue: defaultAboutBoard.title,
+                },
+                {
+                    name: 'subtitle',
+                    type: 'textarea',
+                    label: 'คำอธิบาย',
+                    defaultValue: defaultAboutBoard.subtitle,
+                },
+                {
+                    name: 'heroImage',
+                    type: 'upload',
+                    relationTo: 'media',
+                    label: 'รูปภาพ hero',
+                    admin: {
+                        description: 'ใช้แสดงใน hero ของหน้าคณะกรรมการจังหวัด',
+                    },
+                },
+            ],
+        },
+        {
             name: 'news',
             type: 'group',
             label: 'หน้าข่าวสาร',
@@ -184,6 +321,74 @@ export const PageHeroes: GlobalConfig = {
                     label: 'รูปภาพ hero',
                     admin: {
                         description: 'ใช้แสดงใน hero ของหน้าข่าวสาร',
+                    },
+                },
+            ],
+        },
+        {
+            name: 'districts',
+            type: 'group',
+            label: 'หน้าเครือข่ายอำเภอ',
+            fields: [
+                {
+                    name: 'eyebrow',
+                    type: 'text',
+                    label: 'ป้ายกำกับ',
+                    defaultValue: defaultDistricts.eyebrow,
+                },
+                {
+                    name: 'title',
+                    type: 'text',
+                    label: 'หัวเรื่อง',
+                    defaultValue: defaultDistricts.title,
+                },
+                {
+                    name: 'subtitle',
+                    type: 'textarea',
+                    label: 'คำอธิบาย',
+                    defaultValue: defaultDistricts.subtitle,
+                },
+                {
+                    name: 'heroImage',
+                    type: 'upload',
+                    relationTo: 'media',
+                    label: 'รูปภาพ hero',
+                    admin: {
+                        description: 'ใช้แสดงใน hero ของหน้าเครือข่ายอำเภอ',
+                    },
+                },
+            ],
+        },
+        {
+            name: 'contact',
+            type: 'group',
+            label: 'หน้าติดต่อเรา',
+            fields: [
+                {
+                    name: 'eyebrow',
+                    type: 'text',
+                    label: 'ป้ายกำกับ',
+                    defaultValue: defaultContact.eyebrow,
+                },
+                {
+                    name: 'title',
+                    type: 'text',
+                    label: 'หัวเรื่อง',
+                    defaultValue: defaultContact.title,
+                },
+                {
+                    name: 'subtitle',
+                    type: 'textarea',
+                    label: 'คำอธิบาย',
+                    defaultValue: defaultContact.subtitle,
+                },
+                {
+                    name: 'heroImage',
+                    type: 'upload',
+                    relationTo: 'media',
+                    label: 'รูปภาพ hero',
+                    admin: {
+                        description: 'ใช้แสดงใน hero ของหน้าติดต่อเรา',
                     },
                 },
             ],

@@ -1,27 +1,30 @@
 ## สถานะปัจจุบัน (อัปเดตทุกครั้งที่หยุดพัฒนา)
 
 ไฟล์นี้เป็นสรุปสถานะสั้นแบบ canonical เพื่อลดข้อมูลซ้ำในโปรเจกต์
-อัปเดตล่าสุด: 4 พฤษภาคม 2569
+อัปเดตล่าสุด: 6 พฤษภาคม 2569
 
 ## 📌 Project Status
 
 ## Current Focus
 - Real content import ชุดแรกสำหรับ board, activities, heritage, และ news
-- ลด query concentration ใน `src/lib/payload.ts` และค่อยๆ ให้ data layer คืนค่า typed public models มากขึ้น
-- ปิด production readiness ที่เหลือ เช่น health check, Docker optimization, และ runtime parity
+- เพิ่ม verification หลัง import ให้ครอบคลุม flow สำคัญ
+- ติดตาม performance และ maintenance หลังข้อมูลจริงเริ่มเข้า
+- รักษา workflow/state docs ให้ตรงกับสถานะจริงหลังเพิ่ม `page-heroes` global, interactive district map, typed public model mapping, และ Docker/runtime parity
 
 ## Current Snapshot
 - โครงสร้างหลักของระบบ, CMS schema, public pages, และ admin ใช้งานได้แล้ว
-- Frontend audit, performance hardening, media handling hardening, และ production build verification ผ่านแล้ว
-- Shared public content/organization types ถูกเพิ่มและเก็บ `any` หลักๆ ในหน้า public แล้ว
+- Frontend audit, performance hardening, media handling hardening, production build verification, typed public model mapping, และ Docker/runtime parity validation ผ่านแล้ว
+- Shared public content/organization types ถูกเพิ่ม และ data layer ถูก refactor ให้คืนค่ารูปแบบ public model ชัดขึ้นแล้ว
 - Header direction ของหน้า home/list/content หลักถูกปรับให้อยู่ใน visual language เดียวกันมากขึ้น
-- จุดที่ยังต้องตามต่อหลักๆ คือ content import, typed data-layer cleanup, และ production hardening
+- หน้า districts ใช้แผนที่แบบ interactive และ page hero content ถูก centralize ไว้ที่ global เดียว
+- API health endpoint และ Docker healthchecks พร้อมใช้งานแล้ว
+- จุดที่ยังต้องตามต่อหลักๆ คือ content import, verification หลัง import, และ follow-up tuning จากข้อมูลจริง
 
 ## Next Steps
 - ลงข้อมูลจริงตาม feature specs
-- refactor data-fetch layer ให้ type ชัดขึ้นและกระจาย responsibility ออกจาก `src/lib/payload.ts`
-- ปิด gap ฝั่ง deployment/runtime
 - เพิ่ม verification ให้ flow สำคัญหลัง import ข้อมูล
+- ปรับจูน performance และ admin/runtime maintenance ตามข้อมูลจริง
+- อัปเดต workflow/task docs เมื่อ milestone หรือ scope เปลี่ยน
 
 ## เอกสารอ้างอิงหลัก
 - กฎและสถาปัตยกรรม: `.windsurfrules`

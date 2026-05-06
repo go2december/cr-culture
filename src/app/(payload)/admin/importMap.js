@@ -76,4 +76,6 @@ export const importMap = {
   "@/components/admin/Logo#Logo": Logo_a44df17d0fc3dcd873dae43dc3bf66bd,
   "@payloadcms/next/rsc#CollectionCards":
     CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
+  "@payloadcms/ui/rsc#CollectionCards":
+    CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
 };
