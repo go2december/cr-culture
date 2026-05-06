@@ -25,7 +25,7 @@ export const BoardPositions: CollectionConfig = {
             label: 'ระดับความสำคัญ (1 คือสูงสุด)',
             defaultValue: 99,
             admin: {
-                description: 'ใช้สำหรับเรียงลำดับการแสดงผล เช่น ประธาน = 1, รองประธาน = 2',
+                description: 'ใช้สำหรับเรียงลำดับการแสดงผล เช่น ประธาน = 1, รองประธาน = 2, เลขานุการ = 5',
             },
         },
     ],

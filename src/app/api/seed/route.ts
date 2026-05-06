@@ -15,9 +15,9 @@ export async function GET() {
       { title: 'รองประธาน คนที่ 2', level: 2 },
       { title: 'รองประธาน คนที่ 3', level: 2 },
       { title: 'รองประธาน คนที่ 4', level: 2 },
-      { title: 'กรรมการ', level: 3 },
-      { title: 'เลขานุการ', level: 4 },
-      { title: 'ผู้ช่วยเลขานุการ', level: 4 },
+      { title: 'กรรมการฝ่ายธุรการและประสานงาน', level: 3 },
+      { title: 'กรรมการ', level: 4 },
+      { title: 'เลขานุการ', level: 5 },
     ]
 
     const positionIds: Record<string, string> = {}
@@ -61,25 +61,42 @@ export async function GET() {
       { name: 'นายวิชัย พัฒนาวัฒน์', position: 'รองประธาน คนที่ 2', positionOrder: 3 },
       { name: 'นางมาลี ศรีวัฒนา', position: 'รองประธาน คนที่ 3', positionOrder: 4 },
       { name: 'นายกิตติพงศ์ ล้านนาศรี', position: 'รองประธาน คนที่ 4', positionOrder: 5 },
-      { name: 'นายสมชาย ใจดี', position: 'กรรมการ', positionOrder: 6 },
-      { name: 'นางราตรี ศิลป์ลานนา', position: 'กรรมการ', positionOrder: 7 },
-      { name: 'นายพิทักษ์ มรดกไทย', position: 'กรรมการ', positionOrder: 8 },
-      { name: 'นางสมศรี วัฒนาสกุล', position: 'กรรมการ', positionOrder: 9 },
-      { name: 'นายธวัชชัย ประเพณีไทย', position: 'เลขานุการ', positionOrder: 10 },
-      { name: 'นางนภัส ล้านนาวัฒน์', position: 'ผู้ช่วยเลขานุการ', positionOrder: 11 },
+      { name: 'นายสมชาย ใจดี', position: 'กรรมการฝ่ายธุรการและประสานงาน', positionOrder: 6 },
+      { name: 'นางราตรี ศิลป์ลานนา', position: 'กรรมการฝ่ายธุรการและประสานงาน', positionOrder: 7 },
+      { name: 'นายพิทักษ์ มรดกไทย', position: 'กรรมการฝ่ายธุรการและประสานงาน', positionOrder: 8 },
+      { name: 'นางสมศรี วัฒนาสกุล', position: 'กรรมการฝ่ายธุรการและประสานงาน', positionOrder: 9 },
+      { name: 'นายธวัชชัย ประเพณีไทย', position: 'กรรมการ', positionOrder: 10 },
+      { name: 'นางนภัส ล้านนาวัฒน์', position: 'เลขานุการ', positionOrder: 11 },
     ]
 
-    const existingBoard = await payload.find({ collection: 'provincial-board', limit: 1 })
-    if (existingBoard.docs.length === 0) {
-      for (const member of boardMembers) {
+    for (const member of boardMembers) {
+      const existingMember = await payload.find({
+        collection: 'provincial-board',
+        where: {
+          name: {
+            equals: member.name,
+          },
+        },
+        limit: 1,
+      })
+
+      const memberData = {
+        name: member.name,
+        position: positionIds[member.position],
+        positionOrder: member.positionOrder,
+        isActive: true,
+      }
+
+      if (existingMember.docs.length > 0) {
+        await payload.update({
+          collection: 'provincial-board',
+          id: String(existingMember.docs[0].id),
+          data: memberData,
+        })
+      } else {
         await payload.create({
           collection: 'provincial-board',
-          data: {
-            name: member.name,
-            position: positionIds[member.position],
-            positionOrder: member.positionOrder,
-            isActive: true,
-          },
+          data: memberData,
         })
       }
     }

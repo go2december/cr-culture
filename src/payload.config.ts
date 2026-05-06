@@ -37,6 +37,7 @@ export default buildConfig({
     serverURL: configuredServerUrl,
     admin: {
         user: Users.slug,
+        suppressHydrationWarning: true,
         meta: {
             titleSuffix: '- สภาวัฒนธรรมจังหวัดเชียงราย',
             openGraph: {
