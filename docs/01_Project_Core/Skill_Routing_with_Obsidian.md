@@ -14,7 +14,7 @@
 - Lint and validation: `../../.agent/skills/lint-and-validate/SKILL.md`
 
 ## Routing Rules
-1. เริ่มทุกงานด้วย `.windsurfrules` + `STATUS.md` + `Site_Map_and_Workflow.md`
+1. เริ่มทุกงานด้วย `.agent/rules/GEMINI.md` + `STATUS.md` + `Site_Map_and_Workflow.md`
 2. เลือก skill เฉพาะงานจาก `.agent/skills/doc.md` เท่านั้น
 3. โหลดเฉพาะ `SKILL.md` ที่เกี่ยวข้อง หลีกเลี่ยงโหลดหลาย skill โดยไม่จำเป็น
 4. เมื่อใช้ skill แล้ว ให้บันทึกผลลง canonical docs ตามหมวดงาน

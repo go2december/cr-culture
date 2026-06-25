@@ -10,7 +10,7 @@ Antigravity Kit is a modular system consisting of:
 
 - **20 Specialist Agents** - Role-based AI personas
 - **36 Skills** - Domain-specific knowledge modules
-- **11 Workflows** - Slash command procedures
+- **12 Workflows** - Slash command procedures
 
 ---
 
@@ -21,7 +21,7 @@ Antigravity Kit is a modular system consisting of:
 ├── ARCHITECTURE.md          # This file
 ├── agents/                  # 20 Specialist Agents
 ├── skills/                  # 36 Skills
-├── workflows/               # 11 Slash Commands
+├── workflows/               # 12 Slash Commands
 ├── rules/                   # Global Rules
 └── scripts/                 # Master Validation Scripts
 ```
@@ -168,7 +168,7 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 
 ---
 
-## 🔄 Workflows (11)
+## 🔄 Workflows (12)
 
 Slash command procedures. Invoke with `/command`.
 
@@ -176,6 +176,7 @@ Slash command procedures. Invoke with `/command`.
 | ---------------- | ------------------------ |
 | `/brainstorm`    | Socratic discovery       |
 | `/create`        | Create new features      |
+| `/headroom`     | Headroom minimal mode    |
 | `/debug`         | Debug issues             |
 | `/deploy`        | Deploy application       |
 | `/enhance`       | Improve existing code    |

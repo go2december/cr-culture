@@ -32,7 +32,7 @@
 - [ ] ถ้ามีการตัดสินใจเชิงระบบ ให้เพิ่มใน ../05_Meeting_Notes/Decision_Log.md
 
 ## 6. Start Checklist (Canonical)
-- [ ] อ่าน .windsurfrules
+- [ ] อ่าน `.agent/rules/GEMINI.md`
 - [ ] อ่าน STATUS.md
 - [ ] อ่าน docs/01_Project_Core/Documentation_Workflow.md
 - [ ] คัดลอกไฟล์นี้เป็นชื่อ feature จริง (เช่น HERITAGE_IMPORT_BATCH_1.md)

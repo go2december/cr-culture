@@ -21,7 +21,7 @@
 - MongoDB: `mongodb://localhost:27017`
 
 ## Recommended Development Mode
-ใช้ Docker เป็นค่าเริ่มต้นสำหรับโปรเจกต์นี้ เพื่อให้ environment สม่ำเสมอและตรงกับกฎใน `.windsurfrules`
+ใช้ Docker เป็นค่าเริ่มต้นสำหรับโปรเจกต์นี้ เพื่อให้ environment สม่ำเสมอและตรงกับกฎใน `.agent/rules/GEMINI.md`
 
 ## Common Commands
 ### Start services

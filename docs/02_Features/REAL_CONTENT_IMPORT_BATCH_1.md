@@ -138,7 +138,7 @@
 - [ ] ถ้ามีการตัดสินใจระบบใหม่ ให้เพิ่มใน `../05_Meeting_Notes/Decision_Log.md`
 
 ## 6. Start Checklist (Canonical)
-- [ ] อ่าน `.windsurfrules`
+- [ ] อ่าน `.agent/rules/GEMINI.md`
 - [ ] อ่าน `STATUS.md`
 - [ ] อ่าน `docs/01_Project_Core/Documentation_Workflow.md`
 - [ ] อ่าน `docs/03_Database/Schema.md` ก่อนเริ่ม mapping/import

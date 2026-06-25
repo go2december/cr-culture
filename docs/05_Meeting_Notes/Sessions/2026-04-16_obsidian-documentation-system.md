@@ -9,7 +9,7 @@
 
 ## Summary
 - จัดระบบเอกสาร Obsidian ให้เป็น canonical structure
-- ลดขนาด `.windsurfrules`
+- ลดขนาดไฟล์ rules ส่วนกลาง
 - ย้ายความรู้จาก legacy docs ไปสู่ `docs/01_Project_Core/`, `docs/02_Features/`, `docs/03_Database/`, `docs/04_UI_UX/`
 
 ## Decisions

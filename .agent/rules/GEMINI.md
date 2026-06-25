@@ -112,6 +112,26 @@ When user's prompt is NOT in English:
 - **Performance**: Measure first. Adhere to 2025 standards (Core Web Vitals).
 - **Infra/Safety**: 5-Phase Deployment. Verify secrets security.
 
+### Ponytail Overlay
+
+Ponytail is the repo-level simplification layer on top of the existing rules.
+
+- Prefer YAGNI, stdlib-first, and native platform features before new abstractions.
+- Delete or reuse before adding anything new.
+- For bug fixes, inspect shared callers and fix the root cause once.
+- Non-trivial logic leaves one runnable check behind; trivial one-liners do not need a test.
+- When a shortcut is intentional, mark it with a `ponytail:` comment and name the ceiling and upgrade path.
+- This overlay does not change routing, ownership, or the existing Next.js + Payload architecture.
+
+### Headroom Minimal Mode
+
+Use Headroom only in the lightest mode needed for the task.
+
+- Prefer MCP-only setup first: `pip install "headroom-ai[mcp]"`.
+- Use `headroom mcp install` for on-demand retrieve/compress tooling; skip `headroom proxy` unless you need full traffic compression.
+- Do not add repo code or runtime dependencies just to enable Headroom docs or agent workflow.
+- If a proxy is needed later, keep it external and ephemeral rather than wiring it into the app.
+
 ### 📁 File Dependency Awareness
 
 **Before modifying ANY file:**

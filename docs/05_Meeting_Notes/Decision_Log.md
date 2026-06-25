@@ -35,7 +35,7 @@
 
 ### Context
 - เอกสารในโปรเจกต์กระจายหลายตำแหน่งและมีข้อมูลซ้ำกัน
-- การอ้างอิงบริบทสำหรับ Windsurf/Obsidian ยังไม่เป็นทางเดียวกัน
+- การอ้างอิงบริบทสำหรับ Obsidian ยังไม่เป็นทางเดียวกัน
 
 ### Decision
 - ใช้ `docs/README.md` เป็นสารบัญกลาง
@@ -61,14 +61,14 @@
 - **Status**: Accepted
 - **Related Meeting Note**: `Sessions/2026-04-16_obsidian-documentation-system.md`
 - **Related Docs**:
-  - `../../.windsurfrules`
+  - `../../.agent/rules/GEMINI.md`
   - `../01_Project_Core/Documentation_Workflow.md`
 
 ### Context
 - การโหลด context กว้างเกินไปทำให้เปลือง token และทำให้ agent หาแหล่งข้อมูลช้าลง
 
 ### Decision
-- ใช้ `.windsurfrules` และ `STATUS.md` เป็นจุดเริ่มต้นเสมอ
+- ใช้ `.agent/rules/GEMINI.md` และ `STATUS.md` เป็นจุดเริ่มต้นเสมอ
 - เพิ่มเอกสารตามชนิดงานเท่าที่จำเป็นเท่านั้น
 - ให้ไฟล์ canonical เป็น priority สูงกว่า legacy docs
 - จำกัดการอ้างอิง context ให้ตรงงาน เช่น feature/schema/UI/workflow เท่านั้น

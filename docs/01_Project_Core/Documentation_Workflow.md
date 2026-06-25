@@ -1,18 +1,19 @@
 # Documentation Workflow
 
 ## Purpose
-ไฟล์นี้กำหนดวิธีใช้เอกสารในโปรเจกต์ให้เป็นระบบสำหรับ Obsidian และ Windsurf โดยลด context ซ้ำและใช้ token อย่างมีประสิทธิภาพ
+ไฟล์นี้กำหนดวิธีใช้เอกสารในโปรเจกต์ให้เป็นระบบสำหรับ Obsidian โดยลด context ซ้ำและใช้ token อย่างมีประสิทธิภาพ
 
 ## Start Here
-- Project rules: `../../.windsurfrules`
+- Project rules: `../../.agent/rules/GEMINI.md`
 - Status summary: `../../STATUS.md`
+- Headroom guide: `Headroom_Minimal_Mode.md`
 - Workflow + tasks: `Site_Map_and_Workflow.md`
 - Docs index: `../README.md`
 - Skill routing: `Skill_Routing_with_Obsidian.md`
 
 ## Workflow
 ### 1. Start of task
-- อ่าน `.windsurfrules` และ `STATUS.md`
+- อ่าน `.agent/rules/GEMINI.md` และ `STATUS.md`
 - เปิดเฉพาะ canonical doc ที่ตรงกับงาน
 - ถ้าต้องใช้ skill ให้เริ่มจาก `.agent/skills/doc.md` และ `Skill_Routing_with_Obsidian.md`
 
@@ -38,6 +39,7 @@
 - ใช้ context เฉพาะไฟล์ที่จำเป็น
 - ไม่เก็บข้อมูลชุดเดียวกันซ้ำหลายที่
 - เริ่มจากเอกสาร canonical ก่อน legacy docs
+- ถ้าเกี่ยวกับ Headroom ให้เริ่มจาก `Headroom_Minimal_Mode.md` และเลือก MCP-only ก่อน proxy
 
 ## Legacy Docs Policy
 - โฟลเดอร์ `guides/`, `implementations/`, และ `workflow/` ใช้เพื่ออ้างอิงย้อนหลัง
