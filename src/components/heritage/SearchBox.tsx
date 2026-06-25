@@ -15,7 +15,11 @@ export default function SearchBox({
     const [, startTransition] = useTransition()
 
     useEffect(() => {
-        setQuery(searchParams.get('search') || '')
+        const timeoutId = window.setTimeout(() => {
+            setQuery(searchParams.get('search') || '')
+        }, 0)
+
+        return () => window.clearTimeout(timeoutId)
     }, [searchParams])
 
     useEffect(() => {

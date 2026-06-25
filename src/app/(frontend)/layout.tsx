@@ -1,29 +1,9 @@
 import type { Metadata } from 'next'
-import { Prompt, Charmonman, Noto_Serif_Thai } from 'next/font/google'
 import '../globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
-const prompt = Prompt({
-    subsets: ['thai', 'latin'],
-    weight: ['300', '400', '500', '600', '700'],
-    variable: '--font-sans',
-    display: 'swap',
-})
-
-const charmonman = Charmonman({
-    subsets: ['thai', 'latin'],
-    weight: ['400', '700'],
-    variable: '--font-display',
-    display: 'swap',
-})
-
-const notoSerifThai = Noto_Serif_Thai({
-    subsets: ['thai', 'latin'],
-    weight: ['400', '500', '600', '700'],
-    variable: '--font-noto-serif',
-    display: 'swap',
-})
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
     title: {
@@ -50,7 +30,7 @@ export default function FrontendLayout({
 }) {
     return (
         <html lang="th" data-theme="lofi">
-            <body className={`min-h-screen flex flex-col font-sans ${prompt.variable} ${charmonman.variable} ${notoSerifThai.variable}`}>
+            <body className="min-h-screen flex flex-col font-sans">
                 <a href="#main-content" className="skip-link">ข้ามไปยังเนื้อหาหลัก</a>
                 <Navbar />
                 <main id="main-content" className="grow">

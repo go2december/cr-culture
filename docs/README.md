@@ -13,7 +13,6 @@
 ### Project Core
 - [Site_Map_and_Workflow.md](01_Project_Core/Site_Map_and_Workflow.md)
 - [Documentation_Workflow.md](01_Project_Core/Documentation_Workflow.md)
-- [Headroom_Minimal_Mode.md](01_Project_Core/Headroom_Minimal_Mode.md)
 - [Skill_Routing_with_Obsidian.md](01_Project_Core/Skill_Routing_with_Obsidian.md)
 - [Development_Environment.md](01_Project_Core/Development_Environment.md)
 - [Project_Roadmap.md](01_Project_Core/Project_Roadmap.md)

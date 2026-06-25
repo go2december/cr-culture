@@ -1,5 +1,17 @@
 import type { GlobalConfig } from 'payload'
 
+type UnknownRecord = Record<string, unknown>
+
+type CleanupPayloadRequest = {
+    payload?: {
+        delete: (args: {
+            collection: 'media'
+            id: string
+            overrideAccess: boolean
+        }) => Promise<unknown>
+    }
+}
+
 const defaultHome = {
     eyebrow: 'Modern Lanna',
     title: 'สภาวัฒนธรรม จังหวัดเชียงราย',
@@ -54,18 +66,30 @@ const defaultHeritage = {
     subtitle: 'รวบรวมและสงวนรักษามรดกทางวัฒนธรรม องค์ความรู้ และภูมิปัญญาท้องถิ่นอันทรงคุณค่าของจังหวัดเชียงราย',
 }
 
-const getValueByPath = (source: any, path: string[]) => {
-    return path.reduce((accumulator, key) => (accumulator && typeof accumulator === 'object' ? accumulator[key] : undefined), source)
+const isRecord = (value: unknown): value is UnknownRecord => {
+    return Boolean(value) && typeof value === 'object'
 }
 
-const getUploadId = (value: any) => {
+const getValueByPath = (source: unknown, path: string[]) => {
+    return path.reduce<unknown>((accumulator, key) => (isRecord(accumulator) ? accumulator[key] : undefined), source)
+}
+
+const getUploadId = (value: unknown) => {
     if (!value) return null
     if (typeof value === 'string' || typeof value === 'number') return String(value)
-    if (typeof value === 'object' && value.id) return String(value.id)
+    if (isRecord(value) && (typeof value.id === 'string' || typeof value.id === 'number')) return String(value.id)
     return null
 }
 
-const cleanupReplacedHeroUploads = async ({ doc, originalDoc, req }: any) => {
+const cleanupReplacedHeroUploads = async ({
+    doc,
+    originalDoc,
+    req,
+}: {
+    doc: unknown
+    originalDoc?: unknown
+    req?: CleanupPayloadRequest
+}) => {
     if (!originalDoc || !req?.payload) {
         return doc
     }

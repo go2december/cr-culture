@@ -25,6 +25,12 @@
 - ปรับจูน performance และ admin/runtime maintenance ตามข้อมูลจริง
 - อัปเดต workflow/task docs เมื่อ milestone หรือ scope เปลี่ยน
 
+## Recent Work (Codex Compatibility — 2026-06-25)
+- **Codex readiness:** Added `AGENTS.md` guidance, ESLint flat config, and working npm scripts for Next.js 16 (`lint`, `typecheck`, `build`).
+- **Offline-safe build:** Production build now uses webpack and no longer depends on `next/font/google` network fetches.
+- **Verification:** `npm run lint`, `npm run typecheck`, and `npm run build` pass. Git safe directory was configured for this repo on the local machine.
+- **Ponytail/Obsidian:** Obsidian docs and Ponytail instruction fallback are wired through `AGENTS.md` and canonical docs. The failed local context-proxy experiment was removed after Docker/WSL access proved unreliable in Codex sandbox.
+
 ## Recent Work (QA Snapshot — 2026-06-25)
 - **Batch 1 Import:** Seeder executed and verification passed (`verification.passed = true`). Per-collection counts verified after import.
 - **Frontend fixes:** Heritage tag filter links updated to preserve `category` and set `tag` using slug; `ActiveFilters` now shows the tag name when available. Files: [src/app/(frontend)/heritage/page.tsx](src/app/(frontend)/heritage/page.tsx), [src/components/heritage/ActiveFilters.tsx](src/components/heritage/ActiveFilters.tsx), [src/lib/payload.ts](src/lib/payload.ts).

@@ -1,36 +1,30 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface ShareButtonsProps {
     title: string
     url?: string
 }
 
-export default function ShareButtons({ title, url }: ShareButtonsProps) {
-    const [currentUrl, setCurrentUrl] = useState('')
+export default function ShareButtons({ url }: ShareButtonsProps) {
     const [copied, setCopied] = useState(false)
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setCurrentUrl(url || window.location.href)
-        }
-    }, [url])
+    const getShareUrl = () => url || window.location.href
 
     const shareToFacebook = () => {
-        if (!currentUrl) return
-        const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`
+        const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getShareUrl())}`
         window.open(shareUrl, '_blank', 'width=600,height=400,scrollbars=yes,resizable=yes')
     }
 
     const shareToLine = () => {
-        if (!currentUrl) return
-        const shareUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(currentUrl)}`
+        const shareUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(getShareUrl())}`
         window.open(shareUrl, '_blank', 'width=500,height=500,scrollbars=yes,resizable=yes')
     }
 
     const copyToClipboard = async () => {
-        if (!currentUrl) return
+        const currentUrl = getShareUrl()
+
         try {
             await navigator.clipboard.writeText(currentUrl)
             setCopied(true)

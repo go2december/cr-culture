@@ -1,6 +1,14 @@
 import type { CollectionConfig } from 'payload'
 
-const optimizeImageUploadToWebp = ({ req, operation }: { req: any; operation: string }) => {
+type UploadRequest = {
+    file?: {
+        name?: string
+        extension?: string
+        mimeType?: string
+    }
+}
+
+const optimizeImageUploadToWebp = ({ req, operation }: { req: UploadRequest; operation: string }) => {
     if (operation !== 'create' && operation !== 'update') {
         return
     }

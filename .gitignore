@@ -11,3 +11,7 @@ tsconfig.tsbuildinfo
 parsed.txt
 parsed_full.txt
 output.txt
+autocannon_result.json
+heritage.html
+.codex/
+.docker-codex/

@@ -210,7 +210,20 @@ export async function GET() {
     // ============================================================
     // 7. Activities (กิจกรรม)
     // ============================================================
-    const activities = [
+    type SeedActivity = {
+      title: string
+      slug: string
+      date: string
+      endDate?: string
+      level: 'province' | 'district'
+      summary: string
+      location: string
+      isPublished: boolean
+      isFeatured?: boolean
+      districtSlug?: string
+    }
+
+    const activities: SeedActivity[] = [
       {
         title: 'งานสืบสานประเพณีสงกรานต์ล้านนา ปี 2569',
         slug: 'songkran-lanna-2569',
@@ -277,8 +290,8 @@ export async function GET() {
     const existingActivities = await payload.find({ collection: 'activities', limit: 1 })
     if (existingActivities.docs.length === 0) {
       for (const act of activities) {
-        const distSlug = (act as any).districtSlug
-        const data: any = {
+        const { districtSlug: distSlug } = act
+        const data: Record<string, unknown> = {
           title: act.title,
           slug: act.slug,
           date: act.date,
@@ -593,7 +606,8 @@ export async function GET() {
         aboutPageGlobal: 'updated',
       },
     })
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Seed failed'
+    return NextResponse.json({ success: false, error: message }, { status: 500 })
   }
 }

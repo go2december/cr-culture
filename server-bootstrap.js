@@ -5,7 +5,7 @@ const logFile = path.resolve(process.cwd(), "node-errors.log");
 function appendLog(msg) {
   try {
     fs.appendFileSync(logFile, `${new Date().toISOString()} - ${msg}\n`);
-  } catch (e) {
+  } catch {
     // best-effort only
   }
 }
@@ -25,12 +25,12 @@ process.on("uncaughtException", (err) => {
       1,
       `uncaughtException: ${err && err.stack ? err.stack : String(err)}\n`,
     );
-  } catch (_) {}
+  } catch {}
   // do not swallow — exit so supervisor behavior remains unchanged
   process.exit(1);
 });
 
-process.on("unhandledRejection", (reason, promise) => {
+process.on("unhandledRejection", (reason) => {
   appendLog(
     "unhandledRejection: " +
       (reason && reason.stack ? reason.stack : String(reason)),
@@ -40,7 +40,7 @@ process.on("unhandledRejection", (reason, promise) => {
       1,
       `unhandledRejection: ${reason && reason.stack ? reason.stack : String(reason)}\n`,
     );
-  } catch (_) {}
+  } catch {}
 });
 
 // Capture process warnings and multiple resolves to help diagnose intermittent errors
@@ -53,10 +53,10 @@ process.on("warning", (warning) => {
       1,
       `warning: ${warning && warning.stack ? warning.stack : String(warning)}\n`,
     );
-  } catch (_) {}
+  } catch {}
 });
 
-process.on("multipleResolves", (type, promise, reason) => {
+process.on("multipleResolves", (type, _promise, reason) => {
   appendLog(
     `multipleResolves: type=${type} reason=${reason && reason.stack ? reason.stack : String(reason)}`,
   );
@@ -65,7 +65,7 @@ process.on("multipleResolves", (type, promise, reason) => {
       1,
       `multipleResolves: type=${type} reason=${reason && reason.stack ? reason.stack : String(reason)}\n`,
     );
-  } catch (_) {}
+  } catch {}
 });
 
 process.on("rejectionHandled", (promise) => {
@@ -78,7 +78,7 @@ process.on("rejectionHandled", (promise) => {
     appendLog(`signal:${sig} received`);
     try {
       fs.writeSync(1, `signal:${sig} received\n`);
-    } catch (_) {}
+    } catch {}
     // allow default behavior after logging
     process.exit(0);
   });

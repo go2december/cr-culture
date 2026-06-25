@@ -12,6 +12,7 @@
 - Next.js/React performance: `../../.agent/skills/nextjs-react-expert/SKILL.md`
 - Architecture decisions: `../../.agent/skills/architecture/SKILL.md`
 - Lint and validation: `../../.agent/skills/lint-and-validate/SKILL.md`
+- Ponytail minimalism layer: `../../AGENTS.md#5-ponytail-minimalism-layer`
 
 ## Routing Rules
 1. เริ่มทุกงานด้วย `.agent/rules/GEMINI.md` + `STATUS.md` + `Site_Map_and_Workflow.md`
@@ -29,6 +30,7 @@
 - Performance optimization: `nextjs-react-expert` -> `../01_Project_Core/Project_Roadmap.md`
 - Architecture/system decisions: `architecture` -> `../05_Meeting_Notes/Decision_Log.md`
 - Quality gate after edits: `lint-and-validate` -> `../../STATUS.md`
+- Minimal implementation / over-engineering review: Ponytail fallback -> `../../AGENTS.md`
 
 ## Command Path Standard (Workspace)
 สำหรับ scripts ใน skill ให้ใช้พาธจาก root ของโปรเจกต์:

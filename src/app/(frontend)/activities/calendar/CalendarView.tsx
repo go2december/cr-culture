@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import CmsImage from '@/components/CmsImage'
-import { resolveMediaAlt, resolveMediaUrl, type GalleryItemLike, type MediaLike } from '@/lib/media'
+import { resolveMediaAlt, resolveMediaUrl } from '@/lib/media'
 import type { PublicCalendarActivity } from '@/lib/public-organization'
 
 interface CalendarViewProps {
@@ -12,7 +12,7 @@ interface CalendarViewProps {
     districtMap: Map<string | number, string>
 }
 
-export default function CalendarView({ year, month, activities, districtMap }: CalendarViewProps) {
+export default function CalendarView({ year, month, activities }: CalendarViewProps) {
     const monthNames = [
         'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
         'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
@@ -282,5 +282,4 @@ export default function CalendarView({ year, month, activities, districtMap }: C
         </>
     )
 }
-
 

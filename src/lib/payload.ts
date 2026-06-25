@@ -89,7 +89,7 @@ async function findDocs<T>(collection: CollectionSlug, options: {
     ...(options.page !== undefined ? { page: options.page } : {}),
     ...(options.sort ? { sort: options.sort } : {}),
     ...(options.depth !== undefined ? { depth: options.depth } : {}),
-  } as any)
+  } as Parameters<typeof payload.find>[0])
 
   return response as unknown as FindResponse<T>
 }
@@ -337,4 +337,3 @@ export const getDistrictChairmen = cache(async () => {
   }, mapDistrictChairman)
   return response.docs
 })
-

@@ -20,12 +20,14 @@ export async function GET() {
         districts: totalDocs,
       },
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Health check failed'
+
     return NextResponse.json(
       {
         status: 'error',
         timestamp: new Date().toISOString(),
-        error: error?.message || 'Health check failed',
+        error: message,
       },
       { status: 503 },
     )

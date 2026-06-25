@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getDistrictBySlug, getDistrictMembers, getActivities } from '@/lib/payload'
 import CmsImage from '@/components/CmsImage'
-import type { PublicDistrictContact, PublicDistrictMember } from '@/lib/public-organization'
+import type { PublicDistrictContact } from '@/lib/public-organization'
 
 export default async function DistrictDetailPage({
     params,
