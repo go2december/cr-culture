@@ -186,18 +186,24 @@ export default async function HeritagePage({
                                     </h4>
                                     <div className="flex flex-wrap gap-2">
                                         {tags.length > 0 ? (
-                                            tags.map((tag) => (
-                                                <Link
-                                                    key={tag.id}
-                                                    href={`/heritage?tag=${tag.slug}`}
-                                                    className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${selectedTag === tag.slug
-                                                        ? 'bg-primary text-white border-primary shadow-sm'
-                                                        : 'bg-slate-50 border-base-200 text-base-content/60 hover:text-primary hover:border-secondary'
-                                                        }`}
-                                                >
-                                                    #{tag.name}
-                                                </Link>
-                                            ))
+                                            tags.map((tag) => {
+                                                const params = new URLSearchParams()
+                                                if (selectedCategory && selectedCategory !== 'all') params.set('category', selectedCategory)
+                                                params.set('tag', tag.slug)
+
+                                                return (
+                                                    <Link
+                                                        key={tag.id}
+                                                        href={`/heritage?${params.toString()}`}
+                                                        className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${selectedTag === tag.slug
+                                                            ? 'bg-primary text-white border-primary shadow-sm'
+                                                            : 'bg-slate-50 border-base-200 text-base-content/60 hover:text-primary hover:border-secondary'
+                                                            }`}
+                                                    >
+                                                        #{tag.name}
+                                                    </Link>
+                                                )
+                                            })
                                         ) : (
                                             <p className="text-xs text-base-content/50 w-full text-center py-4">ยังไม่มีแท็ก</p>
                                         )}
@@ -210,7 +216,7 @@ export default async function HeritagePage({
                     {/* Main Content - Article Grid */}
                     <main className="lg:col-span-3 pb-12">
                         {/* Active Filters Display */}
-                        <ActiveFilters />
+                            <ActiveFilters tags={tags.map(t => ({ slug: t.slug, name: t.name }))} />
 
                         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4 reveal-soft stagger-2">
                             <h2 className="text-2xl font-bold flex items-center gap-3 font-display text-primary">

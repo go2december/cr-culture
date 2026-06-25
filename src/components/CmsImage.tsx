@@ -1,3 +1,5 @@
+'use client'
+
 import Image, { type ImageProps } from 'next/image'
 
 type CmsImageProps = Omit<ImageProps, 'src' | 'alt'> & {
