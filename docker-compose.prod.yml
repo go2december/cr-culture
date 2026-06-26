@@ -1,0 +1,65 @@
+services:
+  # MongoDB Database (Production)
+  mongodb:
+    image: mongo:latest
+    container_name: crculture_mongodb_prod
+    restart: unless-stopped
+    # In production, we do NOT expose MongoDB port 27017 to the public internet
+    # to protect the database from external unauthorized access.
+    expose:
+      - "27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password123}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME:-crculture}
+    volumes:
+      - mongodb_prod_data:/data/db
+    networks:
+      - crculture_prod_network
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok ? quit(0) : quit(1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # Next.js + Payload CMS Application (Production)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: crculture_app_prod
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URI=mongodb://${MONGO_ROOT_USER:-admin}:${MONGO_ROOT_PASSWORD:-password123}@mongodb:27017/${MONGO_DB_NAME:-crculture}?authSource=admin
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+      - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    volumes:
+      # Crucial: mount persistent volume for uploaded media files
+      # so that images/documents are not lost when the container is rebuilt or restarted.
+      - media_prod_data:/app/media
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - crculture_prod_network
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then((response) => { if (!response.ok) process.exit(1) }).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  mongodb_prod_data:
+  media_prod_data:
+
+networks:
+  crculture_prod_network:
+    driver: bridge

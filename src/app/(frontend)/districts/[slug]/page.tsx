@@ -1,8 +1,34 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getDistrictBySlug, getDistrictMembers, getActivities } from '@/lib/payload'
 import CmsImage from '@/components/CmsImage'
 import type { PublicDistrictContact } from '@/lib/public-organization'
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+    const { slug } = await params
+    const decodedSlug = decodeURIComponent(slug)
+    const districtData = await getDistrictBySlug(decodedSlug)
+    if (!districtData) {
+        return {}
+    }
+
+    const title = `สภาวัฒนธรรมอำเภอ${districtData.name}`
+    const description = districtData.description || `ข้อมูลเครือข่าย วัฒนธรรม ประเพณี คณะกรรมการ และกิจกรรมของสภาวัฒนธรรมอำเภอ${districtData.name} จังหวัดเชียงราย`
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+        },
+    }
+}
 
 export default async function DistrictDetailPage({
     params,

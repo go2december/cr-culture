@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getHeritageBlogBySlug, getHeritageBlogs } from '@/lib/payload'
@@ -5,6 +6,33 @@ import { resolveMediaUrl, type GalleryItemLike } from '@/lib/media'
 import type { PublicHeritage, PublicTag } from '@/lib/public-content'
 import CmsImage from '@/components/CmsImage'
 import DeferredShareButtons from '@/components/DeferredShareButtons'
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+    const { slug } = await params
+    const decodedSlug = decodeURIComponent(slug)
+    const articleData = await getHeritageBlogBySlug(decodedSlug)
+    if (!articleData) {
+        return {}
+    }
+
+    const title = articleData.title
+    const description = articleData.excerpt || 'อ่านข้อมูลมรดกภูมิปัญญาและคลังวัฒนธรรมล้านนาของจังหวัดเชียงราย'
+    const imageUrl = resolveMediaUrl(articleData.coverImage)
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            images: imageUrl ? [{ url: imageUrl }] : undefined,
+        },
+    }
+}
 
 export default async function HeritageArticlePage({
     params,

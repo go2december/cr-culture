@@ -1,9 +1,38 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import CmsImage from '@/components/CmsImage'
 import { resolveMediaAlt, resolveMediaUrl } from '@/lib/media'
 import InstitutionImageCard from '@/components/InstitutionImageCard'
 import { getWisdomAwardById, getWisdomAwards } from '@/lib/payload'
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ id: string }>
+}): Promise<Metadata> {
+    const { id } = await params
+    const item = await getWisdomAwardById(id)
+    if (!item) {
+        return {}
+    }
+
+    const title = `${[item.prefix, item.fullName].filter(Boolean).join(' ')} - ครูภูมิปัญญาเมืองเชียงราย`
+    const description = item.wisdomCategory?.title
+        ? `ครูภูมิปัญญาเมืองเชียงราย สาขา${item.wisdomCategory.title} ประจำปี พ.ศ. ${item.year?.buddhistYear || ''}`
+        : `ทำเนียบครูภูมิปัญญาเมืองเชียงราย ประจำปี พ.ศ. ${item.year?.buddhistYear || ''}`
+    const imageUrl = resolveMediaUrl(item.avatarImage)
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            images: imageUrl ? [{ url: imageUrl }] : undefined,
+        },
+    }
+}
+
 
 export default async function WisdomAwardDetailPage({
     params,

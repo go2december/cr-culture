@@ -167,3 +167,27 @@ docker-compose exec mongodb sh
 # View resource usage
 docker stats
 ```
+
+## Production Deployment Setup
+
+สำหรับการนำขึ้นระบบจริง (Production Server) ทางโครงการได้จัดเตรียมไฟล์คอนฟิกขยายเพิ่มเติมเพื่อความปลอดภัยสูงสุดและความคงอยู่ของข้อมูล:
+
+### 1. ไฟล์กำหนดการใช้งานจริง
+- **[docker-compose.prod.yml](file:///e:/web2026/CR-Culture/docker-compose.prod.yml)**: ปรับแต่งมาเพื่อรันแอปพลิเคชัน Next.js ในแบบ standalone (production mode) โดยไม่มีการเปิดพอร์ต MongoDB ออกสู่เครือข่ายอินเทอร์เน็ตสาธารณะ และมีการใช้ Docker Volume เพื่อเก็บข้อมูลสื่ออัปโหลดอย่างถาวร
+- **[.env.prod.example](file:///e:/web2026/CR-Culture/.env.prod.example)**: แม่แบบไฟล์ตัวแปรสภาพแวดล้อมสำหรับกรอกพาสเวิร์ด คีย์ลับเฉพาะ และโดเมนเนมของจริง
+
+### 2. วิธีการติดตั้งบนเซิร์ฟเวอร์จริง
+1. คัดลอกและสร้างไฟล์ `.env.prod`:
+   ```bash
+   cp .env.prod.example .env.prod
+   ```
+2. แก้ไขข้อมูลในไฟล์ `.env.prod` เช่น เปลี่ยน `PAYLOAD_SECRET` ให้เป็นคีย์แบบสุ่มที่มีความปลอดภัยสูง, ปรับ `NEXT_PUBLIC_SERVER_URL` เป็นโดเมนจริงของคุณ และตั้งรหัสผ่าน MongoDB ที่แข็งแรง
+3. สั่งรันแอปพลิเคชันด้วยคำสั่ง:
+   ```bash
+   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+   ```
+
+### 3. การจัดการข้อมูล (Production Volumes)
+- ข้อมูลฐานข้อมูลจะถูกเก็บรักษาถาวรผ่าน Docker volume ชื่อ `mongodb_prod_data`
+- ไฟล์รูปภาพ/วิดีโออัปโหลดของเว็บจริงจะถูกเก็บรักษาถาวรผ่าน Docker volume ชื่อ `media_prod_data` เพื่อไม่ให้ไฟล์ภาพและสื่ออัปโหลดหายเวลาอัปเดตเวอร์ชันของ Docker
+

@@ -1,9 +1,67 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const payload = await getPayload({ config })
+  const { searchParams } = new URL(request.url)
+  const clean = searchParams.get('clean') === 'true'
+
+  if (clean) {
+    const collectionsToClean = [
+      'provincial-board',
+      'district-members',
+      'activities',
+      'heritage-blog',
+      'news',
+      'khon-dee-awards',
+      'youth-award-histories',
+      'wisdom-awards',
+      'award-galleries',
+      'awardees',
+      'institutions',
+      'award-categories',
+      'award-years',
+      'wisdom-categories',
+      'tags',
+      'districts',
+      'board-positions',
+      'district-board-positions',
+    ]
+
+    const cleanSummary: Record<string, number> = {}
+    for (const collection of collectionsToClean) {
+      try {
+        const deleted = await payload.delete({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          collection: collection as any,
+          where: {
+            id: { exists: true }
+          }
+        })
+        cleanSummary[collection] = deleted.errors?.length ? 0 : deleted.docs?.length || 0
+      } catch {
+        cleanSummary[collection] = 0
+      }
+    }
+
+    try {
+      await payload.updateGlobal({
+        slug: 'about-page',
+        data: {
+          vision: '',
+          missions: [],
+          historyPlain: '',
+        }
+      })
+    } catch {}
+
+    return NextResponse.json({
+      success: true,
+      message: '🧹 ล้างข้อมูลตัวอย่างที่ Seed ทั้งหมดเรียบร้อยแล้ว!',
+      summary: cleanSummary
+    })
+  }
   const createRichText = (text: string) => ({
     root: {
       type: 'root',

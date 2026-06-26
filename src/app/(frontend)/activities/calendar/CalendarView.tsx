@@ -56,7 +56,7 @@ export default function CalendarView({ year, month, activities }: CalendarViewPr
                             }}
                         >
                             {monthNames.map((name, index) => (
-                                <option key={index} value={index + 1}>{name} {year}</option>
+                                <option key={index} value={index + 1}>{name}</option>
                             ))}
                         </select>
 
@@ -69,7 +69,7 @@ export default function CalendarView({ year, month, activities }: CalendarViewPr
                             }}
                         >
                             {[year - 1, year, year + 1].map((y) => (
-                                <option key={y} value={y}>{y}</option>
+                                <option key={y} value={y}>{y + 543}</option>
                             ))}
                         </select>
                     </div>
@@ -190,7 +190,7 @@ export default function CalendarView({ year, month, activities }: CalendarViewPr
                         <path d="M2 12h4" />
                         <path d="m4.9 4.9 2.9 2.9" />
                     </svg>
-                    กิจกรรมทั้งหมดในเดือน {monthNames[month - 1]} {year}
+                    กิจกรรมทั้งหมดในเดือน {monthNames[month - 1]} {year + 543}
                 </h2>
 
                 {activities.length > 0 ? (

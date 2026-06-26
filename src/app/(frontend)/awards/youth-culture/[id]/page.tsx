@@ -1,9 +1,37 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import CmsImage from '@/components/CmsImage'
 import InstitutionImageCard from '@/components/InstitutionImageCard'
 import { getAwardGalleries, getYouthAwardHistories, getYouthAwardHistoryById } from '@/lib/payload'
 import { resolveMediaAlt, resolveMediaUrl } from '@/lib/media'
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ id: string }>
+}): Promise<Metadata> {
+    const { id } = await params
+    const history = await getYouthAwardHistoryById(id)
+    if (!history) {
+        return {}
+    }
+
+    const title = `${history.projectTitle} - รางวัลเยาวชนวัฒนธรรม`
+    const description = history.projectSummary || `ผลงานเยาวชนวัฒนธรรมจังหวัดเชียงรายโดยสถาบัน/โรงเรียน ${history.institution?.institutionName || ''}`
+    const imageUrl = resolveMediaUrl(history.coverImage)
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            images: imageUrl ? [{ url: imageUrl }] : undefined,
+        },
+    }
+}
+
 
 const getYouTubeEmbedUrl = (videoUrl?: string | null) => {
     if (!videoUrl) return null

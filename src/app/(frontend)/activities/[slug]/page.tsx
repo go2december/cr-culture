@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getActivityBySlug, getActivities } from '@/lib/payload'
@@ -5,6 +6,33 @@ import { resolveMediaUrl } from '@/lib/media'
 import type { GalleryItemLike } from '@/lib/media'
 import type { PublicActivity } from '@/lib/public-content'
 import CmsImage from '@/components/CmsImage'
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+    const { slug } = await params
+    const decodedSlug = decodeURIComponent(slug)
+    const activityData = await getActivityBySlug(decodedSlug)
+    if (!activityData) {
+        return {}
+    }
+
+    const title = activityData.title
+    const description = activityData.summary || activityData.excerpt || 'ร่วมกิจกรรมและงานประเพณีท้องถิ่นกับสภาวัฒนธรรมจังหวัดเชียงราย'
+    const imageUrl = resolveMediaUrl(activityData.coverImage)
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            images: imageUrl ? [{ url: imageUrl }] : undefined,
+        },
+    }
+}
 
 export default async function ActivityDetailPage({
     params,

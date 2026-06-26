@@ -1,10 +1,36 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import CmsImage from '@/components/CmsImage'
 import { resolveMediaAlt, resolveMediaUrl } from '@/lib/media'
 import InstitutionImageCard from '@/components/InstitutionImageCard'
 import { getKhonDeeAwardById, getKhonDeeAwards } from '@/lib/payload'
 import type { PublicAwardMainPillar, PublicKhonDeeAward } from '@/lib/public-content'
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ id: string }>
+}): Promise<Metadata> {
+    const { id } = await params
+    const award = await getKhonDeeAwardById(id)
+    if (!award) {
+        return {}
+    }
+
+    const title = `${[award.prefix, award.fullName].filter(Boolean).join(' ')} - คนดีศรีเชียงราย`
+    const description = award.contributionTitle || `ทำเนียบรางวัลเกียรติยศคนดีศรีเชียงราย ประจำปี พ.ศ. ${award.year?.buddhistYear || ''}`
+    const imageUrl = resolveMediaUrl(award.profileImage)
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            images: imageUrl ? [{ url: imageUrl }] : undefined,
+        },
+    }
+}
 
 const pillarLabels: Record<PublicAwardMainPillar, string> = {
     'cultural-contributor': 'ด้านผู้ทำคุณประโยชน์ทางวัฒนธรรม',

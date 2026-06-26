@@ -71,3 +71,27 @@
 - **Payload CMS:** Added `wisdom-awards` and refined youth-awards admin labeling so award modules are easier to manage independently.
 - **Frontend:** Added public routes for `/awards/youth-culture`, `/awards/youth-culture/[id]`, `/awards/wisdom-awards`, and `/awards/wisdom-awards/[id]`.
 - **Docs:** Added a canonical modular awards architecture document covering the split collection strategy and public routing.
+
+## Recent Work (Privacy & Terms — 2026-06-26)
+- **Privacy Policy Page:** Created public route `/privacy` with comprehensive Thai PDPA-compliant terms.
+- **Terms of Use Page:** Created public route `/terms` with acceptable use, limitation of liability, and Lanna cultural archive copyright clauses.
+- **Footer Navigation:** Links at Footer now navigate to `/privacy` and `/terms` correctly.
+- **Verification:** `npm run lint`, `npm run typecheck`, and `npm run build` pass.
+
+## Recent Work (Calendar UI Polish — 2026-06-26)
+- **Month Dropdown:** Removed the AD/CE year suffix from the month options text to keep it cleaner.
+- **Year Dropdown & Heading:** Converted the year display on the calendar UI (both year select and title header) from CE to Thai Buddhist Era (BE) by adding +543, while maintaining the correct backend queries using CE values.
+
+## Recent Work (SEO & GEO Enhancements — 2026-06-26)
+- **Search Console Readiness:** Added `robots.ts` and dynamic `sitemap.ts` endpoints. Dynamic sitemap queries Payload CMS for districts, activities, heritage blogs, news, and all three categories of honor awards (khon-dee, wisdom-awards, youth-culture).
+- **Dynamic Meta & Social Sharing:** Implemented Next.js `generateMetadata` for dynamic detail pages of all 7 sections to ensure correct search indexation and rich link previews (OpenGraph tags with covers/avatars).
+- **Code Health & Type Safety:** Fixed typescript compiler errors in sitemap date mapping and district model summaries. Cleared unused imports.
+- **Verification:** Verified with `npm run typecheck`, `npm run lint`, and `npm run build` passing 100%.
+
+## Recent Work (Production Docker Setup — 2026-06-26)
+- **Production Orchestration:** Created `docker-compose.prod.yml` configured to use Next.js standalone production build stage.
+- **Data Persistence:** Integrated persistent volumes (`media_prod_data` mapping to `/app/media` and `mongodb_prod_data` mapping to `/data/db`) to guarantee media uploads and DB data persist across container restarts.
+- **Security Hardening:** Hid MongoDB port 27017 from public access, exposing it only inside the internal Docker network.
+- **Configuration Templates:** Created `.env.prod.example` for secure production environment management, and updated `docs/guides/DOCKER_GUIDE.md` with step-by-step production deployment commands.
+
+
