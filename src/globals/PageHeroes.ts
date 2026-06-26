@@ -66,6 +66,24 @@ const defaultHeritage = {
     subtitle: 'รวบรวมและสงวนรักษามรดกทางวัฒนธรรม องค์ความรู้ และภูมิปัญญาท้องถิ่นอันทรงคุณค่าของจังหวัดเชียงราย',
 }
 
+const defaultKhonDee = {
+    eyebrow: 'รางวัลเกียรติยศ',
+    title: 'คนดีศรีเชียงราย',
+    subtitle: 'ทำเนียบบุคคลและองค์กรที่ได้รับการยกย่องด้านคุณประโยชน์และผลงานดีเด่นทางวัฒนธรรมของจังหวัดเชียงราย',
+}
+
+const defaultYouthCulture = {
+    eyebrow: 'รางวัลเกียรติยศ',
+    title: 'เยาวชนวัฒนธรรม',
+    subtitle: 'รวบรวมผลงานเด่น รายชื่อเยาวชน ครู และสถาบันการศึกษาที่ขับเคลื่อนงานวัฒนธรรมผ่านผลงานของชุมชน',
+}
+
+const defaultWisdomAwards = {
+    eyebrow: 'รางวัลเกียรติยศ',
+    title: 'ครูภูมิปัญญาเมืองเชียงราย',
+    subtitle: 'ทำเนียบผู้สืบสานองค์ความรู้ท้องถิ่นของเชียงราย แยกตามสาขาเพื่อการค้นหาและเผยแพร่ได้อย่างชัดเจน',
+}
+
 const isRecord = (value: unknown): value is UnknownRecord => {
     return Boolean(value) && typeof value === 'object'
 }
@@ -102,6 +120,9 @@ const cleanupReplacedHeroUploads = async ({
         ['aboutBoard', 'heroImage'],
         ['news', 'heroImage'],
         ['heritage', 'heroImage'],
+        ['khonDee', 'heroImage'],
+        ['youthCulture', 'heroImage'],
+        ['wisdomAwards', 'heroImage'],
         ['districts', 'heroImage'],
         ['contact', 'heroImage'],
     ]
@@ -447,6 +468,108 @@ export const PageHeroes: GlobalConfig = {
                     label: 'รูปภาพ hero',
                     admin: {
                         description: 'ใช้แสดงใน hero ของหน้ามรดกภูมิปัญญา',
+                    },
+                },
+            ],
+        },
+        {
+            name: 'khonDee',
+            type: 'group',
+            label: 'คนดีศรีเชียงราย',
+            fields: [
+                {
+                    name: 'eyebrow',
+                    type: 'text',
+                    label: 'ป้ายกำกับ',
+                    defaultValue: defaultKhonDee.eyebrow,
+                },
+                {
+                    name: 'title',
+                    type: 'text',
+                    label: 'หัวเรื่อง',
+                    defaultValue: defaultKhonDee.title,
+                },
+                {
+                    name: 'subtitle',
+                    type: 'textarea',
+                    label: 'คำอธิบาย',
+                    defaultValue: defaultKhonDee.subtitle,
+                },
+                {
+                    name: 'heroImage',
+                    type: 'upload',
+                    relationTo: 'media',
+                    label: 'รูปภาพ hero',
+                    admin: {
+                        description: 'ใช้แสดงใน hero ของหน้าคนดีศรีเชียงราย',
+                    },
+                },
+            ],
+        },
+        {
+            name: 'youthCulture',
+            type: 'group',
+            label: 'เยาวชนวัฒนธรรม',
+            fields: [
+                {
+                    name: 'eyebrow',
+                    type: 'text',
+                    label: 'ป้ายกำกับ',
+                    defaultValue: defaultYouthCulture.eyebrow,
+                },
+                {
+                    name: 'title',
+                    type: 'text',
+                    label: 'หัวเรื่อง',
+                    defaultValue: defaultYouthCulture.title,
+                },
+                {
+                    name: 'subtitle',
+                    type: 'textarea',
+                    label: 'คำอธิบาย',
+                    defaultValue: defaultYouthCulture.subtitle,
+                },
+                {
+                    name: 'heroImage',
+                    type: 'upload',
+                    relationTo: 'media',
+                    label: 'รูปภาพ hero',
+                    admin: {
+                        description: 'ใช้แสดงใน hero ของหน้าเยาวชนวัฒนธรรม',
+                    },
+                },
+            ],
+        },
+        {
+            name: 'wisdomAwards',
+            type: 'group',
+            label: 'ครูภูมิปัญญาเมืองเชียงราย',
+            fields: [
+                {
+                    name: 'eyebrow',
+                    type: 'text',
+                    label: 'ป้ายกำกับ',
+                    defaultValue: defaultWisdomAwards.eyebrow,
+                },
+                {
+                    name: 'title',
+                    type: 'text',
+                    label: 'หัวเรื่อง',
+                    defaultValue: defaultWisdomAwards.title,
+                },
+                {
+                    name: 'subtitle',
+                    type: 'textarea',
+                    label: 'คำอธิบาย',
+                    defaultValue: defaultWisdomAwards.subtitle,
+                },
+                {
+                    name: 'heroImage',
+                    type: 'upload',
+                    relationTo: 'media',
+                    label: 'รูปภาพ hero',
+                    admin: {
+                        description: 'ใช้แสดงใน hero ของหน้าครูภูมิปัญญาเมืองเชียงราย',
                     },
                 },
             ],

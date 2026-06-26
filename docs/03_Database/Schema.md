@@ -11,11 +11,12 @@
  - Upload limit: `10000000` bytes (10MB)
  - Type generation: `src/payload-types.ts`
  - Admin user collection: `users`
- - Globals registered:
-   - `about-page`
+- Globals registered:
+  - `about-page`
+  - `page-heroes`
  
  ## Registered Collections
- The project currently registers 11 collections in Payload config:
+The project currently registers 20 collections in Payload config:
  
  1. `users`
  2. `board-positions`
@@ -26,8 +27,17 @@
  7. `activities`
  8. `heritage-blog`
  9. `tags`
- 10. `news`
- 11. `media`
+ 10. `award-years`
+ 11. `award-categories`
+ 12. `khon-dee-awards`
+13. `news`
+14. `media`
+ 15. `institutions`
+ 16. `awardees`
+ 17. `youth-award-histories`
+18. `award-galleries`
+ 19. `wisdom-categories`
+ 20. `wisdom-awards`
  
  ## Data Models & Relationships
  
@@ -235,8 +245,8 @@
  
  ## Globals
  
- ### `about-page`
- Purpose: Single-source content for the About page.
+### `about-page`
+Purpose: Single-source content for the About page.
  
  Fields:
  - `vision`: `textarea`, required
@@ -245,9 +255,28 @@
  - `history`: `richText`
  - `historyPlain`: `textarea`
  
- Notes:
- - Contains default content for vision, missions, and history.
- - `history` and `historyPlain` allow either formatted or plain content strategies.
+Notes:
+- Contains default content for vision, missions, and history.
+- `history` and `historyPlain` allow either formatted or plain content strategies.
+
+### `page-heroes`
+Purpose: Centralized hero content for the main public pages.
+
+Fields:
+- `home.eyebrow`, `home.title`, `home.subtitle`, `home.heroImage -> media`
+- `activities.eyebrow`, `activities.title`, `activities.subtitle`, `activities.heroImage -> media`
+- `activitiesCalendar.eyebrow`, `activitiesCalendar.title`, `activitiesCalendar.subtitle`, `activitiesCalendar.heroImage -> media`
+- `about.eyebrow`, `about.title`, `about.subtitle`, `about.heroImage -> media`
+- `aboutBoard.eyebrow`, `aboutBoard.title`, `aboutBoard.subtitle`, `aboutBoard.heroImage -> media`
+- `news.eyebrow`, `news.title`, `news.subtitle`, `news.heroImage -> media`
+- `heritage.eyebrow`, `heritage.title`, `heritage.subtitle`, `heritage.heroImage -> media`
+- `khonDee.eyebrow`, `khonDee.title`, `khonDee.subtitle`, `khonDee.heroImage -> media`
+- `districts.eyebrow`, `districts.title`, `districts.subtitle`, `districts.heroImage -> media`
+- `contact.eyebrow`, `contact.title`, `contact.subtitle`, `contact.heroImage -> media`
+
+Notes:
+- Used by the public page list views for consistent heading management from the CMS.
+- Replacing hero images triggers cleanup of orphaned uploads in the `media` collection.
  
  ## Relationship Map
  - `provincial-board.position` -> `board-positions`
@@ -262,10 +291,13 @@
  - `activities.gallery[].image` -> `media`
  - `heritage-blog.coverImage` -> `media`
  - `heritage-blog.gallery[].image` -> `media`
- - `heritage-blog.tags` -> `tags`
- - `heritage-blog.relatedDistrict` -> `districts`
- - `news.coverImage` -> `media`
- - `news.document` -> `media`
+- `heritage-blog.tags` -> `tags`
+- `heritage-blog.relatedDistrict` -> `districts`
+- `khon-dee-awards.year` -> `award-years`
+- `khon-dee-awards.category` -> `award-categories`
+- `khon-dee-awards.profileImage` -> `media`
+- `news.coverImage` -> `media`
+- `news.document` -> `media`
  
  ## Access, Hooks, and Admin Logic
  - No custom collection access control rules are currently defined in the collection configs.
@@ -281,8 +313,48 @@
  - Several collections rely on manual slug entry rather than automatic slug generation.
  - Publish state is generally modeled with boolean flags like `isPublished` instead of Payload draft/version configuration.
  - Sorting intent is represented by numeric fields such as `level`, `positionOrder`, and `order`.
- - `districts` is the central reference collection for district-scoped content.
- - `media` is the shared asset backbone across content and personnel collections.
+- `districts` is the central reference collection for district-scoped content.
+- `media` is the shared asset backbone across content and personnel collections.
+- `khon-dee-awards` is the public-facing honor roll directory for the `คนดีศรีเชียงราย` module.
+
+## Awards Module
+
+### `award-years`
+Purpose: Annual cycle metadata for honor awards.
+
+Fields:
+- `buddhistYear`: `number`, required, unique
+- `announcementDate`: `date`
+- `ceremonyDate`: `date`
+- `location`: `text`
+- `presidentName`: `text`
+
+### `award-categories`
+Purpose: Award pillar and recipient subtype reference data.
+
+Fields:
+- `mainPillar`: `select`, required
+  - `cultural-contributor`
+  - `outstanding-cultural-achievement`
+- `subType`: `text`, required
+
+### `khon-dee-awards`
+Purpose: Public directory of `คนดีศรีเชียงราย` recipients.
+
+Fields:
+- `prefix`: `text`
+- `fullName`: `text`, required
+- `profileImage`: `upload -> media`
+- `currentPosition`: `text`
+- `year`: `relationship -> award-years`, required
+- `category`: `relationship -> award-categories`, required
+- `contributionTitle`: `text`, required
+- `contributionDetail`: `richText`
+- `impactArea`: `text`
+- `contactPhone`: `text`
+- `contactAddress`: `textarea`
+- `nominatorName`: `text`
+- `isPublished`: `checkbox`, default `true`
  
  ## Notes
  - Keep this file aligned with `src/payload.config.ts` and collection files under `src/collections/`.

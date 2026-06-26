@@ -10,10 +10,10 @@ export default async function ContactPage() {
     const heroImageUrl = resolveMediaUrl(heroMedia)
     const heroImageAlt = resolveMediaAlt(heroMedia, (hero.title as string) || 'ภาพพื้นหลังหน้าติดต่อเรา')
     const hasHeroImage = Boolean(heroImageUrl)
+    const contactAddress = 'สำนักงานวัฒนธรรมจังหวัดเชียงราย เลขที่ 570 หมู่ 2 ถ.เลี่ยงเมืองเชียงรายตะวันตก ต.บ้านดู่ อ.เมืองเชียงราย จ.เชียงราย 57100'
 
     return (
         <div className="bg-slate-50 min-h-screen font-sans">
-            {/* Hero Section */}
             <section className={`relative overflow-hidden ${hasHeroImage ? 'pt-32 pb-24 lg:pt-40 lg:pb-30 accent-panel min-h-[52vh] flex items-end' : 'pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-50 accent-panel'}`}>
                 {hasHeroImage ? (
                     <>
@@ -36,7 +36,7 @@ export default async function ContactPage() {
                                 </h1>
                                 <div className="w-24 h-1 rounded-full bg-linear-to-r from-secondary via-accent/60 to-transparent mb-6 reveal-soft stagger-2" />
                                 <p className="text-lg md:text-xl max-w-3xl font-light leading-relaxed text-white/82 reveal-soft stagger-2">
-                                    {(hero.subtitle as string) || 'สอบถามข้อมูล หรือประสานงานเครือข่ายวัฒนธรรมจังหวัดเชียงราย ผ่านช่องทางด้านล่าง'}
+                                    {(hero.subtitle as string) || 'สอบถามข้อมูล หรือติดต่อประสานงานกับสำนักงานวัฒนธรรมจังหวัดเชียงรายผ่านช่องทางด้านล่าง'}
                                 </p>
                             </div>
                         </div>
@@ -57,7 +57,7 @@ export default async function ContactPage() {
                                 {(hero.title as string) || 'ติดต่อสภาวัฒนธรรม'}
                             </h1>
                             <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
-                                {(hero.subtitle as string) || 'สอบถามข้อมูล หรือประสานงานเครือข่ายวัฒนธรรมจังหวัดเชียงราย ผ่านช่องทางด้านล่าง'}
+                                {(hero.subtitle as string) || 'สอบถามข้อมูล หรือติดต่อประสานงานกับสำนักงานวัฒนธรรมจังหวัดเชียงรายผ่านช่องทางด้านล่าง'}
                             </p>
                         </div>
                     </>
@@ -66,7 +66,6 @@ export default async function ContactPage() {
                 <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-slate-50 to-transparent z-10" />
             </section>
 
-            {/* Breadcrumb */}
             <div className="container mx-auto max-w-7xl px-4 py-6 relative z-20">
                 <div className="breadcrumbs text-sm text-base-content/60 font-light">
                     <ul>
@@ -76,11 +75,8 @@ export default async function ContactPage() {
                 </div>
             </div>
 
-            {/* Main Content */}
             <div className="container mx-auto max-w-6xl px-4 py-12 pb-8 relative z-20">
-                {/* Contact Cards Grid */}
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {/* Address */}
                     <div className="group relative bg-white rounded-3xl border border-base-200 shadow-sm p-8 hover:border-secondary/30 hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] transition-all duration-400 overflow-hidden reveal-soft stagger-1">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-primary/5 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="relative z-10">
@@ -89,15 +85,13 @@ export default async function ContactPage() {
                             </div>
                             <h3 className="font-bold text-lg mb-3 text-primary font-display">ที่อยู่</h3>
                             <p className="text-base-content/70 font-light leading-relaxed text-sm">
-                                สำนักงานสภาวัฒนธรรมจังหวัดเชียงราย<br />
-                                ศาลากลางจังหวัดเชียงราย ชั้น 3<br />
-                                ถนนแม่ฟ้าหลวง ตำบลริมกก<br />
-                                อำเภอเมือง จังหวัดเชียงราย 57100
+                                สำนักงานวัฒนธรรมจังหวัดเชียงราย<br />
+                                เลขที่ 570 หมู่ 2 ถ.เลี่ยงเมืองเชียงรายตะวันตก<br />
+                                ต.บ้านดู่ อ.เมืองเชียงราย จ.เชียงราย 57100
                             </p>
                         </div>
                     </div>
 
-                    {/* Phone */}
                     <div className="group relative bg-white rounded-3xl border border-base-200 shadow-sm p-8 hover:border-secondary/30 hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] transition-all duration-400 overflow-hidden reveal-soft stagger-2">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-secondary/5 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="relative z-10">
@@ -106,19 +100,14 @@ export default async function ContactPage() {
                             </div>
                             <h3 className="font-bold text-lg mb-3 text-primary font-display">โทรศัพท์</h3>
                             <div className="space-y-2">
-                                <a href="tel:053150150" className="text-base-content/70 font-light text-sm hover:text-primary transition-colors flex items-center gap-2 group/link">
+                                <a href="tel:053150169" className="text-base-content/70 font-light text-sm hover:text-primary transition-colors flex items-center gap-2 group/link">
                                     <span className="w-1.5 h-1.5 rounded-full bg-accent/50 group-hover/link:bg-accent transition-colors" />
-                                    053-150-150 ต่อ 123
+                                    0-5315-0169
                                 </a>
-                                <p className="text-base-content/50 font-light text-sm flex items-center gap-2">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-base-300" />
-                                    053-150-151 (แฟกซ์)
-                                </p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Email */}
                     <div className="group relative bg-white rounded-3xl border border-base-200 shadow-sm p-8 hover:border-secondary/30 hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] transition-all duration-400 overflow-hidden reveal-soft stagger-3">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-primary/5 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="relative z-10">
@@ -132,7 +121,6 @@ export default async function ContactPage() {
                         </div>
                     </div>
 
-                    {/* Hours */}
                     <div className="group relative bg-white rounded-3xl border border-base-200 shadow-sm p-8 hover:border-secondary/30 hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] transition-all duration-400 overflow-hidden reveal-soft stagger-4">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-secondary/5 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="relative z-10">
@@ -153,9 +141,7 @@ export default async function ContactPage() {
                     </div>
                 </div>
 
-                {/* Social Media & Quick Actions */}
                 <div className="mt-12 grid md:grid-cols-2 gap-8">
-                    {/* Social Media */}
                     <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-8 lg:p-10 accent-panel reveal-soft stagger-1">
                         <h3 className="text-xl font-bold text-primary mb-6 font-display flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -212,14 +198,13 @@ export default async function ContactPage() {
                         </div>
                     </div>
 
-                    {/* Quick Access Links */}
                     <div className="bg-linear-to-br from-primary to-primary-dark rounded-3xl shadow-lg p-8 lg:p-10 text-white relative overflow-hidden accent-panel reveal-soft stagger-2">
                         <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full" />
                         <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-tr-full" />
                         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[40px_40px] mask-[radial-gradient(ellipse_50%_50%_at_50%,#000_70%,transparent_100%)]" />
 
                         <h3 className="text-xl font-bold mb-2 relative z-10 font-display">ลิงก์ด่วน</h3>
-                        <p className="text-white/60 text-sm font-light mb-8 relative z-10">เข้าถึงข้อมูลที่สำคัญได้ทันที</p>
+                        <p className="text-white/60 text-sm font-light mb-8 relative z-10">เข้าถึงข้อมูลสำคัญได้ทันที</p>
 
                         <ul className="space-y-3 relative z-10">
                             <li>
@@ -275,19 +260,18 @@ export default async function ContactPage() {
                 </div>
             </div>
 
-            {/* Map Section — Full Width */}
             <section className="py-20 px-4 md:px-8 bg-white border-t border-base-200 relative overflow-hidden accent-panel">
                 <div className="absolute inset-0 opacity-[0.02] mask-kanok bg-primary pointer-events-none" />
                 <div className="container mx-auto max-w-6xl relative z-10">
                     <div className="text-center mb-10 reveal-soft">
                         <span className="text-accent font-semibold tracking-widest text-sm uppercase mb-3 block">Location</span>
                         <h2 className="text-3xl font-bold text-primary font-display">แผนที่ตั้งสำนักงาน</h2>
-                        <p className="text-base-content/60 font-light mt-3 max-w-lg mx-auto">ศาลากลางจังหวัดเชียงราย ชั้น 3 ถนนแม่ฟ้าหลวง ตำบลริมกก</p>
+                        <p className="text-base-content/60 font-light mt-3 max-w-lg mx-auto">{contactAddress}</p>
                     </div>
 
                     <div className="rounded-3xl border border-secondary/20 shadow-[0_8px_30px_rgb(212,175,55,0.05)] overflow-hidden aspect-video relative reveal-soft stagger-1">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3756.8!2d99.8325!3d19.9105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30d70bf1e35a6c4d%3A0x1029bbc5945be1f0!2z4Lio4Liy4Lil4Liy4LiB4Lil4Liy4LiH4LiI4Lix4LiH4Lir4Lin4Lix4LiU4LmA4LiK4Li14Lii4LiH4Lij4Liy4Lii!5e0!3m2!1sth!2sth!4v1700000000000!5m2!1sth!2sth"
+                            src="https://maps.google.com/maps?q=สำนักงานวัฒนธรรมจังหวัดเชียงราย%20เลขที่%20570%20หมู่%202%20ถนนเลี่ยงเมืองเชียงรายตะวันตก%20ตำบลบ้านดู่%20อำเภอเมืองเชียงราย%20จังหวัดเชียงราย%2057100&z=16&output=embed"
                             width="100%"
                             height="100%"
                             style={{ border: 0 }}
@@ -295,13 +279,13 @@ export default async function ContactPage() {
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
                             className="absolute inset-0 w-full h-full"
-                            title="แผนที่สำนักงานสภาวัฒนธรรมจังหวัดเชียงราย"
+                            title="แผนที่สำนักงานวัฒนธรรมจังหวัดเชียงราย"
                         />
                     </div>
 
                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <a
-                            href="https://maps.google.com/?q=ศาลากลางจังหวัดเชียงราย"
+                            href="https://maps.google.com/?q=สำนักงานวัฒนธรรมจังหวัดเชียงราย เลขที่ 570 หมู่ 2 ถนนเลี่ยงเมืองเชียงรายตะวันตก ตำบลบ้านดู่ อำเภอเมืองเชียงราย จังหวัดเชียงราย 57100"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-medium text-sm shadow-md shadow-primary/20 hover:shadow-lg hover:bg-primary-dark transition-all group"
@@ -311,7 +295,7 @@ export default async function ContactPage() {
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
                         </a>
                         <a
-                            href="https://maps.google.com/maps/dir//ศาลากลางจังหวัดเชียงราย"
+                            href="https://maps.google.com/maps/dir//สำนักงานวัฒนธรรมจังหวัดเชียงราย เลขที่ 570 หมู่ 2 ถนนเลี่ยงเมืองเชียงรายตะวันตก ตำบลบ้านดู่ อำเภอเมืองเชียงราย จังหวัดเชียงราย 57100"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-primary font-medium text-sm border border-base-200 shadow-sm hover:border-secondary hover:shadow-md transition-all group"

@@ -21,6 +21,8 @@
 - สเปคฟีเจอร์ใหม่เก็บใน `02_Features/`
 - ใช้ template จาก `99_Templates/Feature_Template.md`
 - [District_Committee_Profiles.md](02_Features/District_Committee_Profiles.md)
+- [Awards_Honors_Khon_Dee.md](02_Features/Awards_Honors_Khon_Dee.md)
+- [Awards_Honors_Modular_Architecture.md](02_Features/Awards_Honors_Modular_Architecture.md)
 - [Heritage_Search.md](02_Features/Heritage_Search.md)
 - [Heritage_Tag_Filter.md](02_Features/Heritage_Tag_Filter.md)
 

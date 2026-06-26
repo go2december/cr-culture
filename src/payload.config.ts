@@ -17,6 +17,15 @@ import { HeritageBlog } from './collections/HeritageBlog'
 import { Tags } from './collections/Tags'
 import { News } from './collections/News'
 import { Media } from './collections/Media'
+import { AwardYears } from './collections/AwardYears'
+import { AwardCategories } from './collections/AwardCategories'
+import { KhonDeeAwards } from './collections/KhonDeeAwards'
+import { Institutions } from './collections/Institutions'
+import { Awardees } from './collections/Awardees'
+import { YouthAwardHistories } from './collections/YouthAwardHistories'
+import { AwardGalleries } from './collections/AwardGalleries'
+import { WisdomCategories } from './collections/WisdomCategories'
+import { WisdomAwards } from './collections/WisdomAwards'
 
 // Globals
 import { AboutPage } from './globals/AboutPage'
@@ -68,6 +77,15 @@ export default buildConfig({
         Tags,
         News,
         Media,
+        AwardYears,
+        AwardCategories,
+        KhonDeeAwards,
+        Institutions,
+        Awardees,
+        YouthAwardHistories,
+        AwardGalleries,
+        WisdomCategories,
+        WisdomAwards,
     ],
     globals: [
         AboutPage,

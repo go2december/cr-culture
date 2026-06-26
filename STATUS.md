@@ -51,3 +51,23 @@
 - roadmap: `docs/01_Project_Core/Project_Roadmap.md`
 - meeting notes: `docs/05_Meeting_Notes/README.md`
 - decision log: `docs/05_Meeting_Notes/Decision_Log.md`
+
+## Recent Work (Awards Module — 2026-06-26)
+- **Honor awards section:** Added navbar entry `รางวัลเกียรติยศ` with submenu `คนดีศรีเชียงราย`.
+- **Payload CMS:** Added `award-years`, `award-categories`, and `khon-dee-awards` collections for annual cycles, award taxonomy, and recipient profiles.
+- **Frontend:** Added public routes `/awards/khon-dee` and `/awards/khon-dee/[id]` with filterable list and detail view.
+- **Docs:** Added canonical feature doc for the awards module and updated database schema notes.
+
+## Recent Work (Typography Refresh โ€” 2026-06-26)
+- **Frontend typography:** Updated shared typography tokens so body copy uses `Sarabun` and headings/navigation use `Prompt`.
+- **Navbar polish:** Increased menu emphasis and tuned sizing to keep the header cleaner before the mobile breakpoint.
+
+## Recent Work (Khon Dee Hero Global โ€” 2026-06-26)
+- **CMS hero management:** Added `khonDee` to the `page-heroes` global so the `คนดีศรีเชียงราย` list page can manage eyebrow, title, subtitle, and hero image from Payload.
+- **Frontend wiring:** Updated `/awards/khon-dee` to read hero content from the shared global with safe fallback copy when the CMS entry is still empty.
+
+## Recent Work (Awards Expansion — 2026-06-26)
+- **Modular awards IA:** Added `เยาวชนวัฒนธรรม` and `ครูภูมิปัญญาเมืองเชียงราย` under the `รางวัลเกียรติยศ` navigation group.
+- **Payload CMS:** Added `wisdom-awards` and refined youth-awards admin labeling so award modules are easier to manage independently.
+- **Frontend:** Added public routes for `/awards/youth-culture`, `/awards/youth-culture/[id]`, `/awards/wisdom-awards`, and `/awards/wisdom-awards/[id]`.
+- **Docs:** Added a canonical modular awards architecture document covering the split collection strategy and public routing.

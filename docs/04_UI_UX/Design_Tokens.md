@@ -69,20 +69,20 @@
  - `--radius-btn: 0.5rem`
  
  ## Typography Tokens
- - `--font-sans`: `var(--font-sans), 'Noto Sans Thai', system-ui, sans-serif`
- - `--font-display`: `var(--font-display), var(--font-noto-serif), serif`
+- `--font-sans`: `Sarabun`, fallback to `Noto Sans Thai`, `Leelawadee UI`, `system-ui`, `sans-serif`
+- `--font-display`: `Prompt`, fallback to `Sarabun`, `Noto Sans Thai`, `Leelawadee UI`, `system-ui`, `sans-serif`
  
  Typography rules from implementation:
- - `html` uses `var(--font-sans)`
- - `h1` to `h6` use `var(--font-display)`
- - Heading weight is `700`
- - Heading letter spacing is `0.02em`
- - `body` uses `font-weight: 300`
- - `body` line-height is `1.8`
+- `html` uses `var(--font-sans)`
+- `h1` to `h6` use `var(--font-display)`
+- Heading weight is `700`
+- Heading letter spacing is `0.01em`
+- `body` uses `font-weight: 400`
+- `body` line-height is `1.8`
  
  Usage guidance:
- - Use display font for hero headings, section titles, and ceremonial/Lanna mood
- - Use sans font for paragraph text, navigation, metadata, and admin-like UI
+- Use display font for hero headings, section titles, navigation, and CTA emphasis
+- Use sans font for paragraph text, long-form content, metadata, and admin-like UI
  
  ## Radius Tokens
  - `--radius-lanna`: `0.5rem`

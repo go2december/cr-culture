@@ -1,6 +1,22 @@
 import type { GalleryItemLike, MediaLike } from './media'
 import { resolveMediaUrl } from './media'
-import type { PublicActivity, PublicHeritage, PublicNews, PublicTag, PublicDistrictRef } from './public-content'
+import { richTextToHtml } from './richtext'
+import type {
+    PublicActivity,
+    PublicAwardCategory,
+    PublicAwardYear,
+    PublicAwardee,
+    PublicAwardGallery,
+    PublicHeritage,
+    PublicInstitution,
+    PublicKhonDeeAward,
+    PublicNews,
+    PublicTag,
+    PublicYouthAwardHistory,
+    PublicWisdomAward,
+    PublicWisdomCategory,
+    PublicDistrictRef,
+} from './public-content'
 import type { PublicBoardMember, PublicDistrictChairman, PublicDistrictMember, PublicDistrictSummary } from './public-organization'
 
 export type RawPayloadRef = {
@@ -94,6 +110,91 @@ export interface RawTag {
     id: string | number
     name: string
     slug: string
+}
+
+export interface RawAwardYear {
+    id: string | number
+    buddhistYear: number
+    announcementDate?: string | null
+    ceremonyDate?: string | null
+    location?: string | null
+    presidentName?: string | null
+}
+
+export interface RawAwardCategory {
+    id: string | number
+    mainPillar: PublicAwardCategory['mainPillar']
+    subType: string
+}
+
+export interface RawWisdomCategory {
+    id: string | number
+    title: string
+    slug: string
+    description?: string | null
+}
+
+export interface RawKhonDeeAward {
+    id: string | number
+    prefix?: string | null
+    fullName: string
+    currentPosition?: string | null
+    profileImage?: MediaLike
+    contributionTitle: string
+    contributionDetail?: unknown
+    impactArea?: string | null
+    year?: RawAwardYear | string | number | null
+    category?: RawAwardCategory | string | number | null
+    isPublished?: boolean | null
+}
+
+export interface RawInstitution {
+    id: string | number
+    institutionName: string
+    district?: string | null
+    profileImage?: MediaLike
+}
+
+export interface RawAwardee {
+    id: string | number
+    prefix?: string | null
+    fullName: string
+    gradeLevel?: string | null
+    avatarImage?: MediaLike
+    institution?: RawInstitution | string | number | null
+    isPublished?: boolean | null
+}
+
+export interface RawAwardGallery {
+    id: string | number
+    image?: MediaLike
+    caption?: string | null
+    isHighlight?: boolean | null
+    year?: RawAwardYear | string | number | null
+}
+
+export interface RawYouthAwardHistory {
+    id: string | number
+    projectTitle: string
+    projectSummary?: string | null
+    videoUrl?: string | null
+    coverImage?: MediaLike
+    institution?: RawInstitution | string | number | null
+    year?: RawAwardYear | string | number | null
+    category?: RawAwardCategory | string | number | null
+    awardees?: Array<RawAwardee | string | number> | null
+    isPublished?: boolean | null
+}
+
+export interface RawWisdomAward {
+    id: string | number
+    prefix?: string | null
+    fullName: string
+    avatarImage?: MediaLike
+    year?: RawAwardYear | string | number | null
+    wisdomCategory?: RawWisdomCategory | string | number | null
+    contributionDetail?: unknown
+    isPublished?: boolean | null
 }
 
 const toStringId = (value: unknown): string | undefined => {
@@ -258,4 +359,93 @@ export const mapTag = (doc: RawTag): PublicTag => ({
     id: doc.id,
     name: doc.name,
     slug: doc.slug,
+})
+
+export const mapAwardYear = (doc: RawAwardYear): PublicAwardYear => ({
+    id: doc.id,
+    buddhistYear: doc.buddhistYear,
+    announcementDate: doc.announcementDate ?? null,
+    ceremonyDate: doc.ceremonyDate ?? null,
+    location: doc.location ?? null,
+    presidentName: doc.presidentName ?? null,
+})
+
+export const mapAwardCategory = (doc: RawAwardCategory): PublicAwardCategory => ({
+    id: doc.id,
+    mainPillar: doc.mainPillar,
+    subType: doc.subType,
+})
+
+export const mapWisdomCategory = (doc: RawWisdomCategory): PublicWisdomCategory => ({
+    id: doc.id,
+    title: doc.title,
+    slug: doc.slug,
+    description: doc.description ?? null,
+})
+
+export const mapKhonDeeAward = (doc: RawKhonDeeAward): PublicKhonDeeAward => ({
+    id: doc.id,
+    prefix: doc.prefix ?? null,
+    fullName: doc.fullName,
+    currentPosition: doc.currentPosition ?? null,
+    profileImage: doc.profileImage,
+    contributionTitle: doc.contributionTitle,
+    contributionDetailHtml: richTextToHtml(doc.contributionDetail),
+    impactArea: doc.impactArea ?? null,
+    year: doc.year && typeof doc.year === 'object' && 'buddhistYear' in doc.year ? mapAwardYear(doc.year as RawAwardYear) : null,
+    category: doc.category && typeof doc.category === 'object' && 'subType' in doc.category ? mapAwardCategory(doc.category as RawAwardCategory) : null,
+})
+
+export const mapInstitution = (doc: RawInstitution): PublicInstitution => ({
+    id: doc.id,
+    institutionName: doc.institutionName,
+    district: doc.district ?? null,
+    profileImage: doc.profileImage,
+})
+
+export const mapAwardee = (doc: RawAwardee): PublicAwardee => ({
+    id: doc.id,
+    prefix: doc.prefix ?? null,
+    fullName: doc.fullName,
+    gradeLevel: doc.gradeLevel ?? null,
+    avatarImage: doc.avatarImage,
+    institution: doc.institution && typeof doc.institution === 'object' && 'institutionName' in doc.institution
+        ? mapInstitution(doc.institution as RawInstitution)
+        : null,
+})
+
+export const mapAwardGallery = (doc: RawAwardGallery): PublicAwardGallery => ({
+    id: doc.id,
+    image: doc.image,
+    caption: doc.caption ?? null,
+    isHighlight: doc.isHighlight ?? null,
+    year: doc.year && typeof doc.year === 'object' && 'buddhistYear' in doc.year ? mapAwardYear(doc.year as RawAwardYear) : null,
+})
+
+export const mapYouthAwardHistory = (doc: RawYouthAwardHistory): PublicYouthAwardHistory => ({
+    id: doc.id,
+    projectTitle: doc.projectTitle,
+    projectSummary: doc.projectSummary ?? null,
+    videoUrl: doc.videoUrl ?? null,
+    coverImage: doc.coverImage,
+    institution: doc.institution && typeof doc.institution === 'object' && 'institutionName' in doc.institution
+        ? mapInstitution(doc.institution as RawInstitution)
+        : null,
+    year: doc.year && typeof doc.year === 'object' && 'buddhistYear' in doc.year ? mapAwardYear(doc.year as RawAwardYear) : null,
+    category: doc.category && typeof doc.category === 'object' && 'subType' in doc.category ? mapAwardCategory(doc.category as RawAwardCategory) : null,
+    awardees: (doc.awardees || [])
+        .filter((awardee): awardee is RawAwardee => Boolean(awardee) && typeof awardee === 'object' && 'fullName' in awardee)
+        .map(mapAwardee),
+})
+
+export const mapWisdomAward = (doc: RawWisdomAward): PublicWisdomAward => ({
+    id: doc.id,
+    prefix: doc.prefix ?? null,
+    fullName: doc.fullName,
+    avatarImage: doc.avatarImage,
+    year: doc.year && typeof doc.year === 'object' && 'buddhistYear' in doc.year ? mapAwardYear(doc.year as RawAwardYear) : null,
+    wisdomCategory: doc.wisdomCategory && typeof doc.wisdomCategory === 'object' && 'title' in doc.wisdomCategory
+        ? mapWisdomCategory(doc.wisdomCategory as RawWisdomCategory)
+        : null,
+    contributionDetailHtml: richTextToHtml(doc.contributionDetail),
 })

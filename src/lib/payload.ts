@@ -2,24 +2,42 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { cache } from 'react'
 import type { MediaLike } from './media'
-import type { PublicActivity, PublicHeritage, PublicNews, PublicTag } from './public-content'
+import type { PublicActivity, PublicAwardCategory, PublicAwardGallery, PublicAwardYear, PublicAwardee, PublicHeritage, PublicInstitution, PublicKhonDeeAward, PublicNews, PublicTag, PublicYouthAwardHistory, PublicWisdomAward, PublicWisdomCategory } from './public-content'
 import type { PublicBoardMember, PublicDistrictChairman, PublicDistrictMember, PublicDistrictSummary } from './public-organization'
 import {
   mapActivity,
+  mapAwardCategory,
+  mapAwardGallery,
+  mapAwardee,
+  mapAwardYear,
   mapBoardMember,
   mapDistrictChairman,
   mapDistrictMember,
   mapDistrictSummary,
   mapHeritage,
+  mapInstitution,
+  mapKhonDeeAward,
   mapNews,
   mapTag,
+  mapYouthAwardHistory,
+  mapWisdomCategory,
+  mapWisdomAward,
   type RawActivity,
+  type RawAwardCategory,
+  type RawAwardGallery,
+  type RawAwardee,
+  type RawAwardYear,
   type RawBoardMember,
   type RawDistrictMember,
   type RawDistrictSummary,
   type RawHeritage,
+  type RawInstitution,
+  type RawKhonDeeAward,
   type RawNews,
   type RawTag,
+  type RawYouthAwardHistory,
+  type RawWisdomCategory,
+  type RawWisdomAward,
 } from './payload-mappers'
 
 // ดึงอินสแตนซ์ของ Payload API (Singleton Pattern สำหรับเรียกใช้หลายที่)
@@ -40,7 +58,7 @@ type FindResponse<T> = {
 
 type QueryWhere = Record<string, unknown>
 
-type CollectionSlug = 'provincial-board' | 'districts' | 'district-members' | 'activities' | 'heritage-blog' | 'tags' | 'news'
+type CollectionSlug = 'provincial-board' | 'districts' | 'district-members' | 'activities' | 'heritage-blog' | 'tags' | 'news' | 'award-years' | 'award-categories' | 'khon-dee-awards' | 'institutions' | 'awardees' | 'youth-award-histories' | 'award-galleries' | 'wisdom-categories' | 'wisdom-awards'
 
 type GlobalSlug = 'about-page' | 'page-heroes'
 
@@ -65,6 +83,9 @@ export interface PageHeroesGlobal {
   aboutBoard?: PageHeroContent
   news?: PageHeroContent
   heritage?: PageHeroContent
+  khonDee?: PageHeroContent
+  youthCulture?: PageHeroContent
+  wisdomAwards?: PageHeroContent
   districts?: PageHeroContent
   contact?: PageHeroContent
 }
@@ -336,4 +357,245 @@ export const getDistrictChairmen = cache(async () => {
     depth: 2,
   }, mapDistrictChairman)
   return response.docs
+})
+
+export const getAwardYears = cache(async () => {
+  const response = await findMappedDocs<RawAwardYear, PublicAwardYear>('award-years', {
+    limit: 100,
+    sort: '-buddhistYear',
+  }, mapAwardYear)
+  return response.docs
+})
+
+export const getAwardCategories = cache(async () => {
+  const response = await findMappedDocs<RawAwardCategory, PublicAwardCategory>('award-categories', {
+    limit: 100,
+    sort: 'subType',
+  }, mapAwardCategory)
+  return response.docs
+})
+
+export const getKhonDeeAwards = cache(async (options?: {
+  year?: string
+  categoryId?: string
+  search?: string
+  limit?: number
+}) => {
+  let yearId: string | null = null
+
+  if (options?.year) {
+    const matchedYear = await findOne<RawAwardYear>('award-years', {
+      buddhistYear: {
+        equals: Number(options.year),
+      },
+    })
+
+    yearId = matchedYear ? String(matchedYear.id) : null
+  }
+
+  const response = await findMappedDocs<RawKhonDeeAward, PublicKhonDeeAward>('khon-dee-awards', {
+    where: mergeWhere(
+      { isPublished: { equals: true } },
+      yearId ? { year: { equals: yearId } } : undefined,
+      options?.categoryId ? { category: { equals: options.categoryId } } : undefined,
+    ),
+    limit: options?.limit || 200,
+    sort: '-createdAt',
+    depth: 2,
+  }, mapKhonDeeAward)
+
+  if (options?.search) {
+    const searchKeyword = options.search.toLowerCase().trim()
+    response.docs = response.docs.filter((doc) => {
+      const fullName = doc.fullName.toLowerCase()
+      const currentPosition = doc.currentPosition?.toLowerCase() || ''
+      const contributionTitle = doc.contributionTitle.toLowerCase()
+      return fullName.includes(searchKeyword) || currentPosition.includes(searchKeyword) || contributionTitle.includes(searchKeyword)
+    })
+    response.totalDocs = response.docs.length
+  }
+
+  return response
+})
+
+export const getKhonDeeAwardById = cache(async (id: string) => {
+  return await findMappedOne<RawKhonDeeAward, PublicKhonDeeAward>('khon-dee-awards', {
+    id: {
+      equals: id,
+    },
+  }, 2, mapKhonDeeAward)
+})
+
+export const getInstitutions = cache(async () => {
+  const response = await findMappedDocs<RawInstitution, PublicInstitution>('institutions', {
+    limit: 200,
+    sort: 'institutionName',
+  }, mapInstitution)
+  return response.docs
+})
+
+export const getAwardees = cache(async (options?: { institutionId?: string }) => {
+  const response = await findMappedDocs<RawAwardee, PublicAwardee>('awardees', {
+    where: mergeWhere(
+      { isPublished: { equals: true } },
+      options?.institutionId ? { institution: { equals: options.institutionId } } : undefined,
+    ),
+    limit: 500,
+    sort: 'fullName',
+    depth: 1,
+  }, mapAwardee)
+  return response.docs
+})
+
+export const getYouthAwardHistories = cache(async (options?: {
+  year?: string
+  categoryId?: string
+  q?: string
+  limit?: number
+}) => {
+  let yearId: string | null = null
+
+  if (options?.year) {
+    const matchedYear = await findOne<RawAwardYear>('award-years', {
+      buddhistYear: {
+        equals: Number(options.year),
+      },
+    })
+
+    yearId = matchedYear ? String(matchedYear.id) : null
+  }
+
+  const response = await findMappedDocs<RawYouthAwardHistory, PublicYouthAwardHistory>('youth-award-histories', {
+    where: mergeWhere(
+      { isPublished: { equals: true } },
+      yearId ? { year: { equals: yearId } } : undefined,
+      options?.categoryId ? { category: { equals: options.categoryId } } : undefined,
+    ),
+    limit: options?.limit || 200,
+    sort: '-createdAt',
+    depth: 2,
+  }, mapYouthAwardHistory)
+
+  if (options?.q) {
+    const keyword = options.q.toLowerCase().trim()
+    response.docs = response.docs.filter((doc) => {
+      const projectTitle = doc.projectTitle.toLowerCase()
+      const projectSummary = doc.projectSummary?.toLowerCase() || ''
+      const institutionName = doc.institution?.institutionName.toLowerCase() || ''
+      const awardeeNames = doc.awardees.map((awardee) => awardee.fullName.toLowerCase()).join(' ')
+      return projectTitle.includes(keyword) || projectSummary.includes(keyword) || institutionName.includes(keyword) || awardeeNames.includes(keyword)
+    })
+    response.totalDocs = response.docs.length
+  }
+
+  return response
+})
+
+export const getYouthAwardHistoryById = cache(async (id: string) => {
+  return await findMappedOne<RawYouthAwardHistory, PublicYouthAwardHistory>('youth-award-histories', {
+    id: {
+      equals: id,
+    },
+  }, 2, mapYouthAwardHistory)
+})
+
+export const getAwardGalleries = cache(async (options?: {
+  year?: string
+  highlightsOnly?: boolean
+  limit?: number
+}) => {
+  let yearId: string | null = null
+
+  if (options?.year) {
+    const matchedYear = await findOne<RawAwardYear>('award-years', {
+      buddhistYear: {
+        equals: Number(options.year),
+      },
+    })
+
+    yearId = matchedYear ? String(matchedYear.id) : null
+  }
+
+  const response = await findMappedDocs<RawAwardGallery, PublicAwardGallery>('award-galleries', {
+    where: mergeWhere(
+      yearId ? { year: { equals: yearId } } : undefined,
+      options?.highlightsOnly ? { isHighlight: { equals: true } } : undefined,
+    ),
+    limit: options?.limit || 100,
+    sort: '-createdAt',
+    depth: 1,
+  }, mapAwardGallery)
+
+  return response.docs
+})
+
+export const getWisdomCategories = cache(async () => {
+  const response = await findMappedDocs<RawWisdomCategory, PublicWisdomCategory>('wisdom-categories', {
+    limit: 200,
+    sort: 'title',
+    depth: 0,
+  }, mapWisdomCategory)
+
+  return response.docs
+})
+
+export const getWisdomAwards = cache(async (options?: {
+  year?: string
+  category?: string
+  q?: string
+  limit?: number
+}) => {
+  let yearId: string | null = null
+  let categoryId: string | null = null
+
+  if (options?.year) {
+    const matchedYear = await findOne<RawAwardYear>('award-years', {
+      buddhistYear: {
+        equals: Number(options.year),
+      },
+    })
+
+    yearId = matchedYear ? String(matchedYear.id) : null
+  }
+
+  if (options?.category) {
+    const matchedCategory = await findOne<RawWisdomCategory>('wisdom-categories', {
+      slug: {
+        equals: options.category,
+      },
+    })
+
+    categoryId = matchedCategory ? String(matchedCategory.id) : null
+  }
+
+  const response = await findMappedDocs<RawWisdomAward, PublicWisdomAward>('wisdom-awards', {
+    where: mergeWhere(
+      { isPublished: { equals: true } },
+      yearId ? { year: { equals: yearId } } : undefined,
+      categoryId ? { wisdomCategory: { equals: categoryId } } : undefined,
+    ),
+    limit: options?.limit || 200,
+    sort: '-createdAt',
+    depth: 1,
+  }, mapWisdomAward)
+
+  if (options?.q) {
+    const keyword = options.q.toLowerCase().trim()
+    response.docs = response.docs.filter((doc) => {
+      const fullName = doc.fullName.toLowerCase()
+      const detail = doc.contributionDetailHtml?.toLowerCase() || ''
+      return fullName.includes(keyword) || detail.includes(keyword)
+    })
+    response.totalDocs = response.docs.length
+  }
+
+  return response
+})
+
+export const getWisdomAwardById = cache(async (id: string) => {
+  return await findMappedOne<RawWisdomAward, PublicWisdomAward>('wisdom-awards', {
+    id: {
+      equals: id,
+    },
+  }, 1, mapWisdomAward)
 })

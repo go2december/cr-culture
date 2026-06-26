@@ -4,6 +4,28 @@ import config from '@/payload.config'
 
 export async function GET() {
   const payload = await getPayload({ config })
+  const createRichText = (text: string) => ({
+    root: {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              text,
+              version: 1,
+            },
+          ],
+          version: 1,
+        },
+      ],
+      direction: 'ltr',
+      format: '',
+      indent: 0,
+      version: 1,
+    },
+  })
 
   try {
     // ============================================================
@@ -453,7 +475,374 @@ export async function GET() {
     }
 
     // ============================================================
-    // 10. AboutPage Global
+    // 10. Awards Honor Sample Data
+    // ============================================================
+    const awardYears = [
+      {
+        buddhistYear: 2568,
+        announcementDate: '2025-06-08T00:00:00.000Z',
+        ceremonyDate: '2025-06-29T08:30:00.000Z',
+        location: 'หอประชุมใหญ่ มหาวิทยาลัยราชภัฏเชียงราย',
+        presidentName: 'ดร.สลักจฤฎดิ์ ติยะไพรัช',
+      },
+      {
+        buddhistYear: 2569,
+        announcementDate: '2026-06-08T00:00:00.000Z',
+        ceremonyDate: '2026-06-29T08:30:00.000Z',
+        location: 'หอประชุมใหญ่ มหาวิทยาลัยราชภัฏเชียงราย',
+        presidentName: 'ดร.สลักจฤฎดิ์ ติยะไพรัช',
+      },
+    ]
+    const awardYearIds: Record<number, string> = {}
+    for (const year of awardYears) {
+      const existing = await payload.find({
+        collection: 'award-years',
+        where: { buddhistYear: { equals: year.buddhistYear } },
+        limit: 1,
+      })
+      if (existing.docs.length > 0) {
+        awardYearIds[year.buddhistYear] = String(existing.docs[0].id)
+      } else {
+        const created = await payload.create({ collection: 'award-years', data: year })
+        awardYearIds[year.buddhistYear] = String(created.id)
+      }
+    }
+
+    const mediaDocs = await payload.find({
+      collection: 'media',
+      limit: 20,
+      sort: '-createdAt',
+    })
+    const findMediaId = (pattern: string) =>
+      String(mediaDocs.docs.find((doc) => typeof doc.filename === 'string' && doc.filename.includes(pattern))?.id || '')
+    const mediaIds = {
+      silver: findMediaId('Silver_ore_threads_into_jewelry'),
+      textileA: findMediaId('Cotton_silk_threads_Tai_Lue_202605061201'),
+      textileB: findMediaId('Cotton_silk_threads_Tai_Lue_202605061249'),
+      bamboo: findMediaId('Bamboo_offerings_with_silk_ribbons'),
+      clay: findMediaId('Clay_to_ceramic_transformation_vase'),
+      ethnic: findMediaId('Ethnic_textures_blending_cultura'),
+      craftA: findMediaId('Craft_materials_into_cultural_la') || findMediaId('Craft_materials_into_cultur'),
+      surreal: findMediaId('Surreal_and_visually'),
+    }
+
+    const awardCategories = [
+      { mainPillar: 'cultural-contributor' as const, subType: 'ประเภทบุคคลทั่วไป' },
+      { mainPillar: 'outstanding-cultural-achievement' as const, subType: 'ประเภทองค์กร / ชุมชน' },
+      { mainPillar: 'outstanding-cultural-achievement' as const, subType: 'ประเภทเยาวชน / สถานศึกษา' },
+    ]
+    const awardCategoryIds: Record<string, string> = {}
+    for (const category of awardCategories) {
+      const key = `${category.mainPillar}:${category.subType}`
+      const existing = await payload.find({
+        collection: 'award-categories',
+        where: {
+          and: [
+            { mainPillar: { equals: category.mainPillar } },
+            { subType: { equals: category.subType } },
+          ],
+        },
+        limit: 1,
+      })
+      if (existing.docs.length > 0) {
+        awardCategoryIds[key] = String(existing.docs[0].id)
+      } else {
+        const created = await payload.create({ collection: 'award-categories', data: category })
+        awardCategoryIds[key] = String(created.id)
+      }
+    }
+
+    const institutions = [
+      { institutionName: 'โรงเรียนสามัคคีวิทยาคม', district: 'อ.เมืองเชียงราย' },
+      { institutionName: 'โรงเรียนดำรงราษฎร์สงเคราะห์', district: 'อ.เมืองเชียงราย' },
+      { institutionName: 'โรงเรียนเชียงของวิทยาคม', district: 'อ.เชียงของ' },
+    ]
+    const institutionIds: Record<string, string> = {}
+    for (const institution of institutions) {
+      const existing = await payload.find({
+        collection: 'institutions',
+        where: { institutionName: { equals: institution.institutionName } },
+        limit: 1,
+      })
+      if (existing.docs.length > 0) {
+        institutionIds[institution.institutionName] = String(existing.docs[0].id)
+      } else {
+        const created = await payload.create({ collection: 'institutions', data: institution })
+        institutionIds[institution.institutionName] = String(created.id)
+      }
+    }
+
+    const awardees = [
+      { prefix: 'นางสาว', fullName: 'พิมพ์ชนก ใจคำ', institutionName: 'โรงเรียนสามัคคีวิทยาคม', gradeLevel: 'มัธยมศึกษาปีที่ 5', avatarImage: mediaIds.textileA || mediaIds.ethnic },
+      { prefix: 'นาย', fullName: 'ธนกฤต แซ่ลี้', institutionName: 'โรงเรียนสามัคคีวิทยาคม', gradeLevel: 'มัธยมศึกษาปีที่ 5', avatarImage: mediaIds.bamboo || mediaIds.craftA },
+      { prefix: 'นางสาว', fullName: 'กัญญาณัฐ วงศ์ประเสริฐ', institutionName: 'โรงเรียนดำรงราษฎร์สงเคราะห์', gradeLevel: 'มัธยมศึกษาปีที่ 6', avatarImage: mediaIds.clay || mediaIds.surreal },
+      { prefix: 'นาย', fullName: 'ภัทรพล เชื้อเมืองพาน', institutionName: 'โรงเรียนเชียงของวิทยาคม', gradeLevel: 'มัธยมศึกษาปีที่ 4', avatarImage: mediaIds.textileB || mediaIds.ethnic },
+    ]
+    const awardeeIds: Record<string, string> = {}
+    for (const awardee of awardees) {
+      const existing = await payload.find({
+        collection: 'awardees',
+        where: { fullName: { equals: awardee.fullName } },
+        limit: 1,
+      })
+      const awardeeData = {
+        prefix: awardee.prefix,
+        fullName: awardee.fullName,
+        institution: institutionIds[awardee.institutionName],
+        gradeLevel: awardee.gradeLevel,
+        avatarImage: awardee.avatarImage || undefined,
+        isPublished: true,
+      }
+      if (existing.docs.length > 0) {
+        awardeeIds[awardee.fullName] = String(existing.docs[0].id)
+        await payload.update({
+          collection: 'awardees',
+          id: String(existing.docs[0].id),
+          data: awardeeData,
+        })
+      } else {
+        const created = await payload.create({
+          collection: 'awardees',
+          data: awardeeData,
+        })
+        awardeeIds[awardee.fullName] = String(created.id)
+      }
+    }
+
+    const khonDeeAwards = [
+      {
+        prefix: 'นาย',
+        fullName: 'ประยูร อินต๊ะวงศ์',
+        currentPosition: 'ประธานกลุ่มสืบสานงานหัตถกรรมพื้นบ้าน',
+        contributionTitle: 'โครงการสืบสานเครื่องเงินและลายแกะล้านนา',
+        contributionDetail: 'ดำเนินงานถ่ายทอดภูมิปัญญางานช่างพื้นบ้านให้เยาวชนและชุมชนในอำเภอเมืองเชียงรายอย่างต่อเนื่อง พร้อมจัดนิทรรศการหมุนเวียนในพื้นที่สาธารณะ',
+        impactArea: 'อ.เมืองเชียงราย, อ.แม่ลาว',
+        year: 2569,
+        categoryKey: 'cultural-contributor:ประเภทบุคคลทั่วไป',
+        contactPhone: '08-1234-5678',
+        contactAddress: 'อำเภอเมืองเชียงราย จังหวัดเชียงราย',
+        nominatorName: 'สภาวัฒนธรรมอำเภอเมืองเชียงราย',
+        profileImage: mediaIds.silver || mediaIds.craftA,
+      },
+      {
+        prefix: 'คณะ',
+        fullName: 'ชุมชนลุ่มน้ำแม่กก',
+        currentPosition: 'เครือข่ายวัฒนธรรมชุมชน',
+        contributionTitle: 'ฟื้นฟูประเพณีลอยโขมดและตลาดวัฒนธรรมริมกก',
+        contributionDetail: 'รวมพลังชุมชน หน่วยงานท้องถิ่น และเยาวชน จัดกิจกรรมสืบสานประเพณีริมน้ำ พร้อมสร้างรายได้จากผลิตภัณฑ์วัฒนธรรมของชุมชน',
+        impactArea: 'อ.เมืองเชียงราย, อ.เชียงแสน',
+        year: 2568,
+        categoryKey: 'outstanding-cultural-achievement:ประเภทองค์กร / ชุมชน',
+        contactPhone: '08-2345-6789',
+        contactAddress: 'ชุมชนลุ่มน้ำแม่กก จังหวัดเชียงราย',
+        nominatorName: 'เครือข่ายวัฒนธรรมจังหวัดเชียงราย',
+        profileImage: mediaIds.ethnic || mediaIds.textileA,
+      },
+    ]
+    for (const award of khonDeeAwards) {
+      const existing = await payload.find({
+        collection: 'khon-dee-awards',
+        where: {
+          and: [
+            { fullName: { equals: award.fullName } },
+            { contributionTitle: { equals: award.contributionTitle } },
+          ],
+        },
+        limit: 1,
+      })
+      const awardData = {
+        prefix: award.prefix,
+        fullName: award.fullName,
+        currentPosition: award.currentPosition,
+        profileImage: award.profileImage || undefined,
+        contributionTitle: award.contributionTitle,
+        contributionDetail: createRichText(award.contributionDetail),
+        impactArea: award.impactArea,
+        year: awardYearIds[award.year],
+        category: awardCategoryIds[award.categoryKey],
+        contactPhone: award.contactPhone,
+        contactAddress: award.contactAddress,
+        nominatorName: award.nominatorName,
+        isPublished: true,
+      }
+      if (existing.docs.length > 0) {
+        await payload.update({
+          collection: 'khon-dee-awards',
+          id: String(existing.docs[0].id),
+          data: awardData,
+        })
+      } else {
+        await payload.create({
+          collection: 'khon-dee-awards',
+          data: awardData,
+        })
+      }
+    }
+
+    const youthAwardHistories = [
+      {
+        projectTitle: 'สารคดีสั้น ตามรอยภูมิปัญญาผ้าทอเชียงราย',
+        year: 2569,
+        categoryKey: 'outstanding-cultural-achievement:ประเภทเยาวชน / สถานศึกษา',
+        institutionName: 'โรงเรียนสามัคคีวิทยาคม',
+        awardeeNames: ['พิมพ์ชนก ใจคำ', 'ธนกฤต แซ่ลี้'],
+        videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        projectSummary: 'สารคดีสั้นที่บันทึกเรื่องราวช่างทอผ้าท้องถิ่น กระบวนการย้อมสีธรรมชาติ และการต่อยอดงานหัตถกรรมสู่คนรุ่นใหม่',
+        coverImage: mediaIds.textileA || mediaIds.ethnic,
+      },
+      {
+        projectTitle: 'ละครเวทีเยาวชน เสียงจากลำน้ำโขง',
+        year: 2568,
+        categoryKey: 'outstanding-cultural-achievement:ประเภทเยาวชน / สถานศึกษา',
+        institutionName: 'โรงเรียนเชียงของวิทยาคม',
+        awardeeNames: ['ภัทรพล เชื้อเมืองพาน'],
+        videoUrl: 'https://www.youtube.com/watch?v=oHg5SJYRHA0',
+        projectSummary: 'ผลงานสร้างสรรค์เชิงการแสดงที่เล่าเรื่องวิถีวัฒนธรรมริมน้ำโขง เชื่อมโยงประวัติศาสตร์ท้องถิ่นกับมุมมองของเยาวชน',
+        coverImage: mediaIds.bamboo || mediaIds.craftA,
+      },
+    ]
+    for (const history of youthAwardHistories) {
+      const existing = await payload.find({
+        collection: 'youth-award-histories',
+        where: { projectTitle: { equals: history.projectTitle } },
+        limit: 1,
+      })
+      const historyData = {
+        projectTitle: history.projectTitle,
+        year: awardYearIds[history.year],
+        category: awardCategoryIds[history.categoryKey],
+        institution: institutionIds[history.institutionName],
+        awardees: history.awardeeNames.map((name) => awardeeIds[name]).filter(Boolean),
+        coverImage: history.coverImage || undefined,
+        videoUrl: history.videoUrl,
+        projectSummary: history.projectSummary,
+        isPublished: true,
+      }
+      if (existing.docs.length > 0) {
+        await payload.update({
+          collection: 'youth-award-histories',
+          id: String(existing.docs[0].id),
+          data: historyData,
+        })
+      } else {
+        await payload.create({
+          collection: 'youth-award-histories',
+          data: historyData,
+        })
+      }
+    }
+    const awardGalleries = [
+      { year: 2569, caption: 'บรรยากาศพิธีมอบรางวัลเกียรติยศประจำปี 2569', isHighlight: true, image: mediaIds.craftA || mediaIds.surreal },
+      { year: 2569, caption: 'เยาวชนผู้ได้รับรางวัลร่วมถ่ายภาพกับคณะกรรมการ', isHighlight: false, image: mediaIds.textileB || mediaIds.ethnic },
+      { year: 2568, caption: 'การแสดงผลงานวัฒนธรรมของนักเรียนบนเวทีหลัก', isHighlight: false, image: mediaIds.bamboo || mediaIds.textileA },
+    ]
+    for (const gallery of awardGalleries) {
+      const existing = await payload.find({
+        collection: 'award-galleries',
+        where: { caption: { equals: gallery.caption } },
+        limit: 1,
+      })
+      const galleryData = {
+        year: awardYearIds[gallery.year],
+        image: gallery.image || mediaIds.craftA || undefined,
+        caption: gallery.caption,
+        isHighlight: gallery.isHighlight,
+      }
+      if (existing.docs.length > 0) {
+        await payload.update({
+          collection: 'award-galleries',
+          id: String(existing.docs[0].id),
+          data: galleryData,
+        })
+      } else {
+        await payload.create({
+          collection: 'award-galleries',
+          data: galleryData,
+        })
+      }
+    }
+
+    const wisdomCategories = [
+      { title: 'สาขาช่างฝีมือดั้งเดิม', slug: 'traditional-craftsmanship' },
+      { title: 'สาขาศิลปะการแสดง', slug: 'performing-arts' },
+      { title: 'สาขาการแพทย์พื้นบ้าน', slug: 'folk-medicine' },
+    ]
+    const wisdomCategoryIds: Record<string, string> = {}
+    for (const category of wisdomCategories) {
+      const existing = await payload.find({
+        collection: 'wisdom-categories',
+        where: { slug: { equals: category.slug } },
+        limit: 1,
+      })
+      if (existing.docs.length > 0) {
+        wisdomCategoryIds[category.slug] = String(existing.docs[0].id)
+      } else {
+        const created = await payload.create({
+          collection: 'wisdom-categories',
+          data: category,
+        })
+        wisdomCategoryIds[category.slug] = String(created.id)
+      }
+    }
+
+    const sampleWisdomAwards = [
+      {
+        prefix: 'พ่อครู',
+        fullName: 'สมศักดิ์ จันต๊ะคุณ',
+        wisdomCategorySlug: 'traditional-craftsmanship',
+        year: 2569,
+        contributionText: 'สืบสานงานช่างฝีมือพื้นบ้านด้านการแกะสลักไม้และการทำเครื่องใช้พื้นถิ่น ถ่ายทอดองค์ความรู้ให้เยาวชนและชุมชนอย่างต่อเนื่อง',
+        avatarImage: mediaIds.silver || mediaIds.clay,
+      },
+      {
+        prefix: 'แม่ครู',
+        fullName: 'บัวเรียง ใจงาม',
+        wisdomCategorySlug: 'performing-arts',
+        year: 2569,
+        contributionText: 'เป็นผู้สืบทอดศิลปะการฟ้อนพื้นเมืองล้านนาและจัดกิจกรรมถ่ายทอดให้โรงเรียนและเครือข่ายวัฒนธรรมในจังหวัดเชียงราย',
+        avatarImage: mediaIds.bamboo || mediaIds.ethnic,
+      },
+      {
+        prefix: 'นาย',
+        fullName: 'สุรพล แสงคำ',
+        wisdomCategorySlug: 'folk-medicine',
+        year: 2568,
+        contributionText: 'รวบรวมองค์ความรู้การแพทย์พื้นบ้านและสมุนไพรท้องถิ่น พร้อมให้คำปรึกษาและถ่ายทอดแนวทางดูแลสุขภาพตามภูมิปัญญาชุมชน',
+        avatarImage: mediaIds.clay || mediaIds.craftA,
+      },
+    ]
+    for (const wisdom of sampleWisdomAwards) {
+      const existing = await payload.find({
+        collection: 'wisdom-awards',
+        where: { fullName: { equals: wisdom.fullName } },
+        limit: 1,
+        depth: 0,
+      })
+      const wisdomData = {
+        prefix: wisdom.prefix,
+        fullName: wisdom.fullName,
+        avatarImage: wisdom.avatarImage || undefined,
+        year: awardYearIds[wisdom.year],
+        wisdomCategory: wisdomCategoryIds[wisdom.wisdomCategorySlug],
+        contributionDetail: createRichText(wisdom.contributionText),
+        isPublished: true,
+      }
+      if (existing.docs.length > 0) {
+        await payload.update({
+          collection: 'wisdom-awards',
+          id: String(existing.docs[0].id),
+          data: wisdomData,
+        })
+      } else {
+        await payload.create({
+          collection: 'wisdom-awards',
+          data: wisdomData,
+        })
+      }
+    }
+
+    // ============================================================
+    // 11. AboutPage Global
     // ============================================================
     try {
       await payload.updateGlobal({
@@ -475,10 +864,86 @@ export async function GET() {
     }
 
     // ============================================================
-    // 11. PageHeroes Global
+    // 11. WisdomAwards (ครูภูมิปัญญาเมืองเชียงราย)
+    // ============================================================
+    const awardYearsResponse = await payload.find({ collection: 'award-years', limit: 10, sort: '-buddhistYear' })
+    const defaultAwardYearId = awardYearsResponse.docs[0] ? String(awardYearsResponse.docs[0].id) : undefined
+    const wisdomAwards = [
+      {
+        prefix: 'พ่อครู',
+        fullName: 'สมศักดิ์ จันต๊ะคุณ',
+        wisdomCategorySlug: 'traditional-craftsmanship',
+        contributionText: 'สืบสานงานช่างฝีมือพื้นบ้านด้านการแกะสลักไม้และการทำเครื่องใช้พื้นถิ่น ถ่ายทอดองค์ความรู้ให้เยาวชนและชุมชนอย่างต่อเนื่อง',
+      },
+      {
+        prefix: 'แม่ครู',
+        fullName: 'บัวเรียง ใจงาม',
+        wisdomCategorySlug: 'performing-arts',
+        contributionText: 'เป็นผู้สืบทอดศิลปะการฟ้อนพื้นเมืองล้านนาและจัดกิจกรรมถ่ายทอดให้โรงเรียนและเครือข่ายวัฒนธรรมในจังหวัดเชียงราย',
+      },
+      {
+        prefix: 'นาย',
+        fullName: 'สุรพล แสงคำ',
+        wisdomCategorySlug: 'folk-medicine',
+        contributionText: 'รวบรวมองค์ความรู้การแพทย์พื้นบ้านและสมุนไพรท้องถิ่น พร้อมให้คำปรึกษาและถ่ายทอดแนวทางดูแลสุขภาพตามภูมิปัญญาชุมชน',
+      },
+    ]
+
+    if (defaultAwardYearId) {
+      const existingWisdomAwards = await payload.find({ collection: 'wisdom-awards', limit: 1, depth: 0 })
+      if (existingWisdomAwards.docs.length === 0) {
+        for (const wisdom of wisdomAwards) {
+          await payload.create({
+            collection: 'wisdom-awards',
+            data: {
+              prefix: wisdom.prefix,
+              fullName: wisdom.fullName,
+              year: defaultAwardYearId,
+              wisdomCategory: wisdomCategoryIds[wisdom.wisdomCategorySlug],
+              contributionDetail: {
+                root: {
+                  type: 'root',
+                  children: [
+                    {
+                      type: 'paragraph',
+                      children: [
+                        {
+                          type: 'text',
+                          text: wisdom.contributionText,
+                          version: 1,
+                        },
+                      ],
+                      version: 1,
+                    },
+                  ],
+                  direction: 'ltr',
+                  format: '',
+                  indent: 0,
+                  version: 1,
+                },
+              },
+              isPublished: true,
+            },
+          })
+        }
+      }
+    }
+
+    // ============================================================
+    // 12. PageHeroes Global
     // ============================================================
     try {
       const existingPageHeroes = await payload.findGlobal({ slug: 'page-heroes' }).catch(() => null)
+      const khonDeeHeroMedia = await payload.find({
+        collection: 'media',
+        where: {
+          filename: {
+            contains: 'Craft_materials_into_cultural_la',
+          },
+        },
+        limit: 1,
+      }).catch(() => ({ docs: [] }))
+      const khonDeeHeroMediaId = khonDeeHeroMedia.docs[0] ? String(khonDeeHeroMedia.docs[0].id) : undefined
       await payload.updateGlobal({
         slug: 'page-heroes',
         data: {
@@ -524,6 +989,27 @@ export async function GET() {
             eyebrow: 'ความรู้และภูมิปัญญา',
             title: 'คลังมรดกภูมิปัญญาทางวัฒนธรรม',
             subtitle: 'รวบรวมและสงวนรักษามรดกทางวัฒนธรรม องค์ความรู้ และภูมิปัญญาท้องถิ่นอันทรงคุณค่าของจังหวัดเชียงราย',
+          },
+          khonDee: {
+            ...(existingPageHeroes?.khonDee || {}),
+            eyebrow: 'รางวัลเกียรติยศ',
+            title: 'คนดีศรีเชียงราย',
+            subtitle: 'ทำเนียบบุคคลและองค์กรที่ได้รับการยกย่องด้านคุณประโยชน์และผลงานดีเด่นทางวัฒนธรรมของจังหวัดเชียงราย',
+            heroImage: existingPageHeroes?.khonDee?.heroImage || khonDeeHeroMediaId,
+          },
+          youthCulture: {
+            ...(existingPageHeroes?.youthCulture || {}),
+            eyebrow: 'รางวัลเกียรติยศ',
+            title: 'เยาวชนวัฒนธรรม',
+            subtitle: 'ผลงานสร้างสรรค์ทางวัฒนธรรมของเยาวชนเชียงราย พร้อมข้อมูลโรงเรียน ทีมผู้จัดทำ และคลังภาพบรรยากาศวันรับรางวัล',
+            heroImage: existingPageHeroes?.youthCulture?.heroImage || khonDeeHeroMediaId,
+          },
+          wisdomAwards: {
+            ...(existingPageHeroes?.wisdomAwards || {}),
+            eyebrow: 'รางวัลเกียรติยศ',
+            title: 'ครูภูมิปัญญาเมืองเชียงราย',
+            subtitle: 'ทำเนียบผู้สืบสานองค์ความรู้ท้องถิ่นของเชียงราย แยกตามสาขาเพื่อการค้นหาและเผยแพร่ได้อย่างชัดเจน',
+            heroImage: existingPageHeroes?.wisdomAwards?.heroImage || khonDeeHeroMediaId,
           },
           districts: {
             ...(existingPageHeroes?.districts || {}),
@@ -580,7 +1066,7 @@ export async function GET() {
         name: 'page heroes',
         expected: 1,
         actual: pageHeroesStats ? 1 : 0,
-        passed: Boolean(pageHeroesStats?.home?.title && pageHeroesStats?.districts?.title && pageHeroesStats?.contact?.title),
+        passed: Boolean(pageHeroesStats?.home?.title && pageHeroesStats?.khonDee?.title && pageHeroesStats?.youthCulture?.title && pageHeroesStats?.wisdomAwards?.title && pageHeroesStats?.districts?.title && pageHeroesStats?.contact?.title),
       },
     ]
 
@@ -603,6 +1089,16 @@ export async function GET() {
         activities: activities.length,
         heritageBlogs: heritageBlogs.length,
         news: newsItems.length,
+        awardYears: awardYears.length,
+        awardCategories: awardCategories.length,
+        wisdomCategories: wisdomCategories.length,
+        institutions: institutions.length,
+        awardees: awardees.length,
+        khonDeeAwards: khonDeeAwards.length,
+        youthAwardHistories: youthAwardHistories.length,
+        awardGalleries: awardGalleries.length,
+        wisdomAwardsSample: sampleWisdomAwards.length,
+        wisdomAwards: wisdomAwards.length,
         aboutPageGlobal: 'updated',
       },
     })

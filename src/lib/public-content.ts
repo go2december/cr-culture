@@ -3,6 +3,13 @@ import type { GalleryItemLike, MediaLike } from './media'
 export type PublicNewsType = 'general' | 'video' | 'document'
 export type PublicActivityLevel = 'province' | 'district'
 export type PublicHeritageCategory = 'all' | 'intangible-heritage' | 'learning-resources' | 'local-wisdom'
+export type PublicAwardMainPillar = 'cultural-contributor' | 'outstanding-cultural-achievement'
+export interface PublicWisdomCategory {
+    id: string | number
+    title: string
+    slug: string
+    description?: string | null
+}
 
 export interface PublicDistrict {
     id: string | number
@@ -66,4 +73,78 @@ export interface PublicHeritage {
     gallery?: GalleryItemLike[]
     tags?: Array<string | PublicTag>
     district?: PublicDistrictRef | null
+}
+
+export interface PublicAwardYear {
+    id: string | number
+    buddhistYear: number
+    announcementDate?: string | null
+    ceremonyDate?: string | null
+    location?: string | null
+    presidentName?: string | null
+}
+
+export interface PublicAwardCategory {
+    id: string | number
+    mainPillar: PublicAwardMainPillar
+    subType: string
+}
+
+export interface PublicKhonDeeAward {
+    id: string | number
+    prefix?: string | null
+    fullName: string
+    currentPosition?: string | null
+    profileImage?: MediaLike
+    contributionTitle: string
+    contributionDetailHtml?: string | null
+    impactArea?: string | null
+    year?: PublicAwardYear | null
+    category?: PublicAwardCategory | null
+}
+
+export interface PublicInstitution {
+    id: string | number
+    institutionName: string
+    district?: string | null
+    profileImage?: MediaLike
+}
+
+export interface PublicAwardee {
+    id: string | number
+    prefix?: string | null
+    fullName: string
+    gradeLevel?: string | null
+    avatarImage?: MediaLike
+    institution?: PublicInstitution | null
+}
+
+export interface PublicAwardGallery {
+    id: string | number
+    image?: MediaLike
+    caption?: string | null
+    isHighlight?: boolean | null
+    year?: PublicAwardYear | null
+}
+
+export interface PublicYouthAwardHistory {
+    id: string | number
+    projectTitle: string
+    projectSummary?: string | null
+    videoUrl?: string | null
+    coverImage?: MediaLike
+    institution?: PublicInstitution | null
+    year?: PublicAwardYear | null
+    category?: PublicAwardCategory | null
+    awardees: PublicAwardee[]
+}
+
+export interface PublicWisdomAward {
+    id: string | number
+    prefix?: string | null
+    fullName: string
+    avatarImage?: MediaLike
+    year?: PublicAwardYear | null
+    wisdomCategory?: PublicWisdomCategory | null
+    contributionDetailHtml?: string | null
 }
