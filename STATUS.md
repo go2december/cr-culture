@@ -1,7 +1,7 @@
 ## สถานะปัจจุบัน (อัปเดตทุกครั้งที่หยุดพัฒนา)
 
 ไฟล์นี้เป็นสรุปสถานะสั้นแบบ canonical เพื่อลดข้อมูลซ้ำในโปรเจกต์
-อัปเดตล่าสุด: 25 มิถุนายน 2569
+อัปเดตล่าสุด: 27 มิถุนายน 2569
 
 ## 📌 Project Status
 
@@ -58,11 +58,11 @@
 - **Frontend:** Added public routes `/awards/khon-dee` and `/awards/khon-dee/[id]` with filterable list and detail view.
 - **Docs:** Added canonical feature doc for the awards module and updated database schema notes.
 
-## Recent Work (Typography Refresh โ€” 2026-06-26)
+## Recent Work (Typography Refresh — 2026-06-26)
 - **Frontend typography:** Updated shared typography tokens so body copy uses `Sarabun` and headings/navigation use `Prompt`.
 - **Navbar polish:** Increased menu emphasis and tuned sizing to keep the header cleaner before the mobile breakpoint.
 
-## Recent Work (Khon Dee Hero Global โ€” 2026-06-26)
+## Recent Work (Khon Dee Hero Global — 2026-06-26)
 - **CMS hero management:** Added `khonDee` to the `page-heroes` global so the `คนดีศรีเชียงราย` list page can manage eyebrow, title, subtitle, and hero image from Payload.
 - **Frontend wiring:** Updated `/awards/khon-dee` to read hero content from the shared global with safe fallback copy when the CMS entry is still empty.
 
@@ -94,4 +94,10 @@
 - **Security Hardening:** Hid MongoDB port 27017 from public access, exposing it only inside the internal Docker network.
 - **Configuration Templates:** Created `.env.prod.example` for secure production environment management, and updated `docs/guides/DOCKER_GUIDE.md` with step-by-step production deployment commands.
 
-
+## Recent Work (Production Optimization & Readiness — 2026-06-27)
+- **Dynamic Imports:** Dynamically imported `CalendarView` in the calendar page, splitting off heavy calendar code and speeding up initial page loads.
+- **Dynamic Image Domain & Optimization:** Configured `CmsImage.tsx` and `next.config.ts` to dynamically extract and add production/staging domains (and `cr-culture.com`) to image remote patterns, enabling full Next.js image optimization instead of using `unoptimized`.
+- **Production Alignment:** Resolved hardcoded domains in sitemaps, robots, and metadata base layout to dynamically adapt to the production URL `https://cr-culture.com/`.
+- **Cache Prevention:** Forced dynamic behavior (`force-dynamic`) on `/api/health` check endpoint.
+- **Docker Optimization:** Re-architected Dockerfile production stage to base off clean alpine node and omit python3/make/g++, shrinking final image size by ~200-300MB.
+- **Verification:** Verified with `npm run lint`, `npm run typecheck`, and production builds succeeding. Ran a Lighthouse audit against local production standalone server yielding scores of **99% Performance**, **85% Accessibility**, and **100% SEO**.
