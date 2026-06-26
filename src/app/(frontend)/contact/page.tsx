@@ -141,63 +141,7 @@ export default async function ContactPage() {
                     </div>
                 </div>
 
-                <div className="mt-12 grid md:grid-cols-2 gap-8">
-                    <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-8 lg:p-10 accent-panel reveal-soft stagger-1">
-                        <h3 className="text-xl font-bold text-primary mb-6 font-display flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
-                            </div>
-                            ติดตามเรา
-                        </h3>
-                        <div className="grid grid-cols-2 gap-4">
-                            <a href="#" className="group flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-base-100 hover:bg-white hover:border-[#1877F2]/30 hover:shadow-md transition-all">
-                                <div className="w-12 h-12 rounded-xl bg-[#1877F2] flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
-                                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <span className="font-semibold text-sm text-base-content group-hover:text-[#1877F2] transition-colors">Facebook</span>
-                                    <p className="text-xs text-base-content/50 font-light">@crculture</p>
-                                </div>
-                            </a>
-
-                            <a href="#" className="group flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-base-100 hover:bg-white hover:border-[#00c300]/30 hover:shadow-md transition-all">
-                                <div className="w-12 h-12 rounded-xl bg-[#00c300] flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
-                                    <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12.01 2C6.5 2 2.02 5.86 2.02 10.61c0 2.65 1.33 5.01 3.41 6.59-.12.44-.64 2.28-.67 2.44 0 0-.01.09.04.13s.11.01.11.01c.15-.02 1.76-1.15 2.46-1.68.6.17 1.24.29 1.9.35.31.03.63.05.95.05h.27c-.06-.34-.09-.69-.09-1.05 0-4.24 3.99-7.67 8.9-7.67.35 0 .69.02 1.03.06C19.82 5.55 16.28 2 12.01 2zm-2.76 6.89c.38 0 .68.31.68.69v3.12c0 .38-.3.69-.68.69s-.69-.31-.69-.69V9.58c0-.38.31-.69.69-.69zm5.5 0c.38 0 .69.31.69.69v3.12c0 .38-.31.69-.69.69s-.68-.31-.68-.69V9.58c0-.38.3-.69.68-.69z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <span className="font-semibold text-sm text-base-content group-hover:text-[#00c300] transition-colors">LINE</span>
-                                    <p className="text-xs text-base-content/50 font-light">@crculture</p>
-                                </div>
-                            </a>
-
-                            <a href="#" className="group flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-base-100 hover:bg-white hover:border-[#FF0000]/30 hover:shadow-md transition-all">
-                                <div className="w-12 h-12 rounded-xl bg-[#FF0000] flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
-                                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <span className="font-semibold text-sm text-base-content group-hover:text-[#FF0000] transition-colors">YouTube</span>
-                                    <p className="text-xs text-base-content/50 font-light">CR Culture</p>
-                                </div>
-                            </a>
-
-                            <a href="#" className="group flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-base-100 hover:bg-white hover:border-primary/30 hover:shadow-md transition-all">
-                                <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
-                                </div>
-                                <div>
-                                    <span className="font-semibold text-sm text-base-content group-hover:text-primary transition-colors">เว็บไซต์</span>
-                                    <p className="text-xs text-base-content/50 font-light">crculture.go.th</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
+                <div className="mt-12 max-w-2xl mx-auto">
                     <div className="bg-linear-to-br from-primary to-primary-dark rounded-3xl shadow-lg p-8 lg:p-10 text-white relative overflow-hidden accent-panel reveal-soft stagger-2">
                         <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full" />
                         <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-tr-full" />
