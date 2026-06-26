@@ -141,67 +141,6 @@ export default async function ContactPage() {
                     </div>
                 </div>
 
-                <div className="mt-12 max-w-2xl mx-auto">
-                    <div className="bg-linear-to-br from-primary to-primary-dark rounded-3xl shadow-lg p-8 lg:p-10 text-white relative overflow-hidden accent-panel reveal-soft stagger-2">
-                        <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full" />
-                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-tr-full" />
-                        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[40px_40px] mask-[radial-gradient(ellipse_50%_50%_at_50%,#000_70%,transparent_100%)]" />
-
-                        <h3 className="text-xl font-bold mb-2 relative z-10 font-display">ลิงก์ด่วน</h3>
-                        <p className="text-white/60 text-sm font-light mb-8 relative z-10">เข้าถึงข้อมูลสำคัญได้ทันที</p>
-
-                        <ul className="space-y-3 relative z-10">
-                            <li>
-                                <Link href="/about" className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/10 transition-colors group">
-                                    <div className="flex items-center gap-4">
-                                        <span className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center group-hover:bg-white/20 transition-colors text-lg">🏛️</span>
-                                        <div>
-                                            <span className="text-sm font-semibold block">เกี่ยวกับสภาวัฒนธรรม</span>
-                                            <span className="text-xs text-white/50 font-light">วิสัยทัศน์ พันธกิจ โครงสร้าง</span>
-                                        </div>
-                                    </div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/districts" className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/10 transition-colors group">
-                                    <div className="flex items-center gap-4">
-                                        <span className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center group-hover:bg-white/20 transition-colors text-lg">🗺️</span>
-                                        <div>
-                                            <span className="text-sm font-semibold block">เครือข่ายอำเภอ</span>
-                                            <span className="text-xs text-white/50 font-light">18 อำเภอทั่วจังหวัด</span>
-                                        </div>
-                                    </div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/heritage" className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/10 transition-colors group">
-                                    <div className="flex items-center gap-4">
-                                        <span className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center group-hover:bg-white/20 transition-colors text-lg">📚</span>
-                                        <div>
-                                            <span className="text-sm font-semibold block">คลังมรดกภูมิปัญญา</span>
-                                            <span className="text-xs text-white/50 font-light">บทความ แหล่งเรียนรู้ ปราชญ์</span>
-                                        </div>
-                                    </div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/activities" className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/10 transition-colors group">
-                                    <div className="flex items-center gap-4">
-                                        <span className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center group-hover:bg-white/20 transition-colors text-lg">🎉</span>
-                                        <div>
-                                            <span className="text-sm font-semibold block">กิจกรรมทั้งหมด</span>
-                                            <span className="text-xs text-white/50 font-light">ประเพณี เทศกาล งานวัฒนธรรม</span>
-                                        </div>
-                                    </div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
             </div>
 
             <section className="py-20 px-4 md:px-8 bg-white border-t border-base-200 relative overflow-hidden accent-panel">
