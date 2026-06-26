@@ -20,8 +20,7 @@ export default function Footer() {
                             </div>
                         </div>
                         <p className="text-[15px] text-base-content/70 mb-6 leading-relaxed font-normal">
-                            ร่วมส่งเสริมและอนุรักษ์มรดกวัฒนธรรมล้านนา <br />
-                            เชื่อมโยงภูมิปัญญาจากอดีตสู่ความยั่งยืนในอนาคต
+                            ร่วมส่งเสริมและอนุรักษ์มรดกวัฒนธรรมล้านนา เชื่อมโยงภูมิปัญญาจากอดีตสู่ความยั่งยืนในอนาคต
                         </p>
                         <div className="flex gap-2">
                             <button type="button" disabled aria-label="Facebook (กำลังอัปเดต)" className="w-11 h-11 rounded-full border border-base-200 flex items-center justify-center text-base-content/40 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
@@ -71,9 +70,7 @@ export default function Footer() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 <span className="text-[15px] text-base-content/70 font-normal leading-relaxed">
-                                    สำนักงานวัฒนธรรมจังหวัดเชียงราย<br />
-                                    เลขที่ 570 หมู่ 2 ถ.เลี่ยงเมืองเชียงรายตะวันตก<br />
-                                    ต.บ้านดู่ อ.เมืองเชียงราย จ.เชียงราย 57100
+                                    สำนักงานวัฒนธรรมจังหวัดเชียงราย เลขที่ 570 หมู่ 2 ถ.เลี่ยงเมืองเชียงรายตะวันตก ต.บ้านดู่ อ.เมืองเชียงราย จ.เชียงราย 57100
                                 </span>
                             </li>
                             <li className="flex items-center gap-3">
