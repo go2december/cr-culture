@@ -25,7 +25,19 @@ export default function CmsImage({ src, alt, ...props }: CmsImageProps) {
     }
 
     const isRemote = /^https?:\/\//.test(normalizedSrc)
-    const isKnownOptimizedHost = /localhost|127\.0\.0\.1|crculture\.go\.th/.test(normalizedSrc)
+
+    // Dynamically check production server URL and default domains
+    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL
+    let serverHostname = 'cr-culture.com'
+    if (serverUrl) {
+        try {
+            serverHostname = new URL(serverUrl).hostname
+        } catch {}
+    }
+
+    const isKnownOptimizedHost = new RegExp(
+        `localhost|127\\.0\\.0\\.1|crculture\\.go\\.th|cr-culture\\.com|${serverHostname.replace(/\./g, '\\.')}`
+    ).test(normalizedSrc)
 
     return (
         <Image

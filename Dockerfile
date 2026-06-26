@@ -30,8 +30,14 @@ COPY . .
 RUN npm run build
 
 # 5. Production runtime stage
-FROM base AS production
+FROM node:24-alpine AS production
+WORKDIR /app
+
 ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Install libc6-compat (required by sharp / Next SWC)
+RUN apk add --no-cache libc6-compat
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs && \

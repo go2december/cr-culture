@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/admin/', '/api/'],
         },
-        sitemap: 'https://crculture.go.th/sitemap.xml',
+        sitemap: `${(process.env.NEXT_PUBLIC_SERVER_URL || 'https://cr-culture.com').replace(/\/$/, '')}/sitemap.xml`,
     }
 }

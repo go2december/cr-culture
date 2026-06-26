@@ -10,7 +10,7 @@ import {
 } from '@/lib/payload'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = 'https://crculture.go.th'
+    const baseUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://cr-culture.com').replace(/\/$/, '')
 
     // 1. Static Routes
     const staticRoutes = [

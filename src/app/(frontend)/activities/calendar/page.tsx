@@ -1,10 +1,19 @@
 import Link from 'next/link'
 import { getActivities, getDistricts, getPageHeroes } from '@/lib/payload'
-import CalendarView from './CalendarView'
+import dynamic from 'next/dynamic'
 import CmsImage from '@/components/CmsImage'
 import { resolveMediaAlt, resolveMediaUrl, type MediaLike } from '@/lib/media'
 import type { PublicCalendarActivity } from '@/lib/public-organization'
 import type { PublicDistrictSummary } from '@/lib/public-organization'
+
+const CalendarView = dynamic(() => import('./CalendarView'), {
+    ssr: true,
+    loading: () => (
+        <div className="h-96 flex items-center justify-center bg-white rounded-2xl shadow-sm border border-slate-100">
+            <span className="loading loading-spinner loading-md text-primary"></span>
+        </div>
+    ),
+})
 
 export default async function ActivityCalendarPage(props: {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined }>

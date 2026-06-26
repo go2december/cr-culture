@@ -5,7 +5,10 @@ import Footer from '@/components/Footer'
 
 export const dynamic = 'force-dynamic'
 
+const serverUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://cr-culture.com').replace(/\/$/, '')
+
 export const metadata: Metadata = {
+    metadataBase: new URL(serverUrl),
     title: {
         default: 'สภาวัฒนธรรมจังหวัดเชียงราย',
         template: '%s | สภาวัฒนธรรมจังหวัดเชียงราย',
@@ -16,7 +19,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: 'สภาวัฒนธรรมจังหวัดเชียงราย',
         description: 'ส่งเสริมและอนุรักษ์มรดกวัฒนธรรมล้านนา',
-        url: 'https://crculture.go.th',
+        url: serverUrl,
         siteName: 'สภาวัฒนธรรมจังหวัดเชียงราย',
         locale: 'th_TH',
         type: 'website',
