@@ -8,6 +8,7 @@ import {
     getYouthAwardHistories,
     getWisdomAwards
 } from '@/lib/payload'
+export const dynamic = 'force-dynamic';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://cr-culture.com').replace(/\/$/, '')
