@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import '../globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,16 +28,46 @@ export const metadata: Metadata = {
     },
 }
 
-export default function FrontendLayout({
+export default async function FrontendLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+    const payload = await getPayload({ config })
+    const settings = await payload.findGlobal({
+        slug: 'site-settings',
+    }).catch(() => ({ defaultTheme: 'normal' })) as { defaultTheme?: 'normal' | 'mourning' }
+
+    const defaultTheme = settings?.defaultTheme || 'normal'
+
     return (
-        <html lang="th" data-theme="lofi">
+        <html
+            lang="th"
+            data-theme="lofi"
+            className={defaultTheme === 'mourning' ? 'mourning' : undefined}
+            suppressHydrationWarning
+        >
+            <head>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            try {
+                                var savedTheme = localStorage.getItem('site-theme');
+                                var defaultTheme = '${defaultTheme}';
+                                var activeTheme = savedTheme || defaultTheme;
+                                if (activeTheme === 'mourning') {
+                                    document.documentElement.classList.add('mourning');
+                                } else {
+                                    document.documentElement.classList.remove('mourning');
+                                }
+                            } catch (e) {}
+                        `,
+                    }}
+                />
+            </head>
             <body className="min-h-screen flex flex-col font-sans">
                 <a href="#main-content" className="skip-link">ข้ามไปยังเนื้อหาหลัก</a>
-                <Navbar />
+                <Navbar defaultTheme={defaultTheme} />
                 <main id="main-content" className="grow">
                     {children}
                 </main>

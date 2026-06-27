@@ -485,3 +485,8 @@ main > section + section::after {
     transition: none !important;
   }
 }
+
+/* 🖤 Mourning/Grayscale Mode */
+.mourning {
+  filter: grayscale(100%) contrast(90%) brightness(95%);
+}

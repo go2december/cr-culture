@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -55,8 +56,36 @@ const menuItems = [
     },
 ]
 
-export default function Navbar() {
+export default function Navbar({ defaultTheme = 'normal' }: { defaultTheme?: 'normal' | 'mourning' }) {
     const pathname = usePathname()
+    const [theme, setTheme] = useState<'normal' | 'mourning'>(defaultTheme)
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('site-theme') : null
+        const timer = setTimeout(() => {
+            setMounted(true)
+            if (savedTheme) {
+                setTheme(savedTheme as 'normal' | 'mourning')
+            } else {
+                setTheme(defaultTheme)
+            }
+        }, 0)
+        return () => clearTimeout(timer)
+    }, [defaultTheme])
+
+    const toggleTheme = () => {
+        const newTheme = theme === 'normal' ? 'mourning' : 'normal'
+        setTheme(newTheme)
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('site-theme', newTheme)
+            if (newTheme === 'mourning') {
+                document.documentElement.classList.add('mourning')
+            } else {
+                document.documentElement.classList.remove('mourning')
+            }
+        }
+    }
 
     const isActive = (href: string) => {
         if (href === '/') return pathname === '/'
@@ -174,10 +203,23 @@ export default function Navbar() {
                         </div>
 
                         <div className="flex items-center gap-3">
-                            <button aria-label="ค้นหา" className="btn btn-ghost btn-circle btn-sm min-h-11 min-w-11 text-base-content/60 hover:bg-secondary/10 hover:text-primary transition-colors border border-transparent hover:border-secondary/20">
-                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
+                            <button
+                                onClick={toggleTheme}
+                                aria-label={theme === 'normal' ? 'สลับไปโหมดไว้ทุกข์' : 'สลับไปโหมดสีปกติ'}
+                                title={theme === 'normal' ? 'สลับไปโหมดไว้ทุกข์' : 'สลับไปโหมดสีปกติ'}
+                                className="btn btn-ghost btn-circle btn-sm min-h-11 min-w-11 text-base-content/60 hover:bg-secondary/10 hover:text-primary transition-colors border border-transparent hover:border-secondary/20"
+                            >
+                                {mounted && theme === 'normal' ? (
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                    </svg>
+                                ) : mounted && theme === 'mourning' ? (
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                                    </svg>
+                                ) : (
+                                    <div className="h-4.5 w-4.5" />
+                                )}
                             </button>
                             <div className="hidden sm:block w-px h-6 bg-base-200" />
                             <Link href="/admin" onClick={handleClick} className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 text-sm font-display font-semibold text-white bg-primary rounded-full hover:bg-primary-dark transition-all shadow-[0_4px_14px_0_rgba(27,42,73,0.39)] hover:shadow-[0_6px_20px_rgba(27,42,73,0.23)] hover:-translate-y-0.5 active:translate-y-0">

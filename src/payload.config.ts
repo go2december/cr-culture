@@ -30,6 +30,7 @@ import { WisdomAwards } from './collections/WisdomAwards'
 // Globals
 import { AboutPage } from './globals/AboutPage'
 import { PageHeroes } from './globals/PageHeroes'
+import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -90,6 +91,7 @@ export default buildConfig({
     globals: [
         AboutPage,
         PageHeroes,
+        SiteSettings,
     ],
     secret: process.env.PAYLOAD_SECRET || 'cr-culture-secret-key',
     typescript: {
