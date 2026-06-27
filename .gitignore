@@ -2,7 +2,8 @@ node_modules
 .next
 .env
 .env.local
-media
+media/*
+!media/.gitkeep
 *.log
 .DS_Store
 dist
