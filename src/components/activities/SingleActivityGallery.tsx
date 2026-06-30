@@ -22,6 +22,8 @@ export const SingleActivityGallery: React.FC<SingleActivityGalleryProps> = ({
     items,
 }) => {
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null)
+    const [visibleCount, setVisibleCount] = useState(12)
+    const loaderRef = React.useRef<HTMLDivElement>(null)
 
     const handlePrev = () => {
         setSelectedPhotoIndex((prev) => {
@@ -36,6 +38,30 @@ export const SingleActivityGallery: React.FC<SingleActivityGalleryProps> = ({
             return prev < items.length - 1 ? prev + 1 : 0
         })
     }
+
+    useEffect(() => {
+        if (visibleCount >= items.length) return
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    setVisibleCount((prev) => Math.min(prev + 12, items.length))
+                }
+            },
+            { rootMargin: '200px' }
+        )
+
+        const currentTarget = loaderRef.current
+        if (currentTarget) {
+            observer.observe(currentTarget)
+        }
+
+        return () => {
+            if (currentTarget) {
+                observer.unobserve(currentTarget)
+            }
+        }
+    }, [visibleCount, items.length])
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -96,7 +122,7 @@ export const SingleActivityGallery: React.FC<SingleActivityGalleryProps> = ({
 
             {/* Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {items.map((item, index) => (
+                {items.slice(0, visibleCount).map((item, index) => (
                     <div
                         key={item.id}
                         onClick={() => setSelectedPhotoIndex(index)}
@@ -125,6 +151,15 @@ export const SingleActivityGallery: React.FC<SingleActivityGalleryProps> = ({
                     </div>
                 ))}
             </div>
+
+            {visibleCount < items.length && (
+                <div ref={loaderRef} className="py-12 text-center text-slate-400 font-sans text-sm flex items-center justify-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-secondary animate-bounce" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-secondary animate-bounce [animation-delay:0.2s]" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-secondary animate-bounce [animation-delay:0.4s]" />
+                    <span className="ml-2 font-medium text-slate-500">กำลังโหลดรูปภาพเพิ่มเติม...</span>
+                </div>
+            )}
 
             {/* Lightbox / Modal */}
             {selectedPhotoIndex !== null && createPortal(
