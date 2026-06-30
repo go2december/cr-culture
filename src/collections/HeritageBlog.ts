@@ -61,6 +61,9 @@ export const HeritageBlog: CollectionConfig = {
             relationTo: 'media',
             hasMany: true,
             label: 'แกลเลอรีรูปภาพ',
+            admin: {
+                appearance: 'drawer',
+            },
         },
         {
             name: 'tags',

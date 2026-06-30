@@ -88,6 +88,9 @@ export const Activities: CollectionConfig = {
             relationTo: 'media',
             hasMany: true,
             label: 'แกลเลอรีรูปภาพ',
+            admin: {
+                appearance: 'drawer',
+            },
         },
         {
             name: 'location',
