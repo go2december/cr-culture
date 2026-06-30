@@ -7,6 +7,7 @@ type MissionItem = { text: string }
 
 // Default data ใช้เมื่อยังไม่มีข้อมูลใน CMS
 const defaults = {
+    philosophy: 'อนุรักษ์ สร้างสรรค์ สืบสาน และส่งเสริมมรดกภูมิปัญญาทางวัฒนธรรมล้านนา ให้คงอยู่คู่แผ่นดินเชียงรายอย่างยั่งยืน',
     vision: 'เป็นองค์กรหลักในการขับเคลื่อนวัฒนธรรมท้องถิ่น ส่งเสริมและอนุรักษ์มรดกภูมิปัญญาล้านนา ให้คงอยู่อย่างยั่งยืนและสร้างคุณค่าสู่ชุมชน',
     missions: [
         { text: 'ส่งเสริมและอนุรักษ์วัฒนธรรมท้องถิ่นอันดีงาม' },
@@ -25,6 +26,7 @@ export default async function AboutPage() {
     const pageHeroes = await getPageHeroes().catch(() => null)
 
     // ใช้ข้อมูลจาก CMS ถ้ามี ไม่งั้นใช้ defaults
+    const philosophy = (aboutData as { philosophy?: string })?.philosophy || defaults.philosophy
     const vision = aboutData?.vision || defaults.vision
     const missions = (aboutData?.missions && aboutData.missions.length > 0)
         ? (aboutData.missions as MissionItem[])
@@ -107,49 +109,6 @@ export default async function AboutPage() {
             </section>
 
             <div className="container mx-auto max-w-5xl px-4 py-20 relative z-20">
-                {/* Vision & Mission */}
-                <section className="mb-24">
-                    <div className="text-center mb-16">
-                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Vision & Mission</span>
-                        <h2 className="section-header mb-0! text-primary font-display">วิสัยทัศน์และพันธกิจ</h2>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                        {/* Vision Card */}
-                        <div className="group relative bg-white rounded-3xl p-10 border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.05)] hover:shadow-xl hover:border-secondary/50 transition-all duration-500 accent-orb reveal-soft stagger-1">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-secondary/10 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <div className="relative z-10">
-                                <div className="w-20 h-20 mb-8 rounded-2xl bg-slate-50 border border-base-100 flex items-center justify-center text-primary group-hover:bg-white group-hover:border-secondary/20 group-hover:text-secondary-dark transition-all duration-500 shadow-sm">
-                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>
-                                </div>
-                                <h3 className="text-3xl font-bold mb-6 text-primary tracking-tight font-display group-hover:text-primary-dark transition-colors">วิสัยทัศน์</h3>
-                                <p className="text-base-content/70 leading-relaxed font-light text-lg">
-                                    &ldquo;{vision}&rdquo;
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Mission Card */}
-                        <div className="group relative bg-white rounded-3xl p-10 border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.05)] hover:shadow-xl hover:border-secondary/50 transition-all duration-500 accent-orb reveal-soft stagger-2">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-secondary/10 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <div className="relative z-10">
-                                <div className="w-20 h-20 mb-8 rounded-2xl bg-slate-50 border border-base-100 flex items-center justify-center text-primary group-hover:bg-white group-hover:border-secondary/20 group-hover:text-secondary-dark transition-all duration-500 shadow-sm">
-                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
-                                </div>
-                                <h3 className="text-3xl font-bold mb-6 text-primary tracking-tight font-display group-hover:text-primary-dark transition-colors">พันธกิจ</h3>
-                                <ul className="text-base-content/70 space-y-4 font-light text-lg">
-                                    {missions.map((mission, i: number) => (
-                                    <li key={i} className="flex items-start gap-3">
-                                        <div className="mt-2 w-2 h-2 rounded-full bg-secondary shrink-0" />
-                                        <span>{mission.text}</span>
-                                    </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
                 {/* History */}
                 <section className="mb-24 relative accent-panel">
                     <div className="bg-white rounded-3xl p-8 md:p-12 lg:p-16 shadow-[0_8px_30px_rgb(212,175,55,0.05)] border border-base-200">
@@ -167,6 +126,63 @@ export default async function AboutPage() {
                         </div>
                     </div>
                     <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10" />
+                </section>
+
+                {/* Vision & Mission */}
+                <section className="mb-24">
+                    <div className="text-center mb-16">
+                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Philosophy, Vision & Mission</span>
+                        <h2 className="section-header mb-0! text-primary font-display">ปรัชญา วิสัยทัศน์ และพันธกิจ</h2>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+                        {/* Philosophy Card */}
+                        <div className="group relative bg-white rounded-3xl p-8 border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.05)] hover:shadow-xl hover:border-secondary/50 transition-all duration-500 accent-orb reveal-soft stagger-1">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-secondary/10 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="relative z-10">
+                                <div className="w-16 h-16 mb-6 rounded-2xl bg-slate-50 border border-base-100 flex items-center justify-center text-primary group-hover:bg-white group-hover:border-secondary/20 group-hover:text-secondary-dark transition-all duration-500 shadow-sm">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
+                                </div>
+                                <h3 className="text-2xl font-bold mb-4 text-primary tracking-tight font-display group-hover:text-primary-dark transition-colors">ปรัชญา</h3>
+                                <p className="text-base-content/70 leading-relaxed font-light text-base">
+                                    &ldquo;{philosophy}&rdquo;
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Vision Card */}
+                        <div className="group relative bg-white rounded-3xl p-8 border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.05)] hover:shadow-xl hover:border-secondary/50 transition-all duration-500 accent-orb reveal-soft stagger-2">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-secondary/10 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="relative z-10">
+                                <div className="w-16 h-16 mb-6 rounded-2xl bg-slate-50 border border-base-100 flex items-center justify-center text-primary group-hover:bg-white group-hover:border-secondary/20 group-hover:text-secondary-dark transition-all duration-500 shadow-sm">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>
+                                </div>
+                                <h3 className="text-2xl font-bold mb-4 text-primary tracking-tight font-display group-hover:text-primary-dark transition-colors">วิสัยทัศน์</h3>
+                                <p className="text-base-content/70 leading-relaxed font-light text-base">
+                                    &ldquo;{vision}&rdquo;
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Mission Card */}
+                        <div className="group relative bg-white rounded-3xl p-8 border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.05)] hover:shadow-xl hover:border-secondary/50 transition-all duration-500 accent-orb reveal-soft stagger-3">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-secondary/10 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="relative z-10">
+                                <div className="w-16 h-16 mb-6 rounded-2xl bg-slate-50 border border-base-100 flex items-center justify-center text-primary group-hover:bg-white group-hover:border-secondary/20 group-hover:text-secondary-dark transition-all duration-500 shadow-sm">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+                                </div>
+                                <h3 className="text-2xl font-bold mb-4 text-primary tracking-tight font-display group-hover:text-primary-dark transition-colors">พันธกิจ</h3>
+                                <ul className="text-base-content/70 space-y-3 font-light text-base">
+                                    {missions.map((mission, i: number) => (
+                                    <li key={i} className="flex items-start gap-2.5">
+                                        <div className="mt-2 w-1.5 h-1.5 rounded-full bg-secondary shrink-0" />
+                                        <span>{mission.text}</span>
+                                    </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 {/* Board Link CTA */}

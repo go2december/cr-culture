@@ -74,13 +74,13 @@ const defaultKhonDee = {
 
 const defaultYouthCulture = {
     eyebrow: 'รางวัลเกียรติยศ',
-    title: 'เยาวชนวัฒนธรรม',
+    title: 'ยุวชนวัฒนธรรม',
     subtitle: 'รวบรวมผลงานเด่น รายชื่อเยาวชน ครู และสถาบันการศึกษาที่ขับเคลื่อนงานวัฒนธรรมผ่านผลงานของชุมชน',
 }
 
 const defaultWisdomAwards = {
     eyebrow: 'รางวัลเกียรติยศ',
-    title: 'ครูภูมิปัญญาเมืองเชียงราย',
+    title: 'ครูภูมิผญาเมืองเชียงราย',
     subtitle: 'ทำเนียบผู้สืบสานองค์ความรู้ท้องถิ่นของเชียงราย แยกตามสาขาเพื่อการค้นหาและเผยแพร่ได้อย่างชัดเจน',
 }
 
@@ -509,7 +509,7 @@ export const PageHeroes: GlobalConfig = {
         {
             name: 'youthCulture',
             type: 'group',
-            label: 'เยาวชนวัฒนธรรม',
+            label: 'ยุวชนวัฒนธรรม',
             fields: [
                 {
                     name: 'eyebrow',
@@ -535,7 +535,7 @@ export const PageHeroes: GlobalConfig = {
                     relationTo: 'media',
                     label: 'รูปภาพ hero',
                     admin: {
-                        description: 'ใช้แสดงใน hero ของหน้าเยาวชนวัฒนธรรม',
+                        description: 'ใช้แสดงใน hero ของหน้ายุวชนวัฒนธรรม',
                     },
                 },
             ],
@@ -543,7 +543,7 @@ export const PageHeroes: GlobalConfig = {
         {
             name: 'wisdomAwards',
             type: 'group',
-            label: 'ครูภูมิปัญญาเมืองเชียงราย',
+            label: 'ครูภูมิผญาเมืองเชียงราย',
             fields: [
                 {
                     name: 'eyebrow',
@@ -569,7 +569,7 @@ export const PageHeroes: GlobalConfig = {
                     relationTo: 'media',
                     label: 'รูปภาพ hero',
                     admin: {
-                        description: 'ใช้แสดงใน hero ของหน้าครูภูมิปัญญาเมืองเชียงราย',
+                        description: 'ใช้แสดงใน hero ของหน้าครูภูมิผญาเมืองเชียงราย',
                     },
                 },
             ],

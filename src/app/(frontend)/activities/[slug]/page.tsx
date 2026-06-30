@@ -6,6 +6,7 @@ import { resolveMediaUrl } from '@/lib/media'
 import type { GalleryItemLike } from '@/lib/media'
 import type { PublicActivity } from '@/lib/public-content'
 import CmsImage from '@/components/CmsImage'
+import { ActivityDetailGallery } from '@/components/activities/ActivityDetailGallery'
 
 export async function generateMetadata({
     params,
@@ -68,6 +69,17 @@ export default async function ActivityDetailPage({
         coverImage: activityData.coverImage,
         gallery: activityData.gallery || [],
     }
+
+    const galleryItems = (activity.gallery || [])
+        .filter((item): item is NonNullable<typeof item> => Boolean(item))
+        .map((item) => {
+            const imageSrc = resolveMediaUrl(item.image)
+            return {
+                imageSrc: imageSrc || '',
+                caption: item.caption || '',
+            }
+        })
+        .filter((item) => item.imageSrc !== '')
 
     const heroImageUrl = resolveMediaUrl(activity.coverImage, activity.gallery)
 
@@ -160,43 +172,11 @@ export default async function ActivityDetailPage({
                             />
 
                             {/* Gallery */}
-                            {activity.gallery.length > 0 && (
-                            <div className="mt-12 pt-10 border-t border-base-100 reveal-soft stagger-1">
-                                <h3 className="text-2xl font-bold text-primary mb-8 flex items-center gap-3">
-                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
-                                    แกลเลอรี
-                                </h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                    {activity.gallery.filter((item): item is NonNullable<GalleryItemLike> => Boolean(item)).map((item, i: number) => {
-                                        const imageUrl = resolveMediaUrl(item.image)
-                                        return (
-                                                <div key={i} className="group relative aspect-square bg-slate-100 rounded-2xl border border-base-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/30 hover:shadow-md transition-all reveal-soft">
-                                            {imageUrl ? (
-                                                <CmsImage
-                                                    src={imageUrl}
-                                                    alt={item.caption || 'Gallery image'}
-                                                    fill
-                                                    sizes="(min-width: 768px) 33vw, 50vw"
-                                                    className="object-cover transition-transform duration-500"
-                                                />
-                                            ) : (
-                                            <div className="text-center p-4 z-10 transition-transform duration-500">
-                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="mx-auto text-primary/40">
-                                                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                                                    <circle cx="9" cy="9" r="2" />
-                                                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-                                                </svg>
-                                            </div>
-                                            )}
-                                            {item.caption && (
-                                            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-end p-4">
-                                                <span className="text-sm font-medium text-white translate-y-2 group-hover:translate-y-0 transition-transform duration-300">{item.caption}</span>
-                                            </div>
-                                            )}
-                                        </div>
-                                    )})}
-                                </div>
-                            </div>
+                            {galleryItems.length > 0 && (
+                                <ActivityDetailGallery
+                                    items={galleryItems}
+                                    activityTitle={activity.title}
+                                />
                             )}
                         </div>
                     </article>

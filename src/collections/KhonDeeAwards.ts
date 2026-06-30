@@ -24,7 +24,8 @@ export const KhonDeeAwards: CollectionConfig = {
                             fields: [
                                 {
                                     name: 'prefix',
-                                    type: 'text',
+                                    type: 'relationship',
+                                    relationTo: 'prefixes',
                                     label: 'คำนำหน้า/ยศ',
                                     admin: {
                                         width: '35%',

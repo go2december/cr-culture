@@ -9,6 +9,16 @@ export const AboutPage: GlobalConfig = {
     },
     fields: [
         {
+            name: 'philosophy',
+            label: 'ปรัชญา',
+            type: 'textarea',
+            required: true,
+            defaultValue: 'อนุรักษ์ สร้างสรรค์ สืบสาน และส่งเสริมมรดกภูมิปัญญาทางวัฒนธรรมล้านนา ให้คงอยู่คู่แผ่นดินเชียงรายอย่างยั่งยืน',
+            admin: {
+                description: 'ปรัชญาขององค์กร (แสดงในส่วนวิสัยทัศน์/พันธกิจ)',
+            },
+        },
+        {
             name: 'vision',
             label: 'วิสัยทัศน์',
             type: 'textarea',

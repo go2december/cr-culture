@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import '../globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -66,6 +67,13 @@ export default async function FrontendLayout({
                 />
             </head>
             <body className="min-h-screen flex flex-col font-sans">
+                {process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
+                    <Script
+                        src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL || 'https://cloud.umami.is/script.js'}
+                        data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+                        strategy="afterInteractive"
+                    />
+                )}
                 <a href="#main-content" className="skip-link">ข้ามไปยังเนื้อหาหลัก</a>
                 <Navbar defaultTheme={defaultTheme} />
                 <main id="main-content" className="grow">

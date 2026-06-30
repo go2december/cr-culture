@@ -19,16 +19,17 @@ const menuItems = [
         href: '/awards/khon-dee',
         submenu: [
             { label: 'คนดีศรีเชียงราย', href: '/awards/khon-dee' },
-            { label: 'เยาวชนวัฒนธรรม', href: '/awards/youth-culture' },
-            { label: 'ครูภูมิปัญญาเมืองเชียงราย', href: '/awards/wisdom-awards' },
+            { label: 'ครูภูมิผญาเมืองเชียงราย', href: '/awards/wisdom-awards' },
+            { label: 'ยุวชนวัฒนธรรม', href: '/awards/youth-culture' },
         ],
     },
     {
         label: 'กิจกรรม',
         href: '/activities',
         submenu: [
-            { label: 'กิจกรรมระดับจังหวัด', href: '/activities' },
+            { label: 'กิจกรรมสภาวัฒนธรรม', href: '/activities' },
             { label: 'ปฏิทินกิจกรรม', href: '/activities/calendar' },
+            { label: 'ภาพกิจกรรม', href: '/activities/gallery' },
         ],
     },
     {

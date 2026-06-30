@@ -16,6 +16,8 @@ export async function GET(request: NextRequest) {
       'news',
       'khon-dee-awards',
       'youth-award-histories',
+      'youth-award-categories',
+      'prefixes',
       'wisdom-awards',
       'award-galleries',
       'awardees',
@@ -32,14 +34,14 @@ export async function GET(request: NextRequest) {
     const cleanSummary: Record<string, number> = {}
     for (const collection of collectionsToClean) {
       try {
-        const deleted = await payload.delete({
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          collection: collection as any,
-          where: {
-            id: { exists: true }
-          }
-        })
-        cleanSummary[collection] = deleted.errors?.length ? 0 : deleted.docs?.length || 0
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const model = (payload.db as any).collections[collection]
+        if (model) {
+          const result = await model.deleteMany({})
+          cleanSummary[collection] = result.deletedCount || 0
+        } else {
+          cleanSummary[collection] = 0
+        }
       } catch {
         cleanSummary[collection] = 0
       }
@@ -49,6 +51,7 @@ export async function GET(request: NextRequest) {
       await payload.updateGlobal({
         slug: 'about-page',
         data: {
+          philosophy: '',
           vision: '',
           missions: [],
           historyPlain: '',
@@ -367,25 +370,67 @@ export async function GET(request: NextRequest) {
       },
     ]
 
-    const existingActivities = await payload.find({ collection: 'activities', limit: 1 })
-    if (existingActivities.docs.length === 0) {
-      for (const act of activities) {
-        const { districtSlug: distSlug } = act
-        const data: Record<string, unknown> = {
-          title: act.title,
-          slug: act.slug,
-          date: act.date,
-          endDate: act.endDate || undefined,
-          level: act.level,
-          summary: act.summary,
-          location: act.location,
-          isPublished: act.isPublished,
-          isFeatured: act.isFeatured || false,
+    // ดึงรหัสภาพสื่อที่มีในระบบมาใช้ทำภาพประกอบและแกลเลอรี
+    const mediaDocsForGallery = await payload.find({
+      collection: 'media',
+      limit: 10,
+    })
+    const galleryMediaIds = mediaDocsForGallery.docs.map(doc => String(doc.id))
+
+    for (const act of activities) {
+      const { districtSlug: distSlug } = act
+      const existing = await payload.find({
+        collection: 'activities',
+        where: { slug: { equals: act.slug } },
+        limit: 1,
+      })
+
+      const data: Record<string, unknown> = {
+        title: act.title,
+        date: act.date,
+        endDate: act.endDate || undefined,
+        level: act.level,
+        summary: act.summary,
+        location: act.location,
+        isPublished: act.isPublished,
+        isFeatured: act.isFeatured || false,
+      }
+
+      if (distSlug && districtIds[distSlug]) {
+        data.district = districtIds[distSlug]
+      }
+
+      // เพิ่มรูปภาพแกลเลอรีจำลอง
+      if (galleryMediaIds.length > 0) {
+        const galleryItems = []
+        const startIdx = (act.slug.length) % galleryMediaIds.length
+        for (let i = 0; i < 3; i++) {
+          const mediaId = galleryMediaIds[(startIdx + i) % galleryMediaIds.length]
+          if (mediaId) {
+            galleryItems.push({
+              image: mediaId,
+              caption: `ภาพบรรยากาศ${act.title} ภาพที่ ${i + 1}`
+            })
+          }
         }
-        if (distSlug && districtIds[distSlug]) {
-          data.district = districtIds[distSlug]
-        }
-        await payload.create({ collection: 'activities', data })
+        data.gallery = galleryItems
+        data.coverImage = galleryMediaIds[startIdx]
+      }
+
+      if (existing.docs.length > 0) {
+        await payload.update({
+          collection: 'activities',
+          id: String(existing.docs[0].id),
+          data,
+        })
+      } else {
+        await payload.create({
+          collection: 'activities',
+          data: {
+            ...data,
+            slug: act.slug,
+          },
+        })
       }
     }
 
@@ -587,7 +632,6 @@ export async function GET(request: NextRequest) {
     const awardCategories = [
       { mainPillar: 'cultural-contributor' as const, subType: 'ประเภทบุคคลทั่วไป' },
       { mainPillar: 'outstanding-cultural-achievement' as const, subType: 'ประเภทองค์กร / ชุมชน' },
-      { mainPillar: 'outstanding-cultural-achievement' as const, subType: 'ประเภทเยาวชน / สถานศึกษา' },
     ]
     const awardCategoryIds: Record<string, string> = {}
     for (const category of awardCategories) {
@@ -607,6 +651,40 @@ export async function GET(request: NextRequest) {
       } else {
         const created = await payload.create({ collection: 'award-categories', data: category })
         awardCategoryIds[key] = String(created.id)
+      }
+    }
+
+    const youthAwardCategories = [
+      { title: 'ประเภทเยาวชน / สถานศึกษา', slug: 'youth-institution' },
+    ]
+    const youthCategoryIds: Record<string, string> = {}
+    for (const category of youthAwardCategories) {
+      const existing = await payload.find({
+        collection: 'youth-award-categories',
+        where: { slug: { equals: category.slug } },
+        limit: 1,
+      })
+      if (existing.docs.length > 0) {
+        youthCategoryIds[category.slug] = String(existing.docs[0].id)
+      } else {
+        const created = await payload.create({ collection: 'youth-award-categories', data: category })
+        youthCategoryIds[category.slug] = String(created.id)
+      }
+    }
+
+    const prefixes = ['นาย', 'นางสาว', 'นาง', 'พ่อครู', 'แม่ครู', 'คณะ']
+    const prefixIds: Record<string, string> = {}
+    for (const prefix of prefixes) {
+      const existing = await payload.find({
+        collection: 'prefixes',
+        where: { title: { equals: prefix } },
+        limit: 1,
+      })
+      if (existing.docs.length > 0) {
+        prefixIds[prefix] = String(existing.docs[0].id)
+      } else {
+        const created = await payload.create({ collection: 'prefixes', data: { title: prefix } })
+        prefixIds[prefix] = String(created.id)
       }
     }
 
@@ -644,7 +722,7 @@ export async function GET(request: NextRequest) {
         limit: 1,
       })
       const awardeeData = {
-        prefix: awardee.prefix,
+        prefix: awardee.prefix ? prefixIds[awardee.prefix] : undefined,
         fullName: awardee.fullName,
         institution: institutionIds[awardee.institutionName],
         gradeLevel: awardee.gradeLevel,
@@ -709,7 +787,7 @@ export async function GET(request: NextRequest) {
         limit: 1,
       })
       const awardData = {
-        prefix: award.prefix,
+        prefix: award.prefix ? prefixIds[award.prefix] : undefined,
         fullName: award.fullName,
         currentPosition: award.currentPosition,
         profileImage: award.profileImage || undefined,
@@ -741,7 +819,7 @@ export async function GET(request: NextRequest) {
       {
         projectTitle: 'สารคดีสั้น ตามรอยภูมิปัญญาผ้าทอเชียงราย',
         year: 2569,
-        categoryKey: 'outstanding-cultural-achievement:ประเภทเยาวชน / สถานศึกษา',
+        categorySlug: 'youth-institution',
         institutionName: 'โรงเรียนสามัคคีวิทยาคม',
         awardeeNames: ['พิมพ์ชนก ใจคำ', 'ธนกฤต แซ่ลี้'],
         videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -751,7 +829,7 @@ export async function GET(request: NextRequest) {
       {
         projectTitle: 'ละครเวทีเยาวชน เสียงจากลำน้ำโขง',
         year: 2568,
-        categoryKey: 'outstanding-cultural-achievement:ประเภทเยาวชน / สถานศึกษา',
+        categorySlug: 'youth-institution',
         institutionName: 'โรงเรียนเชียงของวิทยาคม',
         awardeeNames: ['ภัทรพล เชื้อเมืองพาน'],
         videoUrl: 'https://www.youtube.com/watch?v=oHg5SJYRHA0',
@@ -768,7 +846,7 @@ export async function GET(request: NextRequest) {
       const historyData = {
         projectTitle: history.projectTitle,
         year: awardYearIds[history.year],
-        category: awardCategoryIds[history.categoryKey],
+        category: youthCategoryIds[history.categorySlug],
         institution: institutionIds[history.institutionName],
         awardees: history.awardeeNames.map((name) => awardeeIds[name]).filter(Boolean),
         coverImage: history.coverImage || undefined,
@@ -877,7 +955,7 @@ export async function GET(request: NextRequest) {
         depth: 0,
       })
       const wisdomData = {
-        prefix: wisdom.prefix,
+        prefix: wisdom.prefix ? prefixIds[wisdom.prefix] : undefined,
         fullName: wisdom.fullName,
         avatarImage: wisdom.avatarImage || undefined,
         year: awardYearIds[wisdom.year],
@@ -906,6 +984,7 @@ export async function GET(request: NextRequest) {
       await payload.updateGlobal({
         slug: 'about-page',
         data: {
+          philosophy: 'อนุรักษ์ สร้างสรรค์ สืบสาน และส่งเสริมมรดกภูมิปัญญาทางวัฒนธรรมล้านนา ให้คงอยู่คู่แผ่นดินเชียงรายอย่างยั่งยืน',
           vision: 'เป็นองค์กรหลักในการขับเคลื่อนวัฒนธรรมท้องถิ่น ส่งเสริมและอนุรักษ์มรดกภูมิปัญญาล้านนา ให้คงอยู่อย่างยั่งยืนและสร้างคุณค่าสู่ชุมชน',
           missions: [
             { text: 'ส่งเสริมและอนุรักษ์วัฒนธรรมท้องถิ่นอันดีงาม' },
@@ -922,7 +1001,7 @@ export async function GET(request: NextRequest) {
     }
 
     // ============================================================
-    // 11. WisdomAwards (ครูภูมิปัญญาเมืองเชียงราย)
+    // 11. WisdomAwards (ครูภูมิผญาเมืองเชียงราย)
     // ============================================================
     const awardYearsResponse = await payload.find({ collection: 'award-years', limit: 10, sort: '-buddhistYear' })
     const defaultAwardYearId = awardYearsResponse.docs[0] ? String(awardYearsResponse.docs[0].id) : undefined
@@ -954,7 +1033,7 @@ export async function GET(request: NextRequest) {
           await payload.create({
             collection: 'wisdom-awards',
             data: {
-              prefix: wisdom.prefix,
+              prefix: wisdom.prefix ? prefixIds[wisdom.prefix] : undefined,
               fullName: wisdom.fullName,
               year: defaultAwardYearId,
               wisdomCategory: wisdomCategoryIds[wisdom.wisdomCategorySlug],
@@ -1058,14 +1137,14 @@ export async function GET(request: NextRequest) {
           youthCulture: {
             ...(existingPageHeroes?.youthCulture || {}),
             eyebrow: 'รางวัลเกียรติยศ',
-            title: 'เยาวชนวัฒนธรรม',
+            title: 'ยุวชนวัฒนธรรม',
             subtitle: 'ผลงานสร้างสรรค์ทางวัฒนธรรมของเยาวชนเชียงราย พร้อมข้อมูลโรงเรียน ทีมผู้จัดทำ และคลังภาพบรรยากาศวันรับรางวัล',
             heroImage: existingPageHeroes?.youthCulture?.heroImage || khonDeeHeroMediaId,
           },
           wisdomAwards: {
             ...(existingPageHeroes?.wisdomAwards || {}),
             eyebrow: 'รางวัลเกียรติยศ',
-            title: 'ครูภูมิปัญญาเมืองเชียงราย',
+            title: 'ครูภูมิผญาเมืองเชียงราย',
             subtitle: 'ทำเนียบผู้สืบสานองค์ความรู้ท้องถิ่นของเชียงราย แยกตามสาขาเพื่อการค้นหาและเผยแพร่ได้อย่างชัดเจน',
             heroImage: existingPageHeroes?.wisdomAwards?.heroImage || khonDeeHeroMediaId,
           },
@@ -1149,6 +1228,8 @@ export async function GET(request: NextRequest) {
         news: newsItems.length,
         awardYears: awardYears.length,
         awardCategories: awardCategories.length,
+        youthAwardCategories: youthAwardCategories.length,
+        prefixes: prefixes.length,
         wisdomCategories: wisdomCategories.length,
         institutions: institutions.length,
         awardees: awardees.length,

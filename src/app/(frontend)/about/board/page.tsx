@@ -53,15 +53,26 @@ export default async function BoardPage() {
         return a.order - b.order
     })
 
+    const districtChairmenList: PublicDistrictChairman[] = (await getDistrictChairmen() || [])
+        .sort((a, b) => a.districtName.localeCompare(b.districtName, 'th'))
+
     // จัดกลุ่มตามลำดับขั้น
     const chairman = orderedBoardMembers.find((m) => m.positionLevel === 1)
     const viceChairmen = orderedBoardMembers.filter((m) => m.positionLevel === 2)
     const committees = orderedBoardMembers.filter((m) => m.positionLevel === 3)
-    const coordinators = orderedBoardMembers.filter((m) => m.positionLevel === 4)
+    
+    // ดึงข้อมูลจากตำแหน่งประธานสภาวัฒนธรรมอำเภอของแต่ละอำเภอมาทำเป็นกรรมการสภาวัฒนธรรมจังหวัด
+    const coordinators = districtChairmenList.map((m, idx) => ({
+        name: m.name,
+        position: m.position,
+        positionLevel: 4,
+        order: idx + 1,
+        image: m.image,
+        districtSlug: m.districtSlug,
+    }))
+
     const secretaryMembers = orderedBoardMembers.filter((m) => m.positionLevel === 5 || (m.positionLevel === 4 && m.position.includes('เลขานุการ')))
 
-    const districtChairmenList: PublicDistrictChairman[] = (await getDistrictChairmen() || [])
-        .sort((a, b) => a.districtName.localeCompare(b.districtName, 'th'))
     const hero = pageHeroes?.aboutBoard || {}
     const heroMedia = hero.heroImage as MediaLike
     const heroImageUrl = resolveMediaUrl(heroMedia)
@@ -230,7 +241,13 @@ export default async function BoardPage() {
                                     <MemberAvatar image={member.image} name={member.name} size="md" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
+                                {member.districtSlug ? (
+                                    <Link href={`/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                        {member.position}
+                                    </Link>
+                                ) : (
+                                    <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -257,51 +274,6 @@ export default async function BoardPage() {
                         ))}
                     </div>
                 </>
-                )}
-
-                {/* ประธานสภาวัฒนธรรมอำเภอ */}
-                {districtChairmenList.length > 0 && (
-                <div className="mt-24 pt-16 border-t border-base-200 accent-panel">
-                    <div className="text-center mb-10 reveal-soft">
-                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">District Chairmen</span>
-                        <h2 className="text-3xl font-bold text-primary font-display">ประธานสภาวัฒนธรรมอำเภอ</h2>
-                        <p className="text-base-content/60 font-light mt-3">รายชื่อประธานสภาวัฒนธรรมประจำแต่ละอำเภอ</p>
-                    </div>
-
-                    <div className="bg-white rounded-3xl border border-secondary/20 shadow-[0_8px_30px_rgb(212,175,55,0.05)] overflow-hidden relative">
-                        <div className="absolute inset-0 opacity-[0.02] mask-kanok bg-primary pointer-events-none" />
-                        <div className="overflow-x-auto relative z-10">
-                            <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="bg-primary/5 border-b border-primary/10 text-sm uppercase tracking-wider text-primary font-bold">
-                                        <th className="py-5 px-6 text-center w-20">ลำดับ</th>
-                                        <th className="py-5 px-6">อำเภอ</th>
-                                        <th className="py-5 px-6">ชื่อ-นามสกุล</th>
-                                        <th className="py-5 px-6">ตำแหน่ง</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {districtChairmenList.map((member, idx: number) => (
-                                        <tr key={idx} className={`border-b border-base-100 hover:bg-slate-50 transition-colors ${idx === districtChairmenList.length - 1 ? 'border-none' : ''}`}>
-                                            <td className="py-4 px-6 text-center text-sm font-semibold text-primary/40">{idx + 1}</td>
-                                            <td className="py-4 px-6">
-                                                <Link href={`/districts/${member.districtSlug}`} className="inline-flex min-h-11 items-center font-medium text-primary hover:text-secondary-dark transition-colors">
-                                                    {member.districtName}
-                                                </Link>
-                                            </td>
-                                            <td className="py-4 px-6 font-medium text-base-content">{member.name}</td>
-                                            <td className="py-4 px-6 text-base-content/70 font-light">
-                                                <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-secondary/20 text-secondary-dark">
-                                                    {member.position}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
                 )}
             </div>
         </div>

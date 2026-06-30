@@ -5,12 +5,12 @@ export const Awardees: CollectionConfig = {
     admin: {
         useAsTitle: 'fullName',
         group: 'รางวัลเกียรติยศ',
-        description: 'ตารางเยาวชนหรือนักเรียนในหมวดเยาวชนวัฒนธรรม',
+        description: 'ตารางยุวชนหรือนักเรียนในหมวดยุวชนวัฒนธรรม',
         defaultColumns: ['fullName', 'institution', 'gradeLevel', 'isPublished'],
     },
     labels: {
-        singular: 'เยาวชน/นักเรียน',
-        plural: 'เยาวชน/นักเรียน',
+        singular: 'ยุวชน/นักเรียน',
+        plural: 'ยุวชน/นักเรียน',
     },
     fields: [
         {
@@ -18,7 +18,8 @@ export const Awardees: CollectionConfig = {
             fields: [
                 {
                     name: 'prefix',
-                    type: 'text',
+                    type: 'relationship',
+                    relationTo: 'prefixes',
                     label: 'คำนำหน้า',
                     admin: {
                         width: '30%',

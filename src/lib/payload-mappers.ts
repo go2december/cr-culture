@@ -13,11 +13,24 @@ import type {
     PublicNews,
     PublicTag,
     PublicYouthAwardHistory,
+    PublicYouthAwardCategory,
     PublicWisdomAward,
     PublicWisdomCategory,
     PublicDistrictRef,
 } from './public-content'
 import type { PublicBoardMember, PublicDistrictChairman, PublicDistrictMember, PublicDistrictSummary } from './public-organization'
+
+const mapPrefix = (prefix: unknown): string | null => {
+    if (prefix && typeof prefix === 'object' && 'title' in prefix) {
+        return (prefix as { title: string }).title
+    }
+    return null
+}
+
+export interface RawPrefix {
+    id: string | number
+    title: string
+}
 
 export type RawPayloadRef = {
     id?: string | number | null
@@ -127,6 +140,13 @@ export interface RawAwardCategory {
     subType: string
 }
 
+export interface RawYouthAwardCategory {
+    id: string | number
+    title: string
+    slug: string
+    description?: string | null
+}
+
 export interface RawWisdomCategory {
     id: string | number
     title: string
@@ -136,7 +156,7 @@ export interface RawWisdomCategory {
 
 export interface RawKhonDeeAward {
     id: string | number
-    prefix?: string | null
+    prefix?: string | number | RawPrefix | null
     fullName: string
     currentPosition?: string | null
     profileImage?: MediaLike
@@ -157,7 +177,7 @@ export interface RawInstitution {
 
 export interface RawAwardee {
     id: string | number
-    prefix?: string | null
+    prefix?: string | number | RawPrefix | null
     fullName: string
     gradeLevel?: string | null
     avatarImage?: MediaLike
@@ -181,14 +201,14 @@ export interface RawYouthAwardHistory {
     coverImage?: MediaLike
     institution?: RawInstitution | string | number | null
     year?: RawAwardYear | string | number | null
-    category?: RawAwardCategory | string | number | null
+    category?: RawYouthAwardCategory | string | number | null
     awardees?: Array<RawAwardee | string | number> | null
     isPublished?: boolean | null
 }
 
 export interface RawWisdomAward {
     id: string | number
-    prefix?: string | null
+    prefix?: string | number | RawPrefix | null
     fullName: string
     avatarImage?: MediaLike
     year?: RawAwardYear | string | number | null
@@ -376,6 +396,13 @@ export const mapAwardCategory = (doc: RawAwardCategory): PublicAwardCategory => 
     subType: doc.subType,
 })
 
+export const mapYouthAwardCategory = (doc: RawYouthAwardCategory): PublicYouthAwardCategory => ({
+    id: doc.id,
+    title: doc.title,
+    slug: doc.slug,
+    description: doc.description ?? null,
+})
+
 export const mapWisdomCategory = (doc: RawWisdomCategory): PublicWisdomCategory => ({
     id: doc.id,
     title: doc.title,
@@ -385,7 +412,7 @@ export const mapWisdomCategory = (doc: RawWisdomCategory): PublicWisdomCategory 
 
 export const mapKhonDeeAward = (doc: RawKhonDeeAward): PublicKhonDeeAward => ({
     id: doc.id,
-    prefix: doc.prefix ?? null,
+    prefix: mapPrefix(doc.prefix),
     fullName: doc.fullName,
     currentPosition: doc.currentPosition ?? null,
     profileImage: doc.profileImage,
@@ -405,7 +432,7 @@ export const mapInstitution = (doc: RawInstitution): PublicInstitution => ({
 
 export const mapAwardee = (doc: RawAwardee): PublicAwardee => ({
     id: doc.id,
-    prefix: doc.prefix ?? null,
+    prefix: mapPrefix(doc.prefix),
     fullName: doc.fullName,
     gradeLevel: doc.gradeLevel ?? null,
     avatarImage: doc.avatarImage,
@@ -432,7 +459,7 @@ export const mapYouthAwardHistory = (doc: RawYouthAwardHistory): PublicYouthAwar
         ? mapInstitution(doc.institution as RawInstitution)
         : null,
     year: doc.year && typeof doc.year === 'object' && 'buddhistYear' in doc.year ? mapAwardYear(doc.year as RawAwardYear) : null,
-    category: doc.category && typeof doc.category === 'object' && 'subType' in doc.category ? mapAwardCategory(doc.category as RawAwardCategory) : null,
+    category: doc.category && typeof doc.category === 'object' && 'title' in doc.category ? mapYouthAwardCategory(doc.category as RawYouthAwardCategory) : null,
     awardees: (doc.awardees || [])
         .filter((awardee): awardee is RawAwardee => Boolean(awardee) && typeof awardee === 'object' && 'fullName' in awardee)
         .map(mapAwardee),
@@ -440,7 +467,7 @@ export const mapYouthAwardHistory = (doc: RawYouthAwardHistory): PublicYouthAwar
 
 export const mapWisdomAward = (doc: RawWisdomAward): PublicWisdomAward => ({
     id: doc.id,
-    prefix: doc.prefix ?? null,
+    prefix: mapPrefix(doc.prefix),
     fullName: doc.fullName,
     avatarImage: doc.avatarImage,
     year: doc.year && typeof doc.year === 'object' && 'buddhistYear' in doc.year ? mapAwardYear(doc.year as RawAwardYear) : null,

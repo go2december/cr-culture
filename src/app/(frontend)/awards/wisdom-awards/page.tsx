@@ -6,11 +6,12 @@ import { getAwardYears, getPageHeroes, getWisdomAwards, getWisdomCategories } fr
 export default async function WisdomAwardsPage({
     searchParams,
 }: {
-    searchParams: Promise<{ year?: string; category?: string; q?: string }>
+    searchParams: Promise<{ year?: string; category?: string; sortBy?: string; q?: string }>
 }) {
     const params = await searchParams
     const selectedYear = params.year || ''
     const selectedCategory = params.category || ''
+    const sortBy = params.sortBy || 'category'
     const searchQuery = params.q || ''
 
     const [response, years, categories, pageHeroes] = await Promise.all([
@@ -25,10 +26,29 @@ export default async function WisdomAwardsPage({
     ])
 
     const items = response.docs || []
+    const sortedItems = [...items]
+    if (sortBy === 'category') {
+        sortedItems.sort((a, b) => {
+            const catA = a.wisdomCategory?.title || ''
+            const catB = b.wisdomCategory?.title || ''
+            return catA.localeCompare(catB, 'th')
+        })
+    } else if (sortBy === 'year_desc') {
+        sortedItems.sort((a, b) => (b.year?.buddhistYear || 0) - (a.year?.buddhistYear || 0))
+    } else if (sortBy === 'year_asc') {
+        sortedItems.sort((a, b) => (a.year?.buddhistYear || 0) - (b.year?.buddhistYear || 0))
+    } else if (sortBy === 'name') {
+        sortedItems.sort((a, b) => {
+            const nameA = [a.prefix, a.fullName].filter(Boolean).join(' ')
+            const nameB = [b.prefix, b.fullName].filter(Boolean).join(' ')
+            return nameA.localeCompare(nameB, 'th')
+        })
+    }
+
     const hero = pageHeroes?.wisdomAwards || {}
     const heroMedia = hero.heroImage as MediaLike
     const heroImageUrl = resolveMediaUrl(heroMedia)
-    const heroImageAlt = resolveMediaAlt(heroMedia, (hero.title as string) || 'ครูภูมิปัญญาเมืองเชียงราย')
+    const heroImageAlt = resolveMediaAlt(heroMedia, (hero.title as string) || 'ครูภูมิผญาเมืองเชียงราย')
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -49,7 +69,7 @@ export default async function WisdomAwardsPage({
                 <div className="container relative z-10 mx-auto max-w-7xl px-4">
                     <div className="max-w-4xl">
                         <h1 className={`font-display text-4xl font-bold leading-[1.05] md:text-6xl lg:text-7xl ${heroImageUrl ? 'text-white' : 'text-primary'}`}>
-                            {(hero.title as string) || 'ครูภูมิปัญญาเมืองเชียงราย'}
+                            {(hero.title as string) || 'ครูภูมิผญาเมืองเชียงราย'}
                         </h1>
                         <p className={`mt-5 max-w-3xl text-lg font-light leading-relaxed md:text-xl ${heroImageUrl ? 'text-white/86' : 'text-base-content/70'}`}>
                             {(hero.subtitle as string) || 'ทำเนียบผู้สืบสานองค์ความรู้ท้องถิ่นของเชียงราย แยกตามสาขาเพื่อการค้นหาและเผยแพร่ได้อย่างชัดเจน'}
@@ -62,17 +82,17 @@ export default async function WisdomAwardsPage({
                 <div className="breadcrumbs text-sm text-base-content/60">
                     <ul>
                         <li><Link href="/" className="transition-colors hover:text-primary">หน้าแรก</Link></li>
-                        <li className="font-medium text-primary">ครูภูมิปัญญาเมืองเชียงราย</li>
+                        <li className="font-medium text-primary">ครูภูมิผญาเมืองเชียงราย</li>
                     </ul>
                 </div>
             </div>
 
             <div className="container mx-auto max-w-7xl px-4 pb-24">
                 <div className="rounded-3xl border border-base-200 bg-white p-6 shadow-sm">
-                    <form className="grid items-end gap-4 lg:grid-cols-[1.1fr_1fr_1fr_auto]">
+                    <form className="grid items-end gap-4 lg:grid-cols-[1.2fr_0.8fr_1fr_1fr_1.1fr_auto]">
                         <label className="form-control">
                             <span className="label-text mb-2 text-sm font-semibold text-base-content/70">ค้นหา</span>
-                            <input type="text" name="q" defaultValue={searchQuery} placeholder="ชื่อครูภูมิปัญญา หรือคำสำคัญในรายละเอียด" className="input input-bordered w-full rounded-2xl border-base-200" />
+                            <input type="text" name="q" defaultValue={searchQuery} placeholder="ชื่อครูภูมิผญา หรือคำสำคัญในรายละเอียด" className="input input-bordered w-full rounded-2xl border-base-200" />
                         </label>
                         <label className="form-control">
                             <span className="label-text mb-2 text-sm font-semibold text-base-content/70">ปี พ.ศ.</span>
@@ -92,6 +112,15 @@ export default async function WisdomAwardsPage({
                                 ))}
                             </select>
                         </label>
+                        <label className="form-control">
+                            <span className="label-text mb-2 text-sm font-semibold text-base-content/70">เรียงลำดับ</span>
+                            <select name="sortBy" defaultValue={sortBy} className="select select-bordered w-full rounded-2xl border-base-200">
+                                <option value="category">ประเภทรางวัลที่ได้รับ</option>
+                                <option value="year_desc">ปี พ.ศ. (ล่าสุด - เก่าสุด)</option>
+                                <option value="year_asc">ปี พ.ศ. (เก่าสุด - ล่าสุด)</option>
+                                <option value="name">ชื่อครูภูมิผญา (ก-ฮ)</option>
+                            </select>
+                        </label>
                         <div className="flex gap-3">
                             <button type="submit" className="btn min-h-12 rounded-2xl border-primary bg-primary px-6 text-white hover:bg-primary-dark">กรองข้อมูล</button>
                             <Link href="/awards/wisdom-awards" className="btn btn-ghost min-h-12 rounded-2xl px-5">ล้าง</Link>
@@ -100,13 +129,13 @@ export default async function WisdomAwardsPage({
                 </div>
 
                 <div className="mt-8">
-                    <h2 className="font-display text-2xl font-bold text-primary">ทำเนียบครูภูมิปัญญา</h2>
-                    <p className="mt-2 text-base-content/60">พบ {items.length} รายการ{selectedYear ? ` ในปี ${selectedYear}` : ''}</p>
+                    <h2 className="font-display text-2xl font-bold text-primary">ทำเนียบครูภูมิผญา</h2>
+                    <p className="mt-2 text-base-content/60">พบ {sortedItems.length} รายการ{selectedYear ? ` ในปี ${selectedYear}` : ''}</p>
                 </div>
 
-                {items.length > 0 ? (
+                {sortedItems.length > 0 ? (
                     <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                        {items.map((item) => {
+                        {sortedItems.map((item) => {
                             const imageUrl = resolveMediaUrl(item.avatarImage)
                             return (
                                 <Link key={item.id} href={`/awards/wisdom-awards/${item.id}`} className="group overflow-hidden rounded-3xl border border-base-200 bg-white shadow-sm transition-all duration-300 hover:border-secondary/50 hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)]">

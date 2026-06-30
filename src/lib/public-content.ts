@@ -11,6 +11,13 @@ export interface PublicWisdomCategory {
     description?: string | null
 }
 
+export interface PublicYouthAwardCategory {
+    id: string | number
+    title: string
+    slug: string
+    description?: string | null
+}
+
 export interface PublicDistrict {
     id: string | number
     name: string
@@ -135,7 +142,7 @@ export interface PublicYouthAwardHistory {
     coverImage?: MediaLike
     institution?: PublicInstitution | null
     year?: PublicAwardYear | null
-    category?: PublicAwardCategory | null
+    category?: PublicYouthAwardCategory | null
     awardees: PublicAwardee[]
 }
 

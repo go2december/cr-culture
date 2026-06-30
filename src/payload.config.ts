@@ -26,11 +26,15 @@ import { YouthAwardHistories } from './collections/YouthAwardHistories'
 import { AwardGalleries } from './collections/AwardGalleries'
 import { WisdomCategories } from './collections/WisdomCategories'
 import { WisdomAwards } from './collections/WisdomAwards'
+import { YouthAwardCategories } from './collections/YouthAwardCategories'
+import { Prefixes } from './collections/Prefixes'
+
 
 // Globals
 import { AboutPage } from './globals/AboutPage'
 import { PageHeroes } from './globals/PageHeroes'
 import { SiteSettings } from './globals/SiteSettings'
+import { AnalyticsReport } from './globals/AnalyticsReport'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -87,11 +91,14 @@ export default buildConfig({
         AwardGalleries,
         WisdomCategories,
         WisdomAwards,
+        YouthAwardCategories,
+        Prefixes,
     ],
     globals: [
         AboutPage,
         PageHeroes,
         SiteSettings,
+        AnalyticsReport,
     ],
     secret: process.env.PAYLOAD_SECRET || 'cr-culture-secret-key',
     typescript: {

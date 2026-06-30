@@ -5,12 +5,12 @@ export const WisdomAwards: CollectionConfig = {
     admin: {
         useAsTitle: 'fullName',
         group: 'รางวัลเกียรติยศ',
-        description: 'ทำเนียบครูภูมิปัญญาเมืองเชียงราย',
+        description: 'ทำเนียบครูภูมิผญาเมืองเชียงราย',
         defaultColumns: ['fullName', 'wisdomCategory', 'year', 'isPublished'],
     },
     labels: {
-        singular: 'ครูภูมิปัญญาเมืองเชียงราย',
-        plural: 'ครูภูมิปัญญาเมืองเชียงราย',
+        singular: 'ครูภูมิผญาเมืองเชียงราย',
+        plural: 'ครูภูมิผญาเมืองเชียงราย',
     },
     fields: [
         {
@@ -24,7 +24,8 @@ export const WisdomAwards: CollectionConfig = {
                             fields: [
                                 {
                                     name: 'prefix',
-                                    type: 'text',
+                                    type: 'relationship',
+                                    relationTo: 'prefixes',
                                     label: 'คำนำหน้า/ยศ',
                                     admin: {
                                         width: '35%',
@@ -45,7 +46,7 @@ export const WisdomAwards: CollectionConfig = {
                             name: 'avatarImage',
                             type: 'upload',
                             relationTo: 'media',
-                            label: 'รูปถ่ายครูภูมิปัญญา',
+                            label: 'รูปถ่ายครูภูมิผญา',
                         },
                     ],
                 },

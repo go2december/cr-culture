@@ -5,7 +5,7 @@ export const Institutions: CollectionConfig = {
     admin: {
         useAsTitle: 'institutionName',
         group: 'รางวัลเกียรติยศ',
-        description: 'ตารางโรงเรียนหรือหน่วยงานของหมวดเยาวชนวัฒนธรรม',
+        description: 'ตารางโรงเรียนหรือหน่วยงานของหมวดยุวชนวัฒนธรรม',
         defaultColumns: ['institutionName', 'district', 'profileImage'],
     },
     labels: {

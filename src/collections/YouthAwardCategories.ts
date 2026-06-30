@@ -1,22 +1,22 @@
 import type { CollectionConfig } from 'payload'
 
-export const WisdomCategories: CollectionConfig = {
-    slug: 'wisdom-categories',
+export const YouthAwardCategories: CollectionConfig = {
+    slug: 'youth-award-categories',
     admin: {
         useAsTitle: 'title',
         group: 'รางวัลเกียรติยศ',
-        description: 'สาขาองค์ความรู้สำหรับครูภูมิผญาเมืองเชียงราย',
+        description: 'ประเภทรางวัลสำหรับรางวัลยุวชนวัฒนธรรม',
         defaultColumns: ['title', 'slug'],
     },
     labels: {
-        singular: 'สาขาองค์ความรู้',
-        plural: 'สาขาองค์ความรู้',
+        singular: 'ประเภทรางวัลยุวชน',
+        plural: 'ประเภทรางวัลยุวชน',
     },
     fields: [
         {
             name: 'title',
             type: 'text',
-            label: 'ชื่อสาขาองค์ความรู้',
+            label: 'ชื่อประเภทรางวัล',
             required: true,
             unique: true,
         },
@@ -27,7 +27,7 @@ export const WisdomCategories: CollectionConfig = {
             required: true,
             unique: true,
             admin: {
-                description: 'ใช้สำหรับกรองข้อมูลบนหน้าเว็บ เช่น traditional-craftsmanship',
+                description: 'ใช้สำหรับกรองข้อมูลบนหน้าเว็บ เช่น youth-institution',
             },
         },
         {

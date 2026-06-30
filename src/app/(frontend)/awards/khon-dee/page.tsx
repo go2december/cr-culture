@@ -12,11 +12,12 @@ const pillarLabels: Record<PublicAwardMainPillar, string> = {
 export default async function KhonDeeAwardsPage({
     searchParams,
 }: {
-    searchParams: Promise<{ year?: string; category?: string; q?: string }>
+    searchParams: Promise<{ year?: string; category?: string; sortBy?: string; q?: string }>
 }) {
     const params = await searchParams
     const selectedYear = params.year || ''
     const selectedCategoryId = params.category || ''
+    const sortBy = params.sortBy || 'category'
     const searchQuery = params.q || ''
 
     const [awardResponse, yearsData, categoriesData, pageHeroes] = await Promise.all([
@@ -31,6 +32,24 @@ export default async function KhonDeeAwardsPage({
     ])
 
     const awards = (awardResponse.docs || []) as PublicKhonDeeAward[]
+    const sortedAwards = [...awards]
+    if (sortBy === 'category') {
+        sortedAwards.sort((a, b) => {
+            const catA = a.category ? `${pillarLabels[a.category.mainPillar]} / ${a.category.subType}` : ''
+            const catB = b.category ? `${pillarLabels[b.category.mainPillar]} / ${b.category.subType}` : ''
+            return catA.localeCompare(catB, 'th')
+        })
+    } else if (sortBy === 'year_desc') {
+        sortedAwards.sort((a, b) => (b.year?.buddhistYear || 0) - (a.year?.buddhistYear || 0))
+    } else if (sortBy === 'year_asc') {
+        sortedAwards.sort((a, b) => (a.year?.buddhistYear || 0) - (b.year?.buddhistYear || 0))
+    } else if (sortBy === 'name') {
+        sortedAwards.sort((a, b) => {
+            const nameA = [a.prefix, a.fullName].filter(Boolean).join(' ')
+            const nameB = [b.prefix, b.fullName].filter(Boolean).join(' ')
+            return nameA.localeCompare(nameB, 'th')
+        })
+    }
     const years = (yearsData || []) as PublicAwardYear[]
     const categories = (categoriesData || []) as PublicAwardCategory[]
     const selectedCategory = categories.find((category) => String(category.id) === selectedCategoryId) || null
@@ -84,7 +103,7 @@ export default async function KhonDeeAwardsPage({
 
             <div className="container mx-auto max-w-7xl px-4 pb-24">
                 <div className="bg-white rounded-3xl border border-base-200 shadow-sm p-6 lg:p-8 mb-8 reveal-soft stagger-1">
-                    <form className="grid lg:grid-cols-[1.1fr_1fr_1fr_auto] gap-4 items-end">
+                    <form className="grid lg:grid-cols-[1.1fr_1fr_1fr_1fr_auto] gap-4 items-end">
                         <label className="form-control">
                             <span className="label-text text-sm font-semibold text-base-content/70 mb-2">ค้นหา</span>
                             <input
@@ -120,6 +139,16 @@ export default async function KhonDeeAwardsPage({
                             </select>
                         </label>
 
+                        <label className="form-control">
+                            <span className="label-text text-sm font-semibold text-base-content/70 mb-2">เรียงลำดับ</span>
+                            <select name="sortBy" defaultValue={sortBy} className="select select-bordered w-full rounded-2xl border-base-200 focus:border-secondary">
+                                <option value="category">ประเภทรางวัลที่ได้รับ</option>
+                                <option value="year_desc">ปี พ.ศ. (ล่าสุด - เก่าสุด)</option>
+                                <option value="year_asc">ปี พ.ศ. (เก่าสุด - ล่าสุด)</option>
+                                <option value="name">ชื่อผู้ได้รับรางวัล (ก-ฮ)</option>
+                            </select>
+                        </label>
+
                         <div className="flex gap-3">
                             <button type="submit" className="btn rounded-2xl bg-primary text-white border-primary hover:bg-primary-dark min-h-12 px-6">
                                 กรองข้อมูล
@@ -137,16 +166,16 @@ export default async function KhonDeeAwardsPage({
                             {selectedCategory ? selectedCategory.subType : 'ทำเนียบผู้ได้รับรางวัล'}
                         </h2>
                         <p className="text-base-content/60 font-light mt-2">
-                            พบ {awards.length} รายการ
+                            พบ {sortedAwards.length} รายการ
                             {selectedYear ? ` ในปี ${selectedYear}` : ''}
                             {searchQuery ? ` สำหรับ "${searchQuery}"` : ''}
                         </p>
                     </div>
                 </div>
 
-                {awards.length > 0 ? (
+                {sortedAwards.length > 0 ? (
                     <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-                        {awards.map((award, index) => {
+                        {sortedAwards.map((award, index) => {
                             const imageUrl = resolveMediaUrl(award.profileImage)
                             const yearLabel = award.year?.buddhistYear ? `พ.ศ. ${award.year.buddhistYear}` : 'ไม่ระบุปี'
                             const categoryLabel = award.category

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import CmsImage from '@/components/CmsImage'
 import InstitutionImageCard from '@/components/InstitutionImageCard'
-import { getAwardGalleries, getYouthAwardHistories, getYouthAwardHistoryById } from '@/lib/payload'
+import { getYouthAwardHistories, getYouthAwardHistoryById } from '@/lib/payload'
 import { resolveMediaAlt, resolveMediaUrl } from '@/lib/media'
 
 export async function generateMetadata({
@@ -17,8 +17,8 @@ export async function generateMetadata({
         return {}
     }
 
-    const title = `${history.projectTitle} - รางวัลเยาวชนวัฒนธรรม`
-    const description = history.projectSummary || `ผลงานเยาวชนวัฒนธรรมจังหวัดเชียงรายโดยสถาบัน/โรงเรียน ${history.institution?.institutionName || ''}`
+    const title = `${history.projectTitle} - รางวัลยุวชนวัฒนธรรม`
+    const description = history.projectSummary || `ผลงานยุวชนวัฒนธรรมจังหวัดเชียงรายโดยสถาบัน/โรงเรียน ${history.institution?.institutionName || ''}`
     const imageUrl = resolveMediaUrl(history.coverImage)
 
     return {
@@ -64,13 +64,10 @@ export default async function YouthCultureDetailPage({
 
     if (!history) return notFound()
 
-    const [relatedResponse, gallery] = await Promise.all([
-        getYouthAwardHistories({
-            year: history.year?.buddhistYear ? String(history.year.buddhistYear) : undefined,
-            limit: 6,
-        }),
-        history.year?.buddhistYear ? getAwardGalleries({ year: String(history.year.buddhistYear), limit: 6 }) : Promise.resolve([]),
-    ])
+    const relatedResponse = await getYouthAwardHistories({
+        year: history.year?.buddhistYear ? String(history.year.buddhistYear) : undefined,
+        limit: 4,
+    })
 
     const related = (relatedResponse.docs || []).filter((item) => String(item.id) !== String(history.id)).slice(0, 3)
     const imageUrl = resolveMediaUrl(history.coverImage)
@@ -89,11 +86,11 @@ export default async function YouthCultureDetailPage({
                         <div className="container relative z-10 mx-auto max-w-6xl px-4 text-white">
                             <div className="max-w-4xl">
                                 <div className="mb-6 inline-flex rounded-full border border-white/20 bg-white/12 px-4 py-2 text-sm font-medium backdrop-blur-md">
-                                    {history.year?.buddhistYear ? `พ.ศ. ${history.year.buddhistYear}` : 'เยาวชนวัฒนธรรม'}
+                                    {history.year?.buddhistYear ? `พ.ศ. ${history.year.buddhistYear}` : 'ยุวชนวัฒนธรรม'}
                                 </div>
                                 <h1 className="font-display text-3xl font-bold leading-[1.05] drop-shadow-lg md:text-5xl lg:text-6xl">{history.projectTitle}</h1>
                                 <p className="mt-5 max-w-3xl text-lg font-light text-white/82 md:text-xl">
-                                    {history.institution?.institutionName || 'ผลงานเยาวชนวัฒนธรรม'}
+                                    {history.institution?.institutionName || 'ผลงานยุวชนวัฒนธรรม'}
                                 </p>
                             </div>
                         </div>
@@ -102,7 +99,7 @@ export default async function YouthCultureDetailPage({
                     <div className="container relative z-10 mx-auto max-w-6xl px-4 text-white">
                         <div className="max-w-4xl">
                             <div className="mb-6 inline-flex rounded-full border border-white/30 bg-white/20 px-4 py-2 text-sm font-medium backdrop-blur-md">
-                                {history.year?.buddhistYear ? `พ.ศ. ${history.year.buddhistYear}` : 'เยาวชนวัฒนธรรม'}
+                                {history.year?.buddhistYear ? `พ.ศ. ${history.year.buddhistYear}` : 'ยุวชนวัฒนธรรม'}
                             </div>
                             <h1 className="font-display text-3xl font-bold md:text-5xl lg:text-6xl">{history.projectTitle}</h1>
                         </div>
@@ -116,7 +113,7 @@ export default async function YouthCultureDetailPage({
                     <div className="breadcrumbs">
                         <ul>
                             <li><Link href="/" className="hover:text-primary transition-colors">หน้าแรก</Link></li>
-                            <li><Link href="/awards/youth-culture" className="hover:text-primary transition-colors">เยาวชนวัฒนธรรม</Link></li>
+                            <li><Link href="/awards/youth-culture" className="hover:text-primary transition-colors">ยุวชนวัฒนธรรม</Link></li>
                             <li className="font-medium text-primary">{history.projectTitle}</li>
                         </ul>
                     </div>
@@ -136,6 +133,12 @@ export default async function YouthCultureDetailPage({
                                     <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-base-content/50">จำนวนสมาชิก</div>
                                     <div className="text-base font-semibold leading-relaxed text-primary">{history.awardees.length} คน</div>
                                 </div>
+                                {history.category?.title && (
+                                    <div className="rounded-2xl border border-base-100 bg-slate-50 p-5">
+                                        <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-base-content/50">ประเภทรางวัล</div>
+                                        <div className="text-base font-semibold leading-relaxed text-primary">{history.category.title}</div>
+                                    </div>
+                                )}
                                 {history.institution?.district && (
                                     <div className="rounded-2xl border border-base-100 bg-slate-50 p-5">
                                         <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-base-content/50">พื้นที่</div>
@@ -159,26 +162,6 @@ export default async function YouthCultureDetailPage({
                                 <h2 className="font-display text-2xl font-bold text-primary">วิดีโอผลงาน</h2>
                                 <div className="relative mt-5 aspect-video overflow-hidden rounded-2xl border border-base-100">
                                     <iframe src={videoEmbedUrl} title={history.projectTitle} className="absolute inset-0 h-full w-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
-                                </div>
-                            </div>
-                        )}
-
-                        {gallery.length > 0 && (
-                            <div className="rounded-3xl border border-base-200 bg-white p-6 shadow-sm lg:p-8">
-                                <h2 className="font-display text-2xl font-bold text-primary">คลังภาพบรรยากาศปีเดียวกัน</h2>
-                                <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                    {gallery.map((item) => {
-                                        const galleryImageUrl = resolveMediaUrl(item.image)
-                                        if (!galleryImageUrl) return null
-                                        return (
-                                            <div key={item.id} className="space-y-2">
-                                                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-base-100 bg-slate-50">
-                                                    <CmsImage src={galleryImageUrl} alt={resolveMediaAlt(item.image, item.caption || 'ภาพบรรยากาศงาน')} fill sizes="18rem" className="object-cover" />
-                                                </div>
-                                                {item.caption && <p className="text-sm font-light text-base-content/55">{item.caption}</p>}
-                                            </div>
-                                        )
-                                    })}
                                 </div>
                             </div>
                         )}

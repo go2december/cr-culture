@@ -5,7 +5,7 @@ export const AwardGalleries: CollectionConfig = {
     admin: {
         useAsTitle: 'caption',
         group: 'รางวัลเกียรติยศ',
-        description: 'คลังภาพบรรยากาศงานของหมวดเยาวชนวัฒนธรรม',
+        description: 'คลังภาพบรรยากาศงานของหมวดยุวชนวัฒนธรรม',
         defaultColumns: ['year', 'caption', 'isHighlight'],
     },
     labels: {

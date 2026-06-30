@@ -16,10 +16,10 @@ export async function generateMetadata({
         return {}
     }
 
-    const title = `${[item.prefix, item.fullName].filter(Boolean).join(' ')} - ครูภูมิปัญญาเมืองเชียงราย`
+    const title = `${[item.prefix, item.fullName].filter(Boolean).join(' ')} - ครูภูมิผญาเมืองเชียงราย`
     const description = item.wisdomCategory?.title
-        ? `ครูภูมิปัญญาเมืองเชียงราย สาขา${item.wisdomCategory.title} ประจำปี พ.ศ. ${item.year?.buddhistYear || ''}`
-        : `ทำเนียบครูภูมิปัญญาเมืองเชียงราย ประจำปี พ.ศ. ${item.year?.buddhistYear || ''}`
+        ? `ครูภูมิผญาเมืองเชียงราย สาขา${item.wisdomCategory.title} ประจำปี พ.ศ. ${item.year?.buddhistYear || ''}`
+        : `ทำเนียบครูภูมิผญาเมืองเชียงราย ประจำปี พ.ศ. ${item.year?.buddhistYear || ''}`
     const imageUrl = resolveMediaUrl(item.avatarImage)
 
     return {
@@ -62,7 +62,7 @@ export default async function WisdomAwardDetailPage({
                 <div className="container relative z-10 mx-auto max-w-6xl px-4 text-white">
                     <div className="max-w-4xl">
                         <div className="mb-6 inline-flex rounded-full border border-white/20 bg-white/12 px-4 py-2 text-sm font-medium backdrop-blur-md">
-                            {item.year?.buddhistYear ? `พ.ศ. ${item.year.buddhistYear}` : 'ครูภูมิปัญญาเมืองเชียงราย'}
+                            {item.year?.buddhistYear ? `พ.ศ. ${item.year.buddhistYear}` : 'ครูภูมิผญาเมืองเชียงราย'}
                         </div>
                         <h1 className="font-display text-3xl font-bold leading-[1.05] md:text-5xl lg:text-6xl">
                             {[item.prefix, item.fullName].filter(Boolean).join(' ')}
@@ -77,7 +77,7 @@ export default async function WisdomAwardDetailPage({
                     <div className="breadcrumbs">
                         <ul>
                             <li><Link href="/" className="transition-colors hover:text-primary">หน้าแรก</Link></li>
-                            <li><Link href="/awards/wisdom-awards" className="transition-colors hover:text-primary">ครูภูมิปัญญาเมืองเชียงราย</Link></li>
+                            <li><Link href="/awards/wisdom-awards" className="transition-colors hover:text-primary">ครูภูมิผญาเมืองเชียงราย</Link></li>
                             <li className="font-medium text-primary">{item.fullName}</li>
                         </ul>
                     </div>

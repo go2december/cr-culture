@@ -5,12 +5,12 @@ export const YouthAwardHistories: CollectionConfig = {
     admin: {
         useAsTitle: 'projectTitle',
         group: 'รางวัลเกียรติยศ',
-        description: 'รางวัลเยาวชนวัฒนธรรม สำหรับบันทึกผลงานคลิปและทีมผู้จัดทำ',
+        description: 'รางวัลยุวชนวัฒนธรรม สำหรับบันทึกผลงานคลิปและทีมผู้จัดทำ',
         defaultColumns: ['projectTitle', 'institution', 'year', 'category', 'isPublished'],
     },
     labels: {
-        singular: 'รางวัลเยาวชนวัฒนธรรม',
-        plural: 'รางวัลเยาวชนวัฒนธรรม',
+        singular: 'รางวัลยุวชนวัฒนธรรม',
+        plural: 'รางวัลยุวชนวัฒนธรรม',
     },
     fields: [
         {
@@ -41,7 +41,7 @@ export const YouthAwardHistories: CollectionConfig = {
                                 {
                                     name: 'category',
                                     type: 'relationship',
-                                    relationTo: 'award-categories',
+                                    relationTo: 'youth-award-categories',
                                     label: 'ประเภทรางวัล',
                                     required: true,
                                     admin: {

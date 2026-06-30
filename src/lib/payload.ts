@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { cache } from 'react'
 import type { MediaLike } from './media'
-import type { PublicActivity, PublicAwardCategory, PublicAwardGallery, PublicAwardYear, PublicAwardee, PublicHeritage, PublicInstitution, PublicKhonDeeAward, PublicNews, PublicTag, PublicYouthAwardHistory, PublicWisdomAward, PublicWisdomCategory } from './public-content'
+import type { PublicActivity, PublicAwardCategory, PublicAwardGallery, PublicAwardYear, PublicAwardee, PublicHeritage, PublicInstitution, PublicKhonDeeAward, PublicNews, PublicTag, PublicYouthAwardHistory, PublicYouthAwardCategory, PublicWisdomAward, PublicWisdomCategory } from './public-content'
 import type { PublicBoardMember, PublicDistrictChairman, PublicDistrictMember, PublicDistrictSummary } from './public-organization'
 import {
   mapActivity,
@@ -20,6 +20,7 @@ import {
   mapNews,
   mapTag,
   mapYouthAwardHistory,
+  mapYouthAwardCategory,
   mapWisdomCategory,
   mapWisdomAward,
   type RawActivity,
@@ -36,6 +37,7 @@ import {
   type RawNews,
   type RawTag,
   type RawYouthAwardHistory,
+  type RawYouthAwardCategory,
   type RawWisdomCategory,
   type RawWisdomAward,
 } from './payload-mappers'
@@ -58,7 +60,7 @@ type FindResponse<T> = {
 
 type QueryWhere = Record<string, unknown>
 
-type CollectionSlug = 'provincial-board' | 'districts' | 'district-members' | 'activities' | 'heritage-blog' | 'tags' | 'news' | 'award-years' | 'award-categories' | 'khon-dee-awards' | 'institutions' | 'awardees' | 'youth-award-histories' | 'award-galleries' | 'wisdom-categories' | 'wisdom-awards'
+type CollectionSlug = 'provincial-board' | 'districts' | 'district-members' | 'activities' | 'heritage-blog' | 'tags' | 'news' | 'award-years' | 'award-categories' | 'khon-dee-awards' | 'institutions' | 'awardees' | 'youth-award-histories' | 'award-galleries' | 'wisdom-categories' | 'wisdom-awards' | 'youth-award-categories'
 
 type GlobalSlug = 'about-page' | 'page-heroes'
 
@@ -225,6 +227,26 @@ export const getActivities = cache(async (options?: { level?: 'province' | 'dist
 })
 
 /**
+ * ดึงกิจกรรมทั้งหมดที่มีรูปภาพแกลเลอรี
+ */
+export const getActivitiesWithGallery = cache(async (limit = 100) => {
+  const response = await findMappedDocs<RawActivity, PublicActivity>('activities', {
+    where: {
+      isPublished: { equals: true },
+    },
+    limit,
+    sort: '-date',
+    depth: 1,
+  }, mapActivity)
+  
+  return {
+    ...response,
+    docs: response.docs.filter((item) => item.gallery && item.gallery.length > 0)
+  }
+})
+
+
+/**
  * ดึงกิจกรรมจาก slug
  */
 export const getActivityBySlug = cache(async (slug: string) => {
@@ -372,6 +394,14 @@ export const getAwardCategories = cache(async () => {
     limit: 100,
     sort: 'subType',
   }, mapAwardCategory)
+  return response.docs
+})
+
+export const getYouthAwardCategories = cache(async () => {
+  const response = await findMappedDocs<RawYouthAwardCategory, PublicYouthAwardCategory>('youth-award-categories', {
+    limit: 100,
+    sort: 'title',
+  }, mapYouthAwardCategory)
   return response.docs
 })
 
