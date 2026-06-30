@@ -83,6 +83,15 @@ export const Activities: CollectionConfig = {
             label: 'รายละเอียด',
         },
         {
+            name: 'bulkUploadZone',
+            type: 'ui',
+            admin: {
+                components: {
+                    Field: '@/components/admin/BulkUploadZone#BulkUploadZone',
+                },
+            },
+        },
+        {
             name: 'gallery',
             type: 'relationship',
             relationTo: 'media',
