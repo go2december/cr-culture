@@ -3,7 +3,37 @@
 import React from 'react'
 
 export const AnalyticsWidget: React.FC = () => {
-  const shareUrl = process.env.NEXT_PUBLIC_UMAMI_SHARE_URL
+  const [shareUrl, setShareUrl] = React.useState<string | null>(null)
+  const [isLoading, setIsLoading] = React.useState(true)
+
+  React.useEffect(() => {
+    fetch('/api/analytics-config')
+      .then((res) => res.json())
+      .then((data) => {
+        setShareUrl(data.shareUrl || null)
+        setIsLoading(false)
+      })
+      .catch(() => {
+        setIsLoading(false)
+      })
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div 
+        style={{ 
+          padding: '24px', 
+          backgroundColor: 'var(--theme-elevation-50, #f8fafc)', 
+          border: '1px solid var(--theme-elevation-150, #e2e8f0)', 
+          borderRadius: '8px', 
+          marginTop: '32px',
+          fontFamily: 'var(--font-sans, system-ui, sans-serif)'
+        }}
+      >
+        กำลังโหลดระบบวิเคราะห์สถิติ...
+      </div>
+    )
+  }
 
   if (!shareUrl) {
     return (

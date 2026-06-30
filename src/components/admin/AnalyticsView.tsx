@@ -3,7 +3,28 @@
 import React from 'react'
 
 export const AnalyticsView: React.FC = () => {
-  const shareUrl = process.env.NEXT_PUBLIC_UMAMI_SHARE_URL
+  const [shareUrl, setShareUrl] = React.useState<string | null>(null)
+  const [isLoading, setIsLoading] = React.useState(true)
+
+  React.useEffect(() => {
+    fetch('/api/analytics-config')
+      .then((res) => res.json())
+      .then((data) => {
+        setShareUrl(data.shareUrl || null)
+        setIsLoading(false)
+      })
+      .catch(() => {
+        setIsLoading(false)
+      })
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div style={{ padding: '40px 32px', fontFamily: 'var(--font-sans, system-ui, sans-serif)' }}>
+        กำลังโหลดระบบวิเคราะห์สถิติ...
+      </div>
+    )
+  }
 
   if (!shareUrl) {
     return (
