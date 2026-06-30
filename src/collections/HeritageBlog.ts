@@ -57,22 +57,10 @@ export const HeritageBlog: CollectionConfig = {
         },
         {
             name: 'gallery',
-            type: 'array',
+            type: 'relationship',
+            relationTo: 'media',
+            hasMany: true,
             label: 'แกลเลอรีรูปภาพ',
-            fields: [
-                {
-                    name: 'image',
-                    type: 'upload',
-                    relationTo: 'media',
-                    label: 'รูปภาพ',
-                    required: true,
-                },
-                {
-                    name: 'caption',
-                    type: 'text',
-                    label: 'คำบรรยาย',
-                },
-            ],
         },
         {
             name: 'tags',

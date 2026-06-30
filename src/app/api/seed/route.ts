@@ -407,10 +407,7 @@ export async function GET(request: NextRequest) {
         for (let i = 0; i < 3; i++) {
           const mediaId = galleryMediaIds[(startIdx + i) % galleryMediaIds.length]
           if (mediaId) {
-            galleryItems.push({
-              image: mediaId,
-              caption: `ภาพบรรยากาศ${act.title} ภาพที่ ${i + 1}`
-            })
+            galleryItems.push(mediaId)
           }
         }
         data.gallery = galleryItems

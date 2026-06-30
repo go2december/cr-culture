@@ -275,8 +275,35 @@ const normalizeLevel = (value: RawBoardPosition): number | null => {
     return null
 }
 
-const normalizeGallery = (gallery?: GalleryItemLike[] | null): GalleryItemLike[] => {
-    return (gallery || []).filter(Boolean)
+const normalizeGallery = (gallery?: unknown[] | null): GalleryItemLike[] => {
+    if (!gallery) return []
+    return gallery.filter(Boolean).map((item) => {
+        if (typeof item === 'string' || typeof item === 'number') {
+            return {
+                image: { url: null } as unknown as MediaLike,
+                caption: null,
+            }
+        }
+        if (typeof item === 'object' && item !== null) {
+            if (!('image' in item)) {
+                return {
+                    image: item as MediaLike,
+                    caption: null,
+                }
+            }
+            const typedItem = item as { image: MediaLike | string | number | null; caption?: string | null }
+            return {
+                image: (typeof typedItem.image === 'string' || typeof typedItem.image === 'number') 
+                    ? ({ url: null } as unknown as MediaLike) 
+                    : typedItem.image,
+                caption: typedItem.caption ?? null,
+            }
+        }
+        return {
+            image: null,
+            caption: null,
+        }
+    })
 }
 
 const normalizeTags = (tags?: Array<string | PublicTag> | null): Array<string | PublicTag> => {
