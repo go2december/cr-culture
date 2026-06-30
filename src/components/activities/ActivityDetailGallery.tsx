@@ -65,33 +65,49 @@ export const ActivityDetailGallery: React.FC<ActivityDetailGalleryProps> = ({
 
             {/* Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {items.map((item, index) => (
-                    <div
-                        key={index}
-                        onClick={() => setSelectedPhotoIndex(index)}
-                        className="group relative aspect-square bg-slate-100 rounded-2xl border border-base-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/30 hover:shadow-md transition-all duration-300"
-                    >
-                        <CmsImage
-                            src={item.imageSrc}
-                            alt={item.caption || activityTitle}
-                            fill
-                            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                            <span className="absolute top-3 right-3 p-2 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/25 transform scale-90 group-hover:scale-100 transition-all duration-300">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.602 10.602z" />
-                                </svg>
-                            </span>
-                            {item.caption && (
-                                <p className="text-white text-xs font-medium font-sans truncate drop-shadow-md">
-                                    {item.caption}
-                                </p>
+                {items.slice(0, 9).map((item, index) => {
+                    const isLastVisible = index === 8 && items.length > 9
+                    const remainingCount = items.length - 9
+
+                    return (
+                        <div
+                            key={index}
+                            onClick={() => setSelectedPhotoIndex(index)}
+                            className="group relative aspect-square bg-slate-100 rounded-2xl border border-base-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/30 hover:shadow-md transition-all duration-300"
+                        >
+                            <CmsImage
+                                src={item.imageSrc}
+                                alt={item.caption || activityTitle}
+                                fill
+                                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            {isLastVisible ? (
+                                <div className="absolute inset-0 bg-black/65 flex flex-col items-center justify-center text-center p-4 transition-colors group-hover:bg-black/55">
+                                    <span className="text-white text-3xl font-bold font-display">
+                                        +{remainingCount}
+                                    </span>
+                                    <span className="text-white/80 text-xs font-medium mt-1 font-sans">
+                                        ดูรูปภาพเพิ่มเติม
+                                    </span>
+                                </div>
+                            ) : (
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                                    <span className="absolute top-3 right-3 p-2 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/25 transform scale-90 group-hover:scale-100 transition-all duration-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-4 h-4">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.602 10.602z" />
+                                        </svg>
+                                    </span>
+                                    {item.caption && (
+                                        <p className="text-white text-xs font-medium font-sans truncate drop-shadow-md">
+                                            {item.caption}
+                                        </p>
+                                    )}
+                                </div>
                             )}
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
 
             {/* Lightbox / Modal */}
