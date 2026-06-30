@@ -176,7 +176,7 @@ export const getProvincialBoard = cache(async () => {
 export const getDistricts = cache(async () => {
   const response = await findMappedDocs<RawDistrictSummary, PublicDistrictSummary>('districts', {
     limit: 100,
-    sort: 'order',
+    sort: 'code',
     depth: 1,
   }, mapDistrictSummary)
   return response.docs

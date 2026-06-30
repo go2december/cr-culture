@@ -28,6 +28,7 @@ export interface PublicDistrictRef {
     id?: string | null
     name?: string | null
     slug?: string | null
+    code?: string | null
 }
 
 export interface PublicTag {

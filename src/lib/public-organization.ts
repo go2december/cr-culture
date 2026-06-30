@@ -42,6 +42,7 @@ export interface PublicDistrictChairman {
     position: string
     districtName: string
     districtSlug: string
+    districtCode?: string | null
     image: string | null
 }
 

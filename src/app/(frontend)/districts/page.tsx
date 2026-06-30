@@ -28,7 +28,7 @@ export default async function DistrictsPage() {
         description: district.description || 'เครือข่ายศูนย์วัฒนธรรมระดับอำเภอ',
         latitude: district.latitude ?? null,
         longitude: district.longitude ?? null,
-    })) : [
+    })).sort((a, b) => (a.code || '').localeCompare(b.code || '')) : [
         { id: 'muang-chiang-rai', name: 'เมืองเชียงราย', slug: 'muang-chiang-rai', code: '5701', description: 'ศูนย์กลางจังหวัดเชียงราย' },
         { id: 'wiang-chai', name: 'เวียงชัย', slug: 'wiang-chai', code: '5710', description: 'อำเภอเวียงชัย' },
     ]

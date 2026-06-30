@@ -36,6 +36,7 @@ export type RawPayloadRef = {
     id?: string | number | null
     name?: string | null
     slug?: string | null
+    code?: string | null
 } | string | number | null | undefined
 
 export type RawBoardPosition = {
@@ -238,6 +239,7 @@ const normalizeRelationRef = (value: RawPayloadRef): PublicDistrictRef | null =>
         id: toStringId(value.id),
         name: typeof value.name === 'string' ? value.name : undefined,
         slug: typeof value.slug === 'string' ? value.slug : undefined,
+        code: typeof value === 'object' && value && 'code' in value && typeof value.code === 'string' ? value.code : undefined,
     }
 }
 
@@ -325,6 +327,7 @@ export const mapDistrictChairman = (doc: RawDistrictMember): PublicDistrictChair
         position: `ประธานสภาวัฒนธรรมอำเภอ${districtName}`,
         districtName: district?.name || '-',
         districtSlug: district?.slug || '#',
+        districtCode: district?.code || null,
         image: resolveMediaUrl(doc.image),
     }
 }

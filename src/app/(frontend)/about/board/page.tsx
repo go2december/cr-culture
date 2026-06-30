@@ -54,7 +54,7 @@ export default async function BoardPage() {
     })
 
     const districtChairmenList: PublicDistrictChairman[] = (await getDistrictChairmen() || [])
-        .sort((a, b) => a.districtName.localeCompare(b.districtName, 'th'))
+        .sort((a, b) => (a.districtCode || '').localeCompare(b.districtCode || ''))
 
     // จัดกลุ่มตามลำดับขั้น
     const chairman = orderedBoardMembers.find((m) => m.positionLevel === 1)
