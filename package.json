@@ -28,7 +28,6 @@
     "react": "19.0.1",
     "react-dom": "19.0.1",
     "react-leaflet": "^5.0.0",
-
     "undici": "^8.5.0",
     "uuid": "^14.0.1",
     "postcss": "^8.5.10"
@@ -43,6 +42,9 @@
     "eslint-config-next": "^16.1.6",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.7.0"
+  },
+  "optionalDependencies": {
+    "@img/sharp-linux-musl-x64": "^0.34.0"
   },
   "overrides": {
     "postcss": "^8.5.10"

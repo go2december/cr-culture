@@ -62,7 +62,6 @@ const nextConfig: NextConfig = {
     },
     // Image optimization domains
     images: {
-        unoptimized: true,
         remotePatterns,
     },
 }
