@@ -84,7 +84,34 @@ export default async function BoardPage() {
     const committees = resolvedBoardMembers.filter((m) => m.positionLevel === 3)
     
     // ดึงข้อมูลจากตำแหน่งประธานสภาวัฒนธรรมอำเภอของแต่ละอำเภอมาทำเป็นกรรมการสภาวัฒนธรรมจังหวัด (หรือกรรมการที่ป้อนแบบกำหนดเอง)
-    const coordinators = resolvedBoardMembers.filter((m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ'))
+    const manualCoordinators = resolvedBoardMembers.filter(
+        (m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ') && m.sourceType === 'manual'
+    )
+    const dbDistrictCoordinators = resolvedBoardMembers.filter(
+        (m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ') && m.sourceType === 'district'
+    )
+    const resolvedDistrictCoordinators = districtChairmenList.map((chairman, idx) => {
+        const dbOverride = dbDistrictCoordinators.find((m) => m.district?.slug === chairman.districtSlug)
+        if (dbOverride) {
+            return {
+                name: chairman.name,
+                position: dbOverride.position || chairman.position,
+                positionLevel: 4,
+                order: dbOverride.order || (idx + 1),
+                image: chairman.image,
+                districtSlug: chairman.districtSlug,
+            }
+        }
+        return {
+            name: chairman.name,
+            position: chairman.position,
+            positionLevel: 4,
+            order: idx + 1,
+            image: chairman.image,
+            districtSlug: chairman.districtSlug,
+        }
+    })
+    const coordinators = [...resolvedDistrictCoordinators, ...manualCoordinators].sort((a, b) => a.order - b.order)
 
     const secretaryMembers = resolvedBoardMembers.filter((m) => m.positionLevel === 5 || (m.positionLevel === 4 && m.position.includes('เลขานุการ')))
 
