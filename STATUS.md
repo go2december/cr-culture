@@ -3,10 +3,11 @@
 ไฟล์นี้เป็นสรุปสถานะสั้นแบบ canonical เพื่อลดข้อมูลซ้ำในโปรเจกต์
 อัปเดตล่าสุด: 1 กรกฎาคม 2569
 
-## Recent Work (แก้ไขระบบลำดับขั้นคณะกรรมการและการแสดงผลหน้า Board — 1 กรกฎาคม 2569)
-- **Board Page Hierarchy & Sorting Fix**: แก้ไขระบบแสดงผลและจัดลำดับของคณะกรรมการสภาวัฒนธรรมจังหวัดหน้า `/about/board` โดยปรับวิธีการดึงข้อมูลในฟังก์ชัน `getDistrictChairmen` ให้อ้างอิงชื่อตำแหน่ง `"ประธานสภาวัฒนธรรมอำเภอ"` (แก้ปัญหาข้อมูลว่างเมื่อไม่ได้ป้อน `positionOrder` เป็น 1 ใน CMS) และไม่เขียนทับตำแหน่งหลัก (เช่น รองประธาน) รวมถึงปรับระบบ Fallback ลำดับ (ให้จัดเรียงตามลำดับอำเภอแทนที่จะนำไปเรียงที่ลำดับ 99 ทั้งหมด)
-- **CSS Stagger Fix**: แก้ไขข้อผิดพลาดการประกาศ class animations ในส่วนลูปของ `viceChairmen`, `committees`, `coordinators`, และ `secretaryMembers` โดยเปลี่ยนจากการใช้เครื่องหมายคำพูดคู่คู่กับการใช้ `${}` มาเป็นการใช้ template literals (backticks) เพื่อให้ animation คลาสแสดงผลและทำงานได้อย่างถูกต้อง
-- **Verification**: รันการทดสอบและบิลด์ผ่านสมบูรณ์ครบ 100% (`npm run lint`, `npm run typecheck`, `npm run build`) คลีนไม่มีจุดติดขัด
+## Recent Work (แก้ไขระบบแสดงผลหน้าคณะกรรมการจังหวัดและตำแหน่งประธานอำเภอ — 1 กรกฎาคม 2569)
+- **District Chairmen Level Filter**: ปรับเปลี่ยนเงื่อนไขการค้นหาประธานสภาวัฒนธรรมประจำอำเภอในฟังก์ชัน `getDistrictChairmen` (ไฟล์ [payload.ts](file:///e:/web2026/CR-Culture/src/lib/payload.ts)) ให้ตรวจสอบฟิลด์ `position.level` เท่ากับ 1 แทนการเทียบด้วยชื่อตำแหน่งแบบสตริงตามคำแนะนำของผู้ใช้งาน เพื่อความถูกต้องและยืดหยุ่นของข้อมูล
+- **Coordinators Display Order**: ปรับลำดับการแสดงผลในส่วน "กรรมการ" (Coordinators) ของหน้า `/about/board` ให้แสดงรายชื่อกรรมการจังหวัดที่ดึงจากคณะกรรมการจังหวัดป้อนเอง (Manual) ขึ้นก่อน แล้วค่อยแสดงรายชื่อประธานสภาวัฒนธรรมอำเภอที่จัดเรียงลำดับตามรหัสอำเภอ (`districtCode`)
+- **CSS Stagger & Build Verification**: แก้ไขข้อผิดพลาดการทำงานของแอนิเมชัน CSS Stagger และรันคำสั่งบิลด์ตรวจสอบคุณภาพผ่านทั้งหมด 100% (`npm run lint`, `npm run typecheck`, และ `npm run build`) พร้อมใช้งานอย่างปลอดภัยบนระบบจริง
+
 
 ## Recent Work (จัดทำแนวปฏิบัติ Loop Engineering Protocol — 1 กรกฎาคม 2569)
 - **Standardizing Loop Engineering**: เพิ่มข้อกำหนด **Loop Engineering Protocol** ลงใน [AGENTS.md](file:///e:/web2026/CR-Culture/AGENTS.md) ข้อ 10 เพื่อเป็นมาตรฐานของรอบการพัฒนา (Inner Loop) ลูปการตรวจสอบความถูกต้องความปลอดภัยก่อนส่งงาน (Verification Loop) และลูปการบันทึกสถานะงาน (Documentation Loop) ทั้งสำหรับนักพัฒนาที่เป็นมนุษย์และ AI

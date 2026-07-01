@@ -56,7 +56,7 @@ export default async function BoardPage() {
     })
 
     const districtChairmenList: PublicDistrictChairman[] = (await getDistrictChairmen() || [])
-        .sort((a, b) => (a.districtCode || '').localeCompare(b.districtCode || ''))
+    .sort((a, b) => (a.districtCode || '').localeCompare(b.districtCode || ''));
 
     const resolvedBoardMembers = orderedBoardMembers.map((member) => {
         if (member.sourceType === 'district' && member.district?.slug) {
@@ -114,7 +114,7 @@ export default async function BoardPage() {
             districtSlug: chairman.districtSlug,
         }
     })
-    const coordinators = [...resolvedDistrictCoordinators, ...manualCoordinators].sort((a, b) => a.order - b.order)
+    const coordinators = [...manualCoordinators, ...resolvedDistrictCoordinators]
 
     const secretaryMembers = resolvedBoardMembers.filter((m) => m.positionLevel === 5 || (m.positionLevel === 4 && m.position.includes('เลขานุการ')))
 
