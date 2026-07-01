@@ -4,6 +4,8 @@ import CmsImage from '@/components/CmsImage'
 import { resolveMediaAlt, resolveMediaUrl, type MediaLike } from '@/lib/media'
 import type { PublicBoardMember, PublicDistrictChairman } from '@/lib/public-organization'
 
+export const dynamic = 'force-dynamic'
+
 // Helper: render member avatar
 function MemberAvatar({ image, name, size = 'md' }: { image: string | null, name: string, size?: 'lg' | 'md' | 'sm' }) {
     const sizeClasses = {
