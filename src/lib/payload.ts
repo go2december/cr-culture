@@ -440,7 +440,8 @@ export const getKhonDeeAwards = cache(async (options?: {
       const fullName = doc.fullName.toLowerCase()
       const currentPosition = doc.currentPosition?.toLowerCase() || ''
       const contributionTitle = doc.contributionTitle.toLowerCase()
-      return fullName.includes(searchKeyword) || currentPosition.includes(searchKeyword) || contributionTitle.includes(searchKeyword)
+      const contributionTitlesMatch = doc.contributionTitles?.some(title => title.toLowerCase().includes(searchKeyword)) || false
+      return fullName.includes(searchKeyword) || currentPosition.includes(searchKeyword) || contributionTitle.includes(searchKeyword) || contributionTitlesMatch
     })
     response.totalDocs = response.docs.length
   }

@@ -35,6 +35,13 @@ export interface PublicBoardMember {
     positionLevel: number
     order: number
     image: string | null
+    districtSlug?: string | null
+    sourceType?: 'manual' | 'district' | null
+    district?: {
+        id?: string | number | null
+        slug?: string | null
+        name?: string | null
+    } | null
 }
 
 export interface PublicDistrictChairman {

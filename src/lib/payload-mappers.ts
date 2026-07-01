@@ -59,6 +59,8 @@ export interface RawBoardMember {
     phone?: string | null
     email?: string | null
     isActive?: boolean | null
+    sourceType?: 'manual' | 'district' | null
+    district?: RawPayloadRef
 }
 
 export interface RawDistrictMember {
@@ -161,7 +163,7 @@ export interface RawKhonDeeAward {
     fullName: string
     currentPosition?: string | null
     profileImage?: MediaLike
-    contributionTitle: string
+    contributionTitle?: string | Array<{ title?: string | null } | null> | null
     contributionDetail?: unknown
     impactArea?: string | null
     year?: RawAwardYear | string | number | null
@@ -334,6 +336,8 @@ export const mapBoardMember = (doc: RawBoardMember): PublicBoardMember => ({
     positionLevel: normalizeLevel(doc.position) || 99,
     order: doc.positionOrder || 99,
     image: resolveMediaUrl(doc.image),
+    sourceType: doc.sourceType || 'manual',
+    district: normalizeRelationRef(doc.district),
 })
 
 export const mapDistrictMember = (doc: RawDistrictMember): PublicDistrictMember => ({
@@ -440,18 +444,32 @@ export const mapWisdomCategory = (doc: RawWisdomCategory): PublicWisdomCategory 
     description: doc.description ?? null,
 })
 
-export const mapKhonDeeAward = (doc: RawKhonDeeAward): PublicKhonDeeAward => ({
-    id: doc.id,
-    prefix: mapPrefix(doc.prefix),
-    fullName: doc.fullName,
-    currentPosition: doc.currentPosition ?? null,
-    profileImage: doc.profileImage,
-    contributionTitle: doc.contributionTitle,
-    contributionDetailHtml: richTextToHtml(doc.contributionDetail),
-    impactArea: doc.impactArea ?? null,
-    year: doc.year && typeof doc.year === 'object' && 'buddhistYear' in doc.year ? mapAwardYear(doc.year as RawAwardYear) : null,
-    category: doc.category && typeof doc.category === 'object' && 'subType' in doc.category ? mapAwardCategory(doc.category as RawAwardCategory) : null,
-})
+export const mapKhonDeeAward = (doc: RawKhonDeeAward): PublicKhonDeeAward => {
+    let titles: string[] = []
+    if (Array.isArray(doc.contributionTitle)) {
+        titles = doc.contributionTitle
+            .map((item) => (item && typeof item === 'object' && 'title' in item) ? String(item.title) : '')
+            .filter(Boolean)
+    } else if (typeof doc.contributionTitle === 'string' && doc.contributionTitle) {
+        titles = [doc.contributionTitle]
+    }
+
+    const mainTitle = titles[0] || ''
+
+    return {
+        id: doc.id,
+        prefix: mapPrefix(doc.prefix),
+        fullName: doc.fullName,
+        currentPosition: doc.currentPosition ?? null,
+        profileImage: doc.profileImage,
+        contributionTitle: mainTitle,
+        contributionTitles: titles,
+        contributionDetailHtml: richTextToHtml(doc.contributionDetail),
+        impactArea: doc.impactArea ?? null,
+        year: doc.year && typeof doc.year === 'object' && 'buddhistYear' in doc.year ? mapAwardYear(doc.year as RawAwardYear) : null,
+        category: doc.category && typeof doc.category === 'object' && 'subType' in doc.category ? mapAwardCategory(doc.category as RawAwardCategory) : null,
+    }
+}
 
 export const mapInstitution = (doc: RawInstitution): PublicInstitution => ({
     id: doc.id,

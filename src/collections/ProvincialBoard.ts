@@ -13,10 +13,40 @@ export const ProvincialBoard: CollectionConfig = {
     },
     fields: [
         {
+            name: 'sourceType',
+            type: 'select',
+            label: 'แหล่งที่มาของข้อมูล',
+            defaultValue: 'manual',
+            options: [
+                { label: 'ป้อนข้อมูลเอง', value: 'manual' },
+                { label: 'ดึงจากประธานสภาวัฒนธรรมอำเภอ', value: 'district' },
+            ],
+            admin: {
+                description: 'เลือกรูปแบบการใส่ข้อมูลกรรมการ (แบบป้อนเอง หรือ ดึงข้อมูลจากตำแหน่งประธานอำเภออัตโนมัติ)',
+            },
+        },
+        {
+            name: 'district',
+            type: 'relationship',
+            relationTo: 'districts',
+            label: 'ดึงข้อมูลจากประธานอำเภอ',
+            admin: {
+                condition: (data) => data?.sourceType === 'district',
+                description: 'เลือกอำเภอที่ต้องการดึงข้อมูลประธานสภาวัฒนธรรมอำเภอมาเป็นกรรมการโดยอัตโนมัติ',
+            },
+        },
+        {
             name: 'name',
             type: 'text',
             label: 'ชื่อ-นามสกุล',
-            required: true,
+            validate: (val: unknown, { data }: { data: Record<string, unknown> }) => {
+                if (data?.sourceType === 'district') return true
+                if (typeof val !== 'string' || !val) return 'กรุณากรอกชื่อ-นามสกุล'
+                return true
+            },
+            admin: {
+                condition: (data) => data?.sourceType !== 'district',
+            },
         },
         {
             name: 'position',
@@ -43,21 +73,33 @@ export const ProvincialBoard: CollectionConfig = {
             type: 'upload',
             relationTo: 'media',
             label: 'รูปภาพ',
+            admin: {
+                condition: (data) => data?.sourceType !== 'district',
+            },
         },
         {
             name: 'bio',
             type: 'textarea',
             label: 'ประวัติโดยย่อ',
+            admin: {
+                condition: (data) => data?.sourceType !== 'district',
+            },
         },
         {
             name: 'phone',
             type: 'text',
             label: 'เบอร์โทรศัพท์',
+            admin: {
+                condition: (data) => data?.sourceType !== 'district',
+            },
         },
         {
             name: 'email',
             type: 'email',
             label: 'อีเมล',
+            admin: {
+                condition: (data) => data?.sourceType !== 'district',
+            },
         },
         {
             name: 'isActive',

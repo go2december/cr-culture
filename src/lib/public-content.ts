@@ -105,6 +105,7 @@ export interface PublicKhonDeeAward {
     currentPosition?: string | null
     profileImage?: MediaLike
     contributionTitle: string
+    contributionTitles?: string[]
     contributionDetailHtml?: string | null
     impactArea?: string | null
     year?: PublicAwardYear | null

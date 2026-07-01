@@ -776,10 +776,7 @@ export async function GET(request: NextRequest) {
       const existing = await payload.find({
         collection: 'khon-dee-awards',
         where: {
-          and: [
-            { fullName: { equals: award.fullName } },
-            { contributionTitle: { equals: award.contributionTitle } },
-          ],
+          fullName: { equals: award.fullName },
         },
         limit: 1,
       })
@@ -788,7 +785,9 @@ export async function GET(request: NextRequest) {
         fullName: award.fullName,
         currentPosition: award.currentPosition,
         profileImage: award.profileImage || undefined,
-        contributionTitle: award.contributionTitle,
+        contributionTitle: [
+          { title: award.contributionTitle },
+        ],
         contributionDetail: createRichText(award.contributionDetail),
         impactArea: award.impactArea,
         year: awardYearIds[award.year],

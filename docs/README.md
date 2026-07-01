@@ -11,6 +11,7 @@
 ## Canonical Docs
 
 ### Project Core
+- [Project_Overview.md](01_Project_Core/Project_Overview.md)
 - [Site_Map_and_Workflow.md](01_Project_Core/Site_Map_and_Workflow.md)
 - [Documentation_Workflow.md](01_Project_Core/Documentation_Workflow.md)
 - [System_Usage_Manual.md](01_Project_Core/System_Usage_Manual.md)

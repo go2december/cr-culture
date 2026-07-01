@@ -87,9 +87,21 @@ export const KhonDeeAwards: CollectionConfig = {
                         },
                         {
                             name: 'contributionTitle',
-                            type: 'text',
+                            type: 'array',
                             label: 'ชื่อผลงาน/โครงการเด่น',
-                            required: true,
+                            labels: {
+                                singular: 'ผลงาน/โครงการเด่น',
+                                plural: 'ผลงาน/โครงการเด่น',
+                            },
+                            minRows: 1,
+                            fields: [
+                                {
+                                    name: 'title',
+                                    type: 'text',
+                                    label: 'ชื่อผลงาน/โครงการเด่น',
+                                    required: true,
+                                },
+                            ],
                         },
                         {
                             name: 'contributionDetail',

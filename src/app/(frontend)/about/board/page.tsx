@@ -61,15 +61,34 @@ export default async function BoardPage() {
     const viceChairmen = orderedBoardMembers.filter((m) => m.positionLevel === 2)
     const committees = orderedBoardMembers.filter((m) => m.positionLevel === 3)
     
-    // ดึงข้อมูลจากตำแหน่งประธานสภาวัฒนธรรมอำเภอของแต่ละอำเภอมาทำเป็นกรรมการสภาวัฒนธรรมจังหวัด
-    const coordinators = districtChairmenList.map((m, idx) => ({
-        name: m.name,
-        position: m.position,
-        positionLevel: 4,
-        order: idx + 1,
-        image: m.image,
-        districtSlug: m.districtSlug,
-    }))
+    // ดึงข้อมูลจากตำแหน่งประธานสภาวัฒนธรรมอำเภอของแต่ละอำเภอมาทำเป็นกรรมการสภาวัฒนธรรมจังหวัด (หรือกรรมการที่ป้อนแบบกำหนดเอง)
+    const committeesLevel4 = orderedBoardMembers.filter((m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ'))
+    const coordinators = committeesLevel4.map((member) => {
+        if (member.sourceType === 'district' && member.district?.slug) {
+            const chairman = districtChairmenList.find(
+                (c) => c.districtSlug === member.district?.slug
+            )
+            if (chairman) {
+                return {
+                    name: chairman.name,
+                    position: chairman.position,
+                    positionLevel: 4,
+                    order: member.order,
+                    image: chairman.image,
+                    districtSlug: chairman.districtSlug,
+                }
+            }
+        }
+
+        return {
+            name: member.name,
+            position: member.position,
+            positionLevel: 4,
+            order: member.order,
+            image: member.image,
+            districtSlug: null,
+        }
+    })
 
     const secretaryMembers = orderedBoardMembers.filter((m) => m.positionLevel === 5 || (m.positionLevel === 4 && m.position.includes('เลขานุการ')))
 

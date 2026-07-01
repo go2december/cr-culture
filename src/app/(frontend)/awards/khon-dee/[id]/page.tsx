@@ -113,7 +113,15 @@ export default async function KhonDeeAwardDetailPage({
                             <div className="mb-8 grid gap-4 sm:grid-cols-2">
                                 <div className="rounded-2xl border border-base-100 bg-slate-50 p-5">
                                     <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-base-content/50">ผลงานเด่น</div>
-                                    <div className="text-base font-semibold leading-relaxed text-primary">{award.contributionTitle}</div>
+                                    {award.contributionTitles && award.contributionTitles.length > 1 ? (
+                                        <ul className="list-disc list-inside space-y-1 text-base font-semibold leading-relaxed text-primary">
+                                            {award.contributionTitles.map((title, idx) => (
+                                                <li key={idx}>{title}</li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <div className="text-base font-semibold leading-relaxed text-primary">{award.contributionTitle}</div>
+                                    )}
                                 </div>
                                 <div className="rounded-2xl border border-base-100 bg-slate-50 p-5">
                                     <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-base-content/50">ประเภทรางวัล</div>
