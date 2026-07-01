@@ -8,11 +8,13 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # 2. Dependencies stage to cache node_modules
 FROM base AS deps
 COPY package.json package-lock.json* npm-shrinkwrap.json* yarn.lock* pnpm-lock.yaml* ./
+# Allow install scripts for native packages (sharp, esbuild) required by npm 10+
+RUN npm config set ignore-scripts false
 RUN \
-    if [ -f package-lock.json ]; then npm ci --legacy-peer-deps || npm install --legacy-peer-deps; \
+    if [ -f package-lock.json ]; then npm ci --legacy-peer-deps --foreground-scripts || npm install --legacy-peer-deps --foreground-scripts; \
     elif [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
     elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i; \
-    else npm install --legacy-peer-deps; \
+    else npm install --legacy-peer-deps --foreground-scripts; \
     fi
 
 # 3. Development stage for hot-reloading (used by docker-compose)
