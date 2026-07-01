@@ -56,24 +56,16 @@ export default async function BoardPage() {
     const districtChairmenList: PublicDistrictChairman[] = (await getDistrictChairmen() || [])
         .sort((a, b) => (a.districtCode || '').localeCompare(b.districtCode || ''))
 
-    // จัดกลุ่มตามลำดับขั้น
-    const chairman = orderedBoardMembers.find((m) => m.positionLevel === 1)
-    const viceChairmen = orderedBoardMembers.filter((m) => m.positionLevel === 2)
-    const committees = orderedBoardMembers.filter((m) => m.positionLevel === 3)
-    
-    // ดึงข้อมูลจากตำแหน่งประธานสภาวัฒนธรรมอำเภอของแต่ละอำเภอมาทำเป็นกรรมการสภาวัฒนธรรมจังหวัด (หรือกรรมการที่ป้อนแบบกำหนดเอง)
-    const committeesLevel4 = orderedBoardMembers.filter((m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ'))
-    const coordinators = committeesLevel4.map((member) => {
+    const resolvedBoardMembers = orderedBoardMembers.map((member) => {
         if (member.sourceType === 'district' && member.district?.slug) {
             const chairman = districtChairmenList.find(
                 (c) => c.districtSlug === member.district?.slug
             )
             if (chairman) {
                 return {
+                    ...member,
                     name: chairman.name,
                     position: chairman.position,
-                    positionLevel: 4,
-                    order: member.order,
                     image: chairman.image,
                     districtSlug: chairman.districtSlug,
                 }
@@ -81,16 +73,20 @@ export default async function BoardPage() {
         }
 
         return {
-            name: member.name,
-            position: member.position,
-            positionLevel: 4,
-            order: member.order,
-            image: member.image,
+            ...member,
             districtSlug: null,
         }
     })
 
-    const secretaryMembers = orderedBoardMembers.filter((m) => m.positionLevel === 5 || (m.positionLevel === 4 && m.position.includes('เลขานุการ')))
+    // จัดกลุ่มตามลำดับขั้น
+    const chairman = resolvedBoardMembers.find((m) => m.positionLevel === 1)
+    const viceChairmen = resolvedBoardMembers.filter((m) => m.positionLevel === 2)
+    const committees = resolvedBoardMembers.filter((m) => m.positionLevel === 3)
+    
+    // ดึงข้อมูลจากตำแหน่งประธานสภาวัฒนธรรมอำเภอของแต่ละอำเภอมาทำเป็นกรรมการสภาวัฒนธรรมจังหวัด (หรือกรรมการที่ป้อนแบบกำหนดเอง)
+    const coordinators = resolvedBoardMembers.filter((m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ'))
+
+    const secretaryMembers = resolvedBoardMembers.filter((m) => m.positionLevel === 5 || (m.positionLevel === 4 && m.position.includes('เลขานุการ')))
 
     const hero = pageHeroes?.aboutBoard || {}
     const heroMedia = hero.heroImage as MediaLike
@@ -192,10 +188,17 @@ export default async function BoardPage() {
                             <h3 className="text-3xl font-bold mb-3 text-primary tracking-tight font-display group-hover:text-primary-dark transition-colors">
                                 {chairman.name}
                             </h3>
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/20 text-secondary-dark font-medium text-sm">
-                                <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
-                                {chairman.position}
-                            </div>
+                            {chairman.districtSlug ? (
+                                <Link href={`/districts/${chairman.districtSlug}`} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/20 text-secondary-dark font-medium text-sm hover:bg-secondary/30 transition-colors hover:underline">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+                                    {chairman.position}
+                                </Link>
+                            ) : (
+                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/20 text-secondary-dark font-medium text-sm">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+                                    {chairman.position}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -216,7 +219,13 @@ export default async function BoardPage() {
                                     <MemberAvatar image={member.image} name={member.name} size="md" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
+                                {member.districtSlug ? (
+                                    <Link href={`/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                        {member.position}
+                                    </Link>
+                                ) : (
+                                    <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -238,7 +247,13 @@ export default async function BoardPage() {
                                     <MemberAvatar image={member.image} name={member.name} size="md" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
+                                {member.districtSlug ? (
+                                    <Link href={`/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                        {member.position}
+                                    </Link>
+                                ) : (
+                                    <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -288,7 +303,13 @@ export default async function BoardPage() {
                                     <MemberAvatar image={member.image} name={member.name} size="md" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
+                                {member.districtSlug ? (
+                                    <Link href={`/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                        {member.position}
+                                    </Link>
+                                ) : (
+                                    <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
+                                )}
                             </div>
                         ))}
                     </div>
