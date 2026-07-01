@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
     // 2. DistrictBoardPositions (ตำแหน่งกรรมการอำเภอ)
     // ============================================================
     const distPositions = [
-      { title: 'ประธานสภาวัฒนธรรมอำเภอ', level: 1 },
+      { title: 'ประธานสภาวัฒนธรรมประจำอำเภอ', level: 1 },
       { title: 'รองประธานสภาวัฒนธรรมอำเภอ', level: 2 },
       { title: 'กรรมการอำเภอ', level: 3 },
       { title: 'เลขานุการอำเภอ', level: 4 },
@@ -225,7 +225,7 @@ export async function GET(request: NextRequest) {
     // ============================================================
     // 5. DistrictMembers (ประธานแต่ละอำเภอ)
     // ============================================================
-    const chairmanPosId = distPosIds['ประธานสภาวัฒนธรรมอำเภอ']
+    const chairmanPosId = distPosIds['ประธานสภาวัฒนธรรมประจำอำเภอ']
     const districtChairmen = [
       { name: 'นายสุริยันต์ แสงล้านนา', districtSlug: 'muang-chiang-rai' },
       { name: 'นายเกริกชัย โบราณศาสตร์', districtSlug: 'chiang-saen' },

@@ -355,7 +355,7 @@ export const mapDistrictChairman = (doc: RawDistrictMember): PublicDistrictChair
 
     return {
         name: doc.name,
-        position: `ประธานสภาวัฒนธรรมอำเภอ${districtName}`,
+        position: `ประธานสภาวัฒนธรรมประจำอำเภอ${districtName}`,
         districtName: district?.name || '-',
         districtSlug: district?.slug || '#',
         districtCode: district?.code || null,
