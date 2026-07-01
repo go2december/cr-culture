@@ -3,7 +3,7 @@ FROM node:24-alpine AS base
 WORKDIR /app
 # Install libc6-compat for sharp and Next.js SWC, plus build tools in case native modules need compilation
 RUN apk add --no-cache libc6-compat python3 make g++
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # 2. Dependencies stage to cache node_modules
 FROM base AS deps
@@ -33,8 +33,8 @@ RUN npm run build
 FROM node:24-alpine AS production
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Install libc6-compat (required by sharp / Next SWC)
 RUN apk add --no-cache libc6-compat
@@ -58,8 +58,8 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 # server.js is created by next build from the standalone output
 CMD ["node", "server.js"]
