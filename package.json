@@ -12,19 +12,26 @@
     "generate:types": "payload generate:types"
   },
   "dependencies": {
-    "@payloadcms/db-mongodb": "^3.79.0",
-    "@payloadcms/next": "^3.79.0",
-    "@payloadcms/richtext-lexical": "^3.79.0",
-    "@payloadcms/ui": "^3.79.0",
+    "@payloadcms/db-mongodb": "^3.85.2",
+    "@payloadcms/next": "^3.85.2",
+    "@payloadcms/richtext-lexical": "^3.85.2",
+    "@payloadcms/ui": "^3.85.2",
     "daisyui": "^5.5.14",
+    "dompurify": "^3.4.11",
+    "esbuild": "^0.28.1",
+    "file-type": "^22.0.0",
     "graphql": "^16.13.1",
     "leaflet": "^1.9.4",
-    "next": "^16.1.6",
-    "payload": "^3.79.0",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "mongoose": "^8.22.0",
+    "next": "^16.2.9",
+    "payload": "^3.85.2",
+    "react": "19.0.1",
+    "react-dom": "19.0.1",
     "react-leaflet": "^5.0.0",
-    "sharp": "^0.33.0"
+    "sharp": "^0.33.0",
+    "undici": "^8.5.0",
+    "uuid": "^14.0.1",
+    "postcss": "^8.5.10"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.0",
@@ -36,6 +43,9 @@
     "eslint-config-next": "^16.1.6",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.7.0"
+  },
+  "overrides": {
+    "postcss": "^8.5.10"
   },
   "engines": {
     "node": ">=20.0.0"
