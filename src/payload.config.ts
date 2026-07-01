@@ -3,7 +3,7 @@ import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import sharp from 'sharp'
+import sharp from '@img/sharp-linux-musl-x64'
 
 // Collections
 import { Users } from './collections/Users'
