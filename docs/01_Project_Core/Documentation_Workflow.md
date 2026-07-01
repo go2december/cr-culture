@@ -29,6 +29,7 @@
 - ถ้ามี collection ใหม่หรือเปลี่ยน schema ให้สรุปไว้ใน docs ที่เกี่ยวข้อง
 
 ### 5. End of task
+- ปฏิบัติตามลูปการตรวจสอบคุณภาพ (Loop Engineering Protocol) ที่ระบุใน [AGENTS.md](file:///e:/web2026/CR-Culture/AGENTS.md) ข้อ 10 ก่อนสรุปงาน
 - อัปเดต `STATUS.md` แบบสั้น
 - ถ้ามีความรู้ใหม่ที่ใช้ซ้ำได้ ให้บันทึกลง canonical docs ตามหมวด
 - ถ้ามีการตัดสินใจเชิงระบบ ให้เพิ่ม entry ลง `../05_Meeting_Notes/Decision_Log.md`

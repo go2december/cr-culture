@@ -113,3 +113,23 @@ This repo also contains a legacy `.agent/` system with GEMINI-oriented docs.
 - User-facing copy can be Thai.
 - Keep code identifiers and technical comments in English.
 - Respect existing tone and terminology used in current pages/content.
+
+## 10. Loop Engineering Protocol
+
+To ensure development speed, safety, and codebase stability, both human developers and AI agents must follow the Loop Engineering Protocol:
+
+### 10.1 The Inner Loop (Local Feedback Loop)
+- **Small Iterations:** Write incremental code. Avoid large, untraceable modifications.
+- **Fast Feedback:** Run `npm run typecheck` or verify the dev server (`npm run dev`) frequently to catch compilation/syntax issues immediately.
+
+### 10.2 The Verification Loop (Pre-commit / Pre-handoff)
+- **Local Quality Gates:** Before concluding any task, always execute:
+  1. `npm run lint` (Lint check)
+  2. `npm run typecheck` (TypeScript validation)
+  3. `npm run build` (Next.js production build validation)
+- **Automated Audits:** If making UI, database, or security changes, execute the corresponding audit scripts:
+  - Run the priority checklist: `python .agent/scripts/checklist.py .`
+
+### 10.3 The Documentation Loop (Traceability)
+- **Unified Status:** Summarize changes in `STATUS.md` under the "Recent Work" section.
+- **Decisions:** Log key architectural choices in `docs/05_Meeting_Notes/Decision_Log.md`.

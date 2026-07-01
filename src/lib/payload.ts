@@ -372,7 +372,7 @@ export const getPageHeroes = cache(async () => {
 export const getDistrictChairmen = cache(async () => {
   const response = await findMappedDocs<RawDistrictMember, PublicDistrictChairman>('district-members', {
     where: {
-      positionOrder: { equals: 1 },
+      'position.title': { equals: 'ประธานสภาวัฒนธรรมอำเภอ' },
     },
     limit: 100,
     sort: 'positionOrder',
