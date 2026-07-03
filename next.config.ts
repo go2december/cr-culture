@@ -67,21 +67,37 @@ const nextConfig: NextConfig = {
     experimental: {
         optimizePackageImports: ['lucide-react', 'date-fns'],
     },
-    webpack: (config, { isServer }) => {
-        if (isServer) {
-            // Prevent webpack from trying to resolve sharp platform-specific binaries
-            config.externals = [
-                ...(Array.isArray(config.externals) ? config.externals : []),
-                'sharp',
-                /^@img\/sharp-.*/,
-            ]
-        }
-        return config
-    },
     // Image optimization domains
     images: {
         remotePatterns,
     },
 }
 
-export default withPayload(nextConfig)
+// 1. Let withPayload apply its webpack config first
+const config = withPayload(nextConfig)
+
+// 2. Then override webpack to force sharp as external AFTER withPayload's modifications
+const payloadWebpack = config.webpack
+config.webpack = (webpackConfig: any, options: any) => {
+    // Run withPayload's webpack config first
+    const modified = payloadWebpack ? payloadWebpack(webpackConfig, options) : webpackConfig
+
+    // Then force sharp + all @img/sharp-* as externals (takes priority)
+    if (options.isServer) {
+        const existing = Array.isArray(modified.externals)
+            ? modified.externals
+            : modified.externals
+              ? [modified.externals]
+              : []
+
+        modified.externals = [
+            ...existing,
+            'sharp',
+            /^@img\/sharp-.*/,
+        ]
+    }
+
+    return modified
+}
+
+export default config
