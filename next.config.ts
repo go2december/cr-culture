@@ -78,6 +78,7 @@ const config = withPayload(nextConfig)
 
 // 2. Then override webpack to force sharp as external AFTER withPayload's modifications
 const payloadWebpack = config.webpack
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 config.webpack = (webpackConfig: any, options: any) => {
     // Run withPayload's webpack config first
     const modified = payloadWebpack ? payloadWebpack(webpackConfig, options) : webpackConfig

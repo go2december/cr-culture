@@ -4,7 +4,7 @@
   "description": "สภาวัฒนธรรมจังหวัดเชียงราย - Cultural Council of Chiang Rai Province Website",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",

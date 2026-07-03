@@ -294,7 +294,7 @@ export default async function BoardPage() {
                 {coordinators.length > 0 && (
                 <>
                     <div className="text-center mb-12">
-                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Committee</span>
+                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">กรรมการ</span>
                         <h2 className="section-header mb-0! text-primary font-display">กรรมการ</h2>
                     </div>
 
