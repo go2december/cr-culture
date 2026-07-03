@@ -61,6 +61,17 @@ const nextConfig: NextConfig = {
     experimental: {
         optimizePackageImports: ['lucide-react', 'date-fns'],
     },
+    webpack: (config, { isServer }) => {
+        if (isServer) {
+            // Prevent webpack from trying to resolve sharp platform-specific binaries
+            config.externals = [
+                ...(Array.isArray(config.externals) ? config.externals : []),
+                'sharp',
+                /^@img\/sharp-.*/,
+            ]
+        }
+        return config
+    },
     // Image optimization domains
     images: {
         remotePatterns,
