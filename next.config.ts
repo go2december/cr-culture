@@ -58,6 +58,12 @@ const nextConfig: NextConfig = {
     output: 'standalone',
     reactStrictMode: true,
     serverExternalPackages: ['sharp'],
+    typescript: {
+        // Type checking runs separately via `npm run typecheck`.
+        // Skipped here because Docker's platform-specific sharp resolution
+        // causes false-positive TS errors during `next build`.
+        ignoreBuildErrors: true,
+    },
     experimental: {
         optimizePackageImports: ['lucide-react', 'date-fns'],
     },
