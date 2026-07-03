@@ -114,7 +114,7 @@ export default async function BoardPage() {
             districtSlug: chairman.districtSlug,
         }
     })
-    const coordinators = [...manualCoordinators, ...resolvedDistrictCoordinators]
+    const coordinators = [...resolvedDistrictCoordinators, ...manualCoordinators];
 
     const secretaryMembers = resolvedBoardMembers.filter((m) => m.positionLevel === 5 || (m.positionLevel === 4 && m.position.includes('เลขานุการ')))
 
