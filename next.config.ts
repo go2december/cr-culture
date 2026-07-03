@@ -57,6 +57,7 @@ if (serverUrl) {
 const nextConfig: NextConfig = {
     output: 'standalone',
     reactStrictMode: true,
+    serverExternalPackages: ['sharp'],
     experimental: {
         optimizePackageImports: ['lucide-react', 'date-fns'],
     },
