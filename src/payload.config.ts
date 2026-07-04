@@ -23,7 +23,6 @@ import { KhonDeeAwards } from './collections/KhonDeeAwards'
 import { Institutions } from './collections/Institutions'
 import { Awardees } from './collections/Awardees'
 import { YouthAwardHistories } from './collections/YouthAwardHistories'
-import { AwardGalleries } from './collections/AwardGalleries'
 import { WisdomCategories } from './collections/WisdomCategories'
 import { WisdomAwards } from './collections/WisdomAwards'
 import { YouthAwardCategories } from './collections/YouthAwardCategories'
@@ -88,7 +87,6 @@ export default buildConfig({
         Institutions,
         Awardees,
         YouthAwardHistories,
-        AwardGalleries,
         WisdomCategories,
         WisdomAwards,
         YouthAwardCategories,

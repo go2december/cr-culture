@@ -19,7 +19,6 @@ export async function GET(request: NextRequest) {
       'youth-award-categories',
       'prefixes',
       'wisdom-awards',
-      'award-galleries',
       'awardees',
       'institutions',
       'award-categories',
@@ -863,36 +862,7 @@ export async function GET(request: NextRequest) {
         })
       }
     }
-    const awardGalleries = [
-      { year: 2569, caption: 'บรรยากาศพิธีมอบรางวัลเกียรติยศประจำปี 2569', isHighlight: true, image: mediaIds.craftA || mediaIds.surreal },
-      { year: 2569, caption: 'เยาวชนผู้ได้รับรางวัลร่วมถ่ายภาพกับคณะกรรมการ', isHighlight: false, image: mediaIds.textileB || mediaIds.ethnic },
-      { year: 2568, caption: 'การแสดงผลงานวัฒนธรรมของนักเรียนบนเวทีหลัก', isHighlight: false, image: mediaIds.bamboo || mediaIds.textileA },
-    ]
-    for (const gallery of awardGalleries) {
-      const existing = await payload.find({
-        collection: 'award-galleries',
-        where: { caption: { equals: gallery.caption } },
-        limit: 1,
-      })
-      const galleryData = {
-        year: awardYearIds[gallery.year],
-        image: gallery.image || mediaIds.craftA || undefined,
-        caption: gallery.caption,
-        isHighlight: gallery.isHighlight,
-      }
-      if (existing.docs.length > 0) {
-        await payload.update({
-          collection: 'award-galleries',
-          id: String(existing.docs[0].id),
-          data: galleryData,
-        })
-      } else {
-        await payload.create({
-          collection: 'award-galleries',
-          data: galleryData,
-        })
-      }
-    }
+
 
     const wisdomCategories = [
       { title: 'สาขาช่างฝีมือดั้งเดิม', slug: 'traditional-craftsmanship' },
@@ -1231,7 +1201,6 @@ export async function GET(request: NextRequest) {
         awardees: awardees.length,
         khonDeeAwards: khonDeeAwards.length,
         youthAwardHistories: youthAwardHistories.length,
-        awardGalleries: awardGalleries.length,
         wisdomAwardsSample: sampleWisdomAwards.length,
         wisdomAwards: wisdomAwards.length,
         aboutPageGlobal: 'updated',

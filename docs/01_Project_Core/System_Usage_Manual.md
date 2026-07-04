@@ -106,7 +106,6 @@
 #### โมดูลรางวัล
 - `khon-dee-awards`
 - `youth-award-histories`
-- `award-galleries`
 - `wisdom-awards`
 
 ### Globals ที่ต้องรู้

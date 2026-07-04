@@ -3,6 +3,12 @@
 ไฟล์นี้เป็นสรุปสถานะสั้นแบบ canonical เพื่อลดข้อมูลซ้ำในโปรเจกต์
 อัปเดตล่าสุด: 4 กรกฎาคม 2569
 
+
+## Recent Work (ลบระบบเก็บข้อมูลบรรยากาศงาน award-galleries — 4 กรกฎาคม 2569)
+- **Collection Cleanup**: ลบคอลเลกชัน `award-galleries` ออกจากระบบ (ไฟล์ [AwardGalleries.ts](file:///e:/web2026/CR-Culture/src/collections/AwardGalleries.ts)) และถอนการลงทะเบียนออกจากไฟล์คอนฟิก [payload.config.ts](file:///e:/web2026/CR-Culture/src/payload.config.ts)
+- **Codebase & Types Cleanup**: ลบฟังก์ชันและประเภทข้อมูลที่เชื่อมโยงในส่วน API Seed, Payload helper, mappers และ public types ทั้งหมดเพื่อไม่ให้เกิดข้อผิดพลาดในการตรวจสอบความถูกต้องของประเภทข้อมูล (Type checking)
+- **Verification**: รันการทดสอบและ build ผ่านเรียบร้อยครบ 100% (`npm run lint`, `npm run typecheck`, และ `npm run build`) พร้อมทดสอบ endpoint seeding (`/api/seed`) ทำงานได้สมบูรณ์
+
 ## Recent Work (แก้ไขปัญหาการสตาร์ท Docker Container และเปลี่ยนเอนจินดีเวลลอปเมนต์เป็น Webpack — 4 กรกฎาคม 2569)
 - **Webpack Dev Server**: ปรับแก้ในไฟล์ [package.json](file:///e:/web2026/CR-Culture/package.json) ให้คำสั่งดีเวลลอปเมนต์ (`dev`) ใช้แฟล็ก `--webpack` เสมือนในการบิลด์เพื่อรองรับการแก้ไขคอนฟิกโมดูล Webpack ของ Payload CMS และหลีกเลี่ยงข้อจำกัดการทำงานของ Turbopack ใน Next.js 16
 - **Docker Cache Invalidated**: ทำความสะอาดและสั่งบิลด์อิมเมจของแอปพลิเคชันขึ้นมาใหม่โดยปราศจากแคชเก่า (`--no-cache`) เพื่อให้ระบบอ้างอิงและติดตั้งแพ็กเกจไบนารีของ Sharp เวอร์ชัน GNU Linux x64 ได้อย่างถูกต้องตามสภาพแวดล้อมจริงของคอนเทนเนอร์ที่เป็น Debian (แทนที่ภาพลักษณ์ musl ของ Alpine เดิม)

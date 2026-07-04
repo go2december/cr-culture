@@ -6,7 +6,6 @@ import type {
     PublicAwardCategory,
     PublicAwardYear,
     PublicAwardee,
-    PublicAwardGallery,
     PublicHeritage,
     PublicInstitution,
     PublicKhonDeeAward,
@@ -188,13 +187,6 @@ export interface RawAwardee {
     isPublished?: boolean | null
 }
 
-export interface RawAwardGallery {
-    id: string | number
-    image?: MediaLike
-    caption?: string | null
-    isHighlight?: boolean | null
-    year?: RawAwardYear | string | number | null
-}
 
 export interface RawYouthAwardHistory {
     id: string | number
@@ -489,13 +481,6 @@ export const mapAwardee = (doc: RawAwardee): PublicAwardee => ({
         : null,
 })
 
-export const mapAwardGallery = (doc: RawAwardGallery): PublicAwardGallery => ({
-    id: doc.id,
-    image: doc.image,
-    caption: doc.caption ?? null,
-    isHighlight: doc.isHighlight ?? null,
-    year: doc.year && typeof doc.year === 'object' && 'buddhistYear' in doc.year ? mapAwardYear(doc.year as RawAwardYear) : null,
-})
 
 export const mapYouthAwardHistory = (doc: RawYouthAwardHistory): PublicYouthAwardHistory => ({
     id: doc.id,

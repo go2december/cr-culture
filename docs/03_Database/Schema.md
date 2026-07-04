@@ -16,7 +16,7 @@
   - `page-heroes`
  
  ## Registered Collections
-The project currently registers 20 collections in Payload config:
+The project currently registers 19 collections in Payload config:
  
  1. `users`
  2. `board-positions`
@@ -35,9 +35,8 @@ The project currently registers 20 collections in Payload config:
  15. `institutions`
  16. `awardees`
  17. `youth-award-histories`
-18. `award-galleries`
- 19. `wisdom-categories`
- 20. `wisdom-awards`
+ 18. `wisdom-categories`
+ 19. `wisdom-awards`
  
  ## Data Models & Relationships
  

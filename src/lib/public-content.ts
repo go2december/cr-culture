@@ -128,13 +128,6 @@ export interface PublicAwardee {
     institution?: PublicInstitution | null
 }
 
-export interface PublicAwardGallery {
-    id: string | number
-    image?: MediaLike
-    caption?: string | null
-    isHighlight?: boolean | null
-    year?: PublicAwardYear | null
-}
 
 export interface PublicYouthAwardHistory {
     id: string | number
