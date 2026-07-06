@@ -186,7 +186,7 @@ export default async function YouthCultureDetailPage({
     <div className="mt-5 space-y-4">
         {history.awardees.map((awardee) => (
             <div key={awardee.id} className="flex flex-col rounded-2xl border border-base-100 bg-slate-50 p-4">
-                <h4 className="font-semibold leading-snug text-primary">{[awardee.prefix, awardee.fullName].filter(Boolean).join(' ')}</h4>
+                <h4 className="font-semibold leading-snug text-primary">{[awardee.prefix, awardee.fullName].filter(Boolean).join('')}</h4>
                 {awardee.gradeLevel && <p className="mt-1 text-sm text-base-content/60">{awardee.gradeLevel}</p>}
             </div>
         ))}

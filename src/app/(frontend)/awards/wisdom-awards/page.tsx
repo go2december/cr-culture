@@ -39,8 +39,8 @@ export default async function WisdomAwardsPage({
         sortedItems.sort((a, b) => (a.year?.buddhistYear || 0) - (b.year?.buddhistYear || 0))
     } else if (sortBy === 'name') {
         sortedItems.sort((a, b) => {
-            const nameA = [a.prefix, a.fullName].filter(Boolean).join(' ')
-            const nameB = [b.prefix, b.fullName].filter(Boolean).join(' ')
+            const nameA = [a.prefix, a.fullName].filter(Boolean).join('')
+            const nameB = [b.prefix, b.fullName].filter(Boolean).join('')
             return nameA.localeCompare(nameB, 'th')
         })
     }
@@ -153,7 +153,7 @@ export default async function WisdomAwardsPage({
                                             )}
                                         </div>
                                         <h3 className="font-display text-xl font-bold leading-snug text-primary transition-colors group-hover:text-secondary-dark">
-                                            {[item.prefix, item.fullName].filter(Boolean).join(' ')}
+                                            {[item.prefix, item.fullName].filter(Boolean).join('')}
                                         </h3>
                                         <p className="mt-3 text-sm font-medium text-base-content/60">{item.wisdomCategory?.title || 'ไม่ระบุสาขา'}</p>
                                     </div>

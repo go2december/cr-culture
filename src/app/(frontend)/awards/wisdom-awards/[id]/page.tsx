@@ -16,7 +16,7 @@ export async function generateMetadata({
         return {}
     }
 
-    const title = `${[item.prefix, item.fullName].filter(Boolean).join(' ')} - ครูภูมิผญาเมืองเชียงราย`
+    const title = `${[item.prefix, item.fullName].filter(Boolean).join('')} - ครูภูมิผญาเมืองเชียงราย`
     const description = item.wisdomCategory?.title
         ? `ครูภูมิผญาเมืองเชียงราย สาขา${item.wisdomCategory.title} ประจำปี พ.ศ. ${item.year?.buddhistYear || ''}`
         : `ทำเนียบครูภูมิผญาเมืองเชียงราย ประจำปี พ.ศ. ${item.year?.buddhistYear || ''}`
@@ -65,7 +65,7 @@ export default async function WisdomAwardDetailPage({
                             {item.year?.buddhistYear ? `พ.ศ. ${item.year.buddhistYear}` : 'ครูภูมิผญาเมืองเชียงราย'}
                         </div>
                         <h1 className="font-display text-3xl font-bold leading-[1.05] md:text-5xl lg:text-6xl">
-                            {[item.prefix, item.fullName].filter(Boolean).join(' ')}
+                            {[item.prefix, item.fullName].filter(Boolean).join('')}
                         </h1>
                         <p className="mt-5 max-w-3xl text-lg font-light text-white/82 md:text-xl">{item.wisdomCategory?.title || 'ไม่ระบุสาขาองค์ความรู้'}</p>
                     </div>
@@ -139,7 +139,7 @@ export default async function WisdomAwardDetailPage({
                                                     {entry.year?.buddhistYear ? String(entry.year.buddhistYear).slice(-2) : 'WP'}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <h4 className="line-clamp-2 text-sm font-medium text-base-content transition-colors group-hover:text-primary">{[entry.prefix, entry.fullName].filter(Boolean).join(' ')}</h4>
+                                                    <h4 className="line-clamp-2 text-sm font-medium text-base-content transition-colors group-hover:text-primary">{[entry.prefix, entry.fullName].filter(Boolean).join('')}</h4>
                                                     <p className="mt-1 line-clamp-1 text-xs text-base-content/50">{entry.wisdomCategory?.title || 'ไม่ระบุสาขา'}</p>
                                                 </div>
                                             </Link>

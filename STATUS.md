@@ -4,6 +4,16 @@
 อัปเดตล่าสุด: 4 กรกฎาคม 2569
 
 
+## Recent Work (ปรับปรุงระบบแสดงผลชื่อผู้ได้รับรางวัลเกียรติยศ — 6 กรกฎาคม 2569)
+- **Award Prefix & FullName Joining**: ปรับปรุงการจัดเรียงและการเรนเดอร์ข้อมูลผู้ได้รับรางวัลให้แสดงคำนำหน้าติดกับชื่อ-นามสกุลโดยไม่มีช่องว่างคั่นตามความต้องการของผู้ใช้งาน ทั้งในหน้าคนดีศรีเชียงราย ครูภูมิผญาเมืองเชียงราย และยุวชนวัฒนธรรม
+- **Impacted Pages**:
+  - [src/app/(frontend)/awards/khon-dee/page.tsx](file:///e:/web2026/CR-Culture/src/app/%28frontend%29/awards/khon-dee/page.tsx)
+  - [src/app/(frontend)/awards/khon-dee/[id]/page.tsx](file:///e:/web2026/CR-Culture/src/app/%28frontend%29/awards/khon-dee/%5Bid%5D/page.tsx)
+  - [src/app/(frontend)/awards/wisdom-awards/page.tsx](file:///e:/web2026/CR-Culture/src/app/%28frontend%29/awards/wisdom-awards/page.tsx)
+  - [src/app/(frontend)/awards/wisdom-awards/[id]/page.tsx](file:///e:/web2026/CR-Culture/src/app/%28frontend%29/awards/wisdom-awards/%5Bid%5D/page.tsx)
+  - [src/app/(frontend)/awards/youth-culture/[id]/page.tsx](file:///e:/web2026/CR-Culture/src/app/%28frontend%29/awards/youth-culture/%5Bid%5D/page.tsx)
+- **Verification**: ผ่านการตรวจสอบคุณภาพ 100% ทั้งการตรวจ Lint (`npm run lint`), TypeScript Compilation (`npm run typecheck`), และ Next.js Production Build (`npm run build`)
+
 ## Recent Work (ลบระบบเก็บข้อมูลบรรยากาศงาน award-galleries — 4 กรกฎาคม 2569)
 - **Collection Cleanup**: ลบคอลเลกชัน `award-galleries` ออกจากระบบ (ไฟล์ [AwardGalleries.ts](file:///e:/web2026/CR-Culture/src/collections/AwardGalleries.ts)) และถอนการลงทะเบียนออกจากไฟล์คอนฟิก [payload.config.ts](file:///e:/web2026/CR-Culture/src/payload.config.ts)
 - **Codebase & Types Cleanup**: ลบฟังก์ชันและประเภทข้อมูลที่เชื่อมโยงในส่วน API Seed, Payload helper, mappers และ public types ทั้งหมดเพื่อไม่ให้เกิดข้อผิดพลาดในการตรวจสอบความถูกต้องของประเภทข้อมูล (Type checking)

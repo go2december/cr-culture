@@ -45,8 +45,8 @@ export default async function KhonDeeAwardsPage({
         sortedAwards.sort((a, b) => (a.year?.buddhistYear || 0) - (b.year?.buddhistYear || 0))
     } else if (sortBy === 'name') {
         sortedAwards.sort((a, b) => {
-            const nameA = [a.prefix, a.fullName].filter(Boolean).join(' ')
-            const nameB = [b.prefix, b.fullName].filter(Boolean).join(' ')
+            const nameA = [a.prefix, a.fullName].filter(Boolean).join('')
+            const nameB = [b.prefix, b.fullName].filter(Boolean).join('')
             return nameA.localeCompare(nameB, 'th')
         })
     }
@@ -216,7 +216,7 @@ export default async function KhonDeeAwardsPage({
                                         </div>
 
                                         <h3 className="text-xl font-bold group-hover:text-primary transition-colors leading-snug font-display mb-3">
-                                            {[award.prefix, award.fullName].filter(Boolean).join(' ')}
+                                            {[award.prefix, award.fullName].filter(Boolean).join('')}
                                         </h3>
 
                                         {award.currentPosition && (

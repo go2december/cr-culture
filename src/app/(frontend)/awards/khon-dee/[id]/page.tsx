@@ -17,7 +17,7 @@ export async function generateMetadata({
         return {}
     }
 
-    const title = `${[award.prefix, award.fullName].filter(Boolean).join(' ')} - คนดีศรีเชียงราย`
+    const title = `${[award.prefix, award.fullName].filter(Boolean).join('')} - คนดีศรีเชียงราย`
     const description = award.contributionTitle || `ทำเนียบรางวัลเกียรติยศคนดีศรีเชียงราย ประจำปี พ.ศ. ${award.year?.buddhistYear || ''}`
     const imageUrl = resolveMediaUrl(award.profileImage)
 
@@ -75,7 +75,7 @@ export default async function KhonDeeAwardDetailPage({
                             {award.year?.buddhistYear ? `พ.ศ. ${award.year.buddhistYear}` : 'รางวัลเกียรติยศ'}
                         </div>
                         <h1 className="font-display text-3xl font-bold leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
-                            {[award.prefix, award.fullName].filter(Boolean).join(' ')}
+                            {[award.prefix, award.fullName].filter(Boolean).join('')}
                         </h1>
                         <p className="mt-5 max-w-3xl text-lg font-light leading-relaxed text-white/82 md:text-xl">
                             {award.currentPosition || award.contributionTitle}
@@ -204,7 +204,7 @@ export default async function KhonDeeAwardDetailPage({
                                                 </div>
                                                 <div className="flex min-w-0 flex-col justify-center">
                                                     <h4 className="line-clamp-2 text-sm font-medium text-base-content transition-colors group-hover:text-primary">
-                                                        {[related.prefix, related.fullName].filter(Boolean).join(' ')}
+                                                        {[related.prefix, related.fullName].filter(Boolean).join('')}
                                                     </h4>
                                                     <p className="mt-1 line-clamp-1 text-xs text-base-content/50">
                                                         {related.contributionTitle}
