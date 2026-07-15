@@ -22,6 +22,8 @@
 - [Decision: News Page Uses Client-Side Navigation and Fixed Content Types](#decision-news-page-uses-client-side-navigation-and-fixed-content-types)
 - [Decision: Activity Calendar Client-Server Separation](#decision-activity-calendar-client-server-separation)
 - [Decision: About Page Configuration via Payload Global and UI Fallbacks](#decision-about-page-configuration-via-payload-global-and-ui-fallbacks)
+- [Decision: Adjust Navbar Order and Rename Honor Award Categories](#decision-adjust-navbar-order-and-rename-honor-award-categories)
+- [Decision: Restructure Honor Awards Pages to Group by Year First](#decision-restructure-honor-awards-pages-to-group-by-year-first)
 
 ---
 
@@ -444,6 +446,37 @@
 
 ### Follow-up
 - ตรวจสอบความถูกต้องของข้อมูลในการนำเข้าหรือ Seeding ครั้งถัดไป
+
+---
+
+## Decision: Restructure Honor Awards Pages to Group by Year First
+- **Date**: 2026-07-15
+- **Status**: Accepted
+- **Related Docs**:
+  - `../../STATUS.md`
+  - `../../src/app/(frontend)/awards/khon-dee/page.tsx`
+  - `../../src/app/(frontend)/awards/wisdom-awards/page.tsx`
+  - `../../src/app/(frontend)/awards/youth-culture/page.tsx`
+
+### Context
+- หน้าแสดงทำเนียบผู้ได้รับรางวัลเกียรติยศเดิมจะดึงและเรนเดอร์ข้อมูลผู้รับรางวัลจากทุกปีรวมกันเป็นก้อนเดียว ส่งผลให้หน้ามีขนาดใหญ่และหาข้อมูลได้ไม่สะดวกในระยะยาว
+- ผู้ใช้ต้องการให้จัดกลุ่มหน้าของแต่ละรางวัลแยกตามปี พ.ศ. ก่อน โดยให้ผู้ใช้งานสามารถคลิกเลือกปีก่อนแล้วค่อยเข้าไปสืบค้นข้อมูลรายปีนั้นๆ
+
+### Decision
+- ปรับโครงสร้างหน้าลิสต์รางวัลเกียรติยศทั้ง 3 หน้าหลัก ให้มีโหมดแสดงผลเป็นกริดของการ์ดปี พ.ศ. (ปีล่าสุดขึ้นก่อน) โดยใช้ข้อมูลปีพิธีการจาก `AwardYears` ร่วมกับการนับจำนวน (Count) รางวัลของปีนั้นๆ
+- เปิดใช้งาน "โหมดรายปี พ.ศ. เฉพาะเจาะจง" เมื่อระบุตัวแปร `?year=YEAR` ใน Query String พร้อมเพิ่มปุ่มกลับไปยังหน้าเลือกปี และรักษาฟังก์ชันการค้นหา (Search) และกรองหมวดหมู่ให้ทำงานสัมพันธ์กับปีที่เลือก
+- ในโหมดหน้าแรก หากมีการใช้ตัวกรองค้นหา (Search query) หรือเลือกประเภทรางวัล ระบบจะแสดงผลรายการรางวัลจากทุกปี พ.ศ. ทันที เพื่อให้ระบบค้นหาทำงานได้อย่างไร้รอยต่อโดยไม่ต้องจำกัดอยู่ในปีเดียว
+
+### Consequences
+- Positive:
+  - การจัดลำดับข้อมูลเป็นระเบียบตามปี พ.ศ. ชัดเจนขึ้น และปรับขนาด UI ให้อ่านง่ายขึ้น
+  - ลดปริมาณการประมวลผลและการโหลดข้อมูลในฝั่งผู้รับบริการเมื่อระบบมีประวัติรางวัลเพิ่มขึ้นในอนาคต
+  - การทำ URL-driven state ด้วย `searchParams` ช่วยให้การทำงานของระบบแชร์ลิงก์ยังคงมีความเสถียรและยืดหยุ่นสูง
+- Trade-offs:
+  - การแสดงจำนวนผู้ได้รับรางวัลในการ์ดแต่ละปีจำเป็นต้อง fetch ข้อมูลทั้งหมดมาประมวลผลฝั่ง Server ก่อน (ใช้ caching ช่วย)
+
+### Follow-up
+- ปรับปรุงคู่มือการใช้และคู่มือการดูแลข้อมูลในระบบแอดมินเพื่อให้การ Seeding ข้อมูลหรือการเพิ่มปีสัมพันธ์กันอย่างสมบูรณ์
 
 ---
 

@@ -14,12 +14,14 @@ export default async function YouthCulturePage({
     const selectedCategoryId = params.category || ''
     const sortBy = params.sortBy || 'category'
     const searchQuery = params.q || ''
+    const showYearGrid = !selectedYear && !searchQuery && !selectedCategoryId && !selectedInstitutionId
 
     const [historyResponse, years, institutions, categories, pageHeroes] = await Promise.all([
         getYouthAwardHistories({
             year: selectedYear || undefined,
             categoryId: selectedCategoryId || undefined,
             q: searchQuery || undefined,
+            limit: selectedYear ? undefined : 1000,
         }),
         getAwardYears(),
         getInstitutions(),
@@ -31,6 +33,15 @@ export default async function YouthCulturePage({
         if (!selectedInstitutionId) return true
         return String(item.institution?.id || '') === selectedInstitutionId
     })
+
+    // Calculate counts of awards per year
+    const awardsPerYear = histories.reduce((acc, curr) => {
+        const yr = curr.year?.buddhistYear
+        if (yr) {
+            acc[yr] = (acc[yr] || 0) + 1
+        }
+        return acc
+    }, {} as Record<number, number>)
 
     const sortedHistories = [...histories]
     if (sortBy === 'category') {
@@ -144,60 +155,131 @@ export default async function YouthCulturePage({
                         </form>
                     </div>
 
-                    <div>
-                        <h2 className="font-display text-2xl font-bold text-primary">ผลงานยุวชนวัฒนธรรม</h2>
-                        <p className="mt-2 text-base-content/60">พบ {sortedHistories.length} รายการ{selectedYear ? ` ในปี ${selectedYear}` : ''}</p>
+                {selectedYear && (
+                    <div className="mt-8 reveal-soft">
+                        <Link href="/awards/youth-culture" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-secondary/15 hover:bg-secondary/25 text-primary font-semibold text-sm transition-all shadow-sm border border-secondary/20">
+                            <span>←</span> ย้อนกลับไปเลือกปี พ.ศ. อื่น
+                        </Link>
                     </div>
+                )}
 
-                    {sortedHistories.length > 0 ? (
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            {sortedHistories.map((history) => {
-                                const institutionImageUrl = resolveMediaUrl(history.institution?.profileImage)
-                                const coverImageUrl = resolveMediaUrl(history.coverImage)
-                                const imageUrl = institutionImageUrl || coverImageUrl
-                                const imageAlt = institutionImageUrl
-                                    ? resolveMediaAlt(history.institution?.profileImage, history.institution?.institutionName || history.projectTitle)
-                                    : resolveMediaAlt(history.coverImage, history.projectTitle)
+                {!showYearGrid && (
+                    <div className="mt-8">
+                        <h2 className="font-display text-2xl font-bold text-primary flex flex-wrap items-baseline gap-2">
+                            <span>ผลงานยุวชนวัฒนธรรม</span>
+                            <span className="text-base font-light text-base-content/60">
+                                (มี {sortedHistories.length} รายการ
+                                {selectedYear ? ` ในปี พ.ศ. ${selectedYear}` : ''}
+                                {searchQuery ? ` สำหรับ "${searchQuery}"` : ''})
+                            </span>
+                        </h2>
+                    </div>
+                )}
 
-                                return (
-                                    <Link key={history.id} href={`/awards/youth-culture/${history.id}`} className="group overflow-hidden rounded-3xl border border-base-200 bg-white shadow-sm transition-all duration-300 hover:border-secondary/50 hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)]">
-                                        <div className="relative aspect-[4/3] overflow-hidden border-b border-base-100 bg-slate-50">
-                                            {imageUrl ? (
-                                                <CmsImage src={imageUrl} alt={imageAlt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                                            ) : (
-                                                <div className="flex h-full items-center justify-center bg-linear-to-br from-primary/5 to-secondary/10 text-4xl text-primary/35">ย</div>
-                                            )}
+                {showYearGrid ? (
+                    <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                        {years.map((year, index) => {
+                            const count = awardsPerYear[year.buddhistYear] || 0
+                            return (
+                                <Link
+                                    key={year.id}
+                                    href={`/awards/youth-culture?year=${year.buddhistYear}`}
+                                    className={`card-modern group bg-white rounded-3xl border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:border-secondary/50 transition-all duration-400 overflow-hidden flex flex-col h-full p-6 md:p-8 justify-between reveal-soft ${
+                                        index % 4 === 0
+                                            ? 'stagger-1'
+                                            : index % 4 === 1
+                                            ? 'stagger-2'
+                                            : index % 4 === 2
+                                            ? 'stagger-3'
+                                            : 'stagger-4'
+                                    }`}
+                                >
+                                    <div className="flex flex-col items-center text-center">
+                                        <div className="text-sm font-bold px-4 py-1.5 rounded-full bg-secondary/10 text-primary mb-4 group-hover:bg-secondary/20 transition-all duration-300 font-display">
+                                            ยุวชนวัฒนธรรม
                                         </div>
-                                        <div className="p-6">
-                                            <div className="mb-3 flex flex-wrap gap-2">
-                                                {history.year?.buddhistYear && (
-                                                    <span className="rounded bg-secondary/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">พ.ศ. {history.year.buddhistYear}</span>
+                                        <h3 className="text-2xl md:text-3xl font-bold text-primary font-display mb-2 group-hover:text-secondary-dark transition-colors">
+                                            พ.ศ. {year.buddhistYear}
+                                        </h3>
+                                        <p className="text-sm font-semibold text-secondary mb-4">
+                                            ผลงานสร้างสรรค์ {count} ผลงาน
+                                        </p>
+                                        
+                                        {(year.location || year.ceremonyDate) && (
+                                            <div className="w-full border-t border-base-100 pt-4 mt-2 text-xs text-base-content/50 font-light text-left space-y-1.5">
+                                                {year.ceremonyDate && (
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span>📅</span>
+                                                        <span>{new Date(year.ceremonyDate).toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                                    </div>
                                                 )}
-                                                {history.category?.title && (
-                                                    <span className="rounded bg-secondary/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-primary/80">{history.category.title}</span>
-                                                )}
-                                                {history.institution?.district && (
-                                                    <span className="rounded bg-primary/6 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-base-content/60">{history.institution.district}</span>
+                                                {year.location && (
+                                                    <div className="flex items-start gap-1.5">
+                                                        <span className="shrink-0">📍</span>
+                                                        <span className="line-clamp-2">{year.location}</span>
+                                                    </div>
                                                 )}
                                             </div>
-                                            <h3 className="font-display text-xl font-bold leading-snug text-primary transition-colors group-hover:text-secondary-dark">{history.projectTitle}</h3>
-                                            {history.institution?.institutionName && (
-                                                <p className="mt-3 text-sm font-medium text-base-content/60">{history.institution.institutionName}</p>
+                                        )}
+                                    </div>
+                                    <div className="mt-6 w-full">
+                                        <span className="btn btn-sm rounded-xl bg-primary text-white border-primary hover:bg-primary-dark group-hover:bg-secondary group-hover:border-secondary transition-all w-full py-2 h-auto text-xs font-semibold">
+                                            ดูผลงานเด่น
+                                        </span>
+                                    </div>
+                                </Link>
+                            )
+                        })}
+                    </div>
+                ) : sortedHistories.length > 0 ? (
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {sortedHistories.map((history) => {
+                            const institutionImageUrl = resolveMediaUrl(history.institution?.profileImage)
+                            const coverImageUrl = resolveMediaUrl(history.coverImage)
+                            const imageUrl = institutionImageUrl || coverImageUrl
+                            const imageAlt = institutionImageUrl
+                                ? resolveMediaAlt(history.institution?.profileImage, history.institution?.institutionName || history.projectTitle)
+                                : resolveMediaAlt(history.coverImage, history.projectTitle)
+
+                            return (
+                                <Link key={history.id} href={`/awards/youth-culture/${history.id}`} className="group overflow-hidden rounded-3xl border border-base-200 bg-white shadow-sm transition-all duration-300 hover:border-secondary/50 hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)]">
+                                    <div className="relative aspect-[4/3] overflow-hidden border-b border-base-100 bg-slate-50">
+                                        {imageUrl ? (
+                                            <CmsImage src={imageUrl} alt={imageAlt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                                        ) : (
+                                            <div className="flex h-full items-center justify-center bg-linear-to-br from-primary/5 to-secondary/10 text-4xl text-primary/35">ย</div>
+                                        )}
+                                    </div>
+                                    <div className="p-6">
+                                        <div className="mb-3 flex flex-wrap gap-2">
+                                            {history.year?.buddhistYear && (
+                                                <span className="rounded bg-secondary/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">พ.ศ. {history.year.buddhistYear}</span>
                                             )}
-                                            {history.projectSummary && (
-                                                <p className="mt-3 line-clamp-2 text-sm font-light text-base-content/70">{history.projectSummary}</p>
+                                            {history.category?.title && (
+                                                <span className="rounded bg-secondary/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-primary/80">{history.category.title}</span>
                                             )}
-                                            {history.awardees.length > 0 && (
-                                                <p className="mt-4 line-clamp-2 text-xs font-medium text-base-content/55">
-                                                    {history.awardees.map((awardee) => awardee.fullName).join(', ')}
-                                                </p>
+                                            {history.institution?.district && (
+                                                <span className="rounded bg-primary/6 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-base-content/60">{history.institution.district}</span>
                                             )}
                                         </div>
-                                    </Link>
-                                )
-                            })}
-                        </div>
-                    ) : (
+                                        <h3 className="font-display text-xl font-bold leading-snug text-primary transition-colors group-hover:text-secondary-dark">{history.projectTitle}</h3>
+                                        {history.institution?.institutionName && (
+                                            <p className="mt-3 text-sm font-medium text-base-content/60">{history.institution.institutionName}</p>
+                                        )}
+                                        {history.projectSummary && (
+                                            <p className="mt-3 line-clamp-2 text-sm font-light text-base-content/70">{history.projectSummary}</p>
+                                        )}
+                                        {history.awardees.length > 0 && (
+                                            <p className="mt-4 line-clamp-2 text-xs font-medium text-base-content/55">
+                                                {history.awardees.map((awardee) => awardee.fullName).join(', ')}
+                                            </p>
+                                        )}
+                                    </div>
+                                </Link>
+                            )
+                        })}
+                    </div>
+                ) : (
                         <div className="rounded-3xl border border-dashed border-base-200 bg-white py-16 text-center">
                             <h3 className="font-display text-2xl font-bold text-primary">ยังไม่พบข้อมูลที่ตรงกับเงื่อนไข</h3>
                             <p className="mt-3 text-base-content/60">ลองเปลี่ยนคำค้นหา หรือกลับมาดูใหม่ภายหลังเมื่อมีการเพิ่มข้อมูล</p>

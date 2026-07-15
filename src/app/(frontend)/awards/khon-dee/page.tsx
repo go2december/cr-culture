@@ -19,12 +19,14 @@ export default async function KhonDeeAwardsPage({
     const selectedCategoryId = params.category || ''
     const sortBy = params.sortBy || 'category'
     const searchQuery = params.q || ''
+    const showYearGrid = !selectedYear && !searchQuery && !selectedCategoryId
 
     const [awardResponse, yearsData, categoriesData, pageHeroes] = await Promise.all([
         getKhonDeeAwards({
             year: selectedYear || undefined,
             categoryId: selectedCategoryId || undefined,
             search: searchQuery || undefined,
+            limit: selectedYear ? undefined : 1000,
         }),
         getAwardYears(),
         getAwardCategories(),
@@ -32,6 +34,15 @@ export default async function KhonDeeAwardsPage({
     ])
 
     const awards = (awardResponse.docs || []) as PublicKhonDeeAward[]
+    
+    // Calculate counts of awards per year
+    const awardsPerYear = awards.reduce((acc, curr) => {
+        const yr = curr.year?.buddhistYear
+        if (yr) {
+            acc[yr] = (acc[yr] || 0) + 1
+        }
+        return acc
+    }, {} as Record<number, number>)
     const sortedAwards = [...awards]
     if (sortBy === 'category') {
         sortedAwards.sort((a, b) => {
@@ -160,20 +171,87 @@ export default async function KhonDeeAwardsPage({
                     </form>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 reveal-soft stagger-2">
-                    <div>
-                        <h2 className="text-2xl font-bold text-primary font-display">
-                            {selectedCategory ? selectedCategory.subType : 'ทำเนียบผู้ได้รับรางวัล'}
-                        </h2>
-                        <p className="text-base-content/60 font-light mt-2">
-                            พบ {sortedAwards.length} รายการ
-                            {selectedYear ? ` ในปี ${selectedYear}` : ''}
-                            {searchQuery ? ` สำหรับ "${searchQuery}"` : ''}
-                        </p>
+                {selectedYear && (
+                    <div className="mb-6 reveal-soft">
+                        <Link href="/awards/khon-dee" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-secondary/15 hover:bg-secondary/25 text-primary font-semibold text-sm transition-all shadow-sm border border-secondary/20">
+                            <span>←</span> ย้อนกลับไปเลือกปี พ.ศ. อื่น
+                        </Link>
                     </div>
-                </div>
+                )}
 
-                {sortedAwards.length > 0 ? (
+                {!showYearGrid && (
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 reveal-soft stagger-2">
+                        <div>
+                            <h2 className="text-2xl font-bold text-primary font-display flex flex-wrap items-baseline gap-2">
+                                <span>
+                                    {selectedCategory ? selectedCategory.subType : 'ทำเนียบผู้ได้รับรางวัล'}
+                                </span>
+                                <span className="text-base font-light text-base-content/60">
+                                    (มี {sortedAwards.length} รายการ
+                                    {selectedYear ? ` ในปี พ.ศ. ${selectedYear}` : ''}
+                                    {searchQuery ? ` สำหรับ "${searchQuery}"` : ''})
+                                </span>
+                            </h2>
+                        </div>
+                    </div>
+                )}
+
+                {showYearGrid ? (
+                    <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+                        {years.map((year, index) => {
+                            const count = awardsPerYear[year.buddhistYear] || 0
+                            return (
+                                <Link
+                                    key={year.id}
+                                    href={`/awards/khon-dee?year=${year.buddhistYear}`}
+                                    className={`card-modern group bg-white rounded-3xl border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:border-secondary/50 transition-all duration-400 overflow-hidden flex flex-col h-full p-6 md:p-8 justify-between reveal-soft ${
+                                        index % 4 === 0
+                                            ? 'stagger-1'
+                                            : index % 4 === 1
+                                            ? 'stagger-2'
+                                            : index % 4 === 2
+                                            ? 'stagger-3'
+                                            : 'stagger-4'
+                                    }`}
+                                >
+                                    <div className="flex flex-col items-center text-center">
+                                        <div className="text-sm font-bold px-4 py-1.5 rounded-full bg-secondary/10 text-primary mb-4 group-hover:bg-secondary/20 transition-all duration-300 font-display">
+                                            คนดีศรีเชียงราย
+                                        </div>
+                                        <h3 className="text-2xl md:text-3xl font-bold text-primary font-display mb-2 group-hover:text-secondary-dark transition-colors">
+                                            พ.ศ. {year.buddhistYear}
+                                        </h3>
+                                        <p className="text-sm font-semibold text-secondary mb-4">
+                                            ผู้ได้รับรางวัล {count} ท่าน
+                                        </p>
+                                        
+                                        {(year.location || year.ceremonyDate) && (
+                                            <div className="w-full border-t border-base-100 pt-4 mt-2 text-xs text-base-content/50 font-light text-left space-y-1.5">
+                                                {year.ceremonyDate && (
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span>📅</span>
+                                                        <span>{new Date(year.ceremonyDate).toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                                    </div>
+                                                )}
+                                                {year.location && (
+                                                    <div className="flex items-start gap-1.5">
+                                                        <span className="shrink-0">📍</span>
+                                                        <span className="line-clamp-2">{year.location}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="mt-6 w-full">
+                                        <span className="btn btn-sm rounded-xl bg-primary text-white border-primary hover:bg-primary-dark group-hover:bg-secondary group-hover:border-secondary transition-all w-full py-2 h-auto text-xs font-semibold">
+                                            ดูรายชื่อผู้ได้รับรางวัล
+                                        </span>
+                                    </div>
+                                </Link>
+                            )
+                        })}
+                    </div>
+                ) : sortedAwards.length > 0 ? (
                     <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
                         {sortedAwards.map((award, index) => {
                             const imageUrl = resolveMediaUrl(award.profileImage)
