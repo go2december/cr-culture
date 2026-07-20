@@ -85,7 +85,7 @@ export interface RawActivity {
     districtName?: string | null
     excerpt?: string | null
     summary?: string | null
-    content_html?: string | null
+    content?: unknown
     coverImage?: MediaLike
     gallery?: GalleryItemLike[] | null
 }
@@ -100,7 +100,7 @@ export interface RawNews {
     createdAt?: string | null
     summary?: string | null
     excerpt?: string | null
-    content_html?: string | null
+    content?: unknown
     coverImage?: MediaLike
     gallery?: GalleryItemLike[] | null
 }
@@ -111,7 +111,7 @@ export interface RawHeritage {
     title: string
     category: PublicHeritage['category']
     excerpt?: string | null
-    content_html?: string | null
+    content?: unknown
     author?: string | null
     createdAt?: string | null
     coverImage?: MediaLike
@@ -367,7 +367,7 @@ export const mapActivity = (doc: RawActivity): PublicActivity => ({
     districtName: doc.districtName ?? normalizeRelationRef(doc.district)?.name ?? null,
     excerpt: doc.excerpt ?? null,
     summary: doc.summary ?? null,
-    content_html: doc.content_html ?? null,
+    content_html: richTextToHtml(doc.content) ?? null,
     coverImage: doc.coverImage,
     gallery: normalizeGallery(doc.gallery),
 })
@@ -381,7 +381,7 @@ export const mapNews = (doc: RawNews): PublicNews => ({
     createdAt: doc.createdAt ?? null,
     summary: doc.summary ?? null,
     excerpt: doc.excerpt ?? null,
-    content_html: doc.content_html ?? null,
+    content_html: richTextToHtml(doc.content) ?? null,
     coverImage: doc.coverImage,
     gallery: normalizeGallery(doc.gallery),
 })
@@ -392,7 +392,7 @@ export const mapHeritage = (doc: RawHeritage): PublicHeritage => ({
     title: doc.title,
     category: doc.category,
     excerpt: doc.excerpt ?? null,
-    content_html: doc.content_html ?? null,
+    content_html: richTextToHtml(doc.content) ?? null,
     author: doc.author ?? null,
     createdAt: doc.createdAt || new Date().toISOString(),
     coverImage: doc.coverImage,
