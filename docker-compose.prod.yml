@@ -43,7 +43,7 @@ services:
     volumes:
       # Crucial: mount persistent volume for uploaded media files
       # so that images/documents are not lost when the container is rebuilt or restarted.
-      - media_prod_data:/app/media
+      - crculture_media_volume:/app/media
     depends_on:
       mongodb:
         condition: service_healthy
@@ -58,7 +58,8 @@ services:
 
 volumes:
   mongodb_prod_data:
-  media_prod_data:
+  crculture_media_volume:
+    external: true
 
 networks:
   crculture_prod_network:
