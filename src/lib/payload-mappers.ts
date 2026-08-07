@@ -48,6 +48,11 @@ export interface RawDistrictSummary extends PublicDistrictSummary {
     coverImage?: MediaLike
 }
 
+export interface RawPartnerSummary extends PublicDistrictSummary {
+    image?: MediaLike
+    coverImage?: MediaLike
+}
+
 export interface RawBoardMember {
     id: string | number
     name: string
@@ -58,8 +63,20 @@ export interface RawBoardMember {
     phone?: string | null
     email?: string | null
     isActive?: boolean | null
-    sourceType?: 'manual' | 'district' | null
+    sourceType?: 'manual' | 'partner' | 'district' | null
     district?: RawPayloadRef
+    partner?: RawPayloadRef
+}
+
+export interface RawPartnerMember {
+    id: string | number
+    name: string
+    position?: RawBoardPosition
+    positionOrder?: number | null
+    partner?: RawPayloadRef
+    image?: MediaLike
+    phone?: string | null
+    isActive?: boolean | null
 }
 
 export interface RawDistrictMember {
@@ -330,7 +347,44 @@ export const mapBoardMember = (doc: RawBoardMember): PublicBoardMember => ({
     image: resolveMediaUrl(doc.image),
     sourceType: doc.sourceType || 'manual',
     district: normalizeRelationRef(doc.district),
+    partner: normalizeRelationRef(doc.partner),
 })
+
+export const mapPartnerSummary = (doc: RawPartnerSummary): PublicDistrictSummary => ({
+    id: doc.id,
+    name: doc.name,
+    slug: doc.slug,
+    code: doc.code ?? null,
+    description: doc.description ?? null,
+    latitude: doc.latitude ?? null,
+    longitude: doc.longitude ?? null,
+    address: doc.address ?? null,
+    phoneNumber: doc.phoneNumber ?? null,
+    email: doc.email ?? null,
+    facebook: doc.facebook ?? null,
+})
+
+export const mapPartnerMember = (doc: RawPartnerMember): PublicDistrictMember => ({
+    name: doc.name,
+    position: normalizeTitle(doc.position) || 'กรรมการ',
+    order: doc.positionOrder || 99,
+    image: doc.image,
+    phone: doc.phone ?? null,
+    isActive: doc.isActive ?? null,
+})
+
+export const mapPartnerChairman = (doc: RawPartnerMember): PublicDistrictChairman => {
+    const partner = normalizeRelationRef(doc.partner)
+
+    return {
+        name: doc.name,
+        position: `ประธาน/ผู้นำองค์กร ${partner?.name || 'องค์กรภาคีวัฒนธรรม'}`,
+        districtName: partner?.name || '-',
+        districtSlug: partner?.slug || '#',
+        districtCode: partner?.code || null,
+        image: resolveMediaUrl(doc.image),
+    }
+}
 
 export const mapDistrictMember = (doc: RawDistrictMember): PublicDistrictMember => ({
     name: doc.name,

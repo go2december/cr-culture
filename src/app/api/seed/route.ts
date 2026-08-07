@@ -10,6 +10,9 @@ export async function GET(request: NextRequest) {
   if (clean) {
     const collectionsToClean = [
       'provincial-board',
+      'cultural-partner-members',
+      'cultural-partner-positions',
+      'cultural-partners',
       'district-members',
       'activities',
       'heritage-blog',
@@ -114,7 +117,7 @@ export async function GET(request: NextRequest) {
     }
 
     // ============================================================
-    // 2. DistrictBoardPositions (ตำแหน่งกรรมการอำเภอ)
+    // 2. DistrictBoardPositions & CulturalPartnerPositions
     // ============================================================
     const distPositions = [
       { title: 'ประธานสภาวัฒนธรรมประจำอำเภอ', level: 1 },
@@ -131,6 +134,156 @@ export async function GET(request: NextRequest) {
       } else {
         const created = await payload.create({ collection: 'district-board-positions', data: pos })
         distPosIds[pos.title] = String(created.id)
+      }
+    }
+
+    const partnerPositions = [
+      { title: 'ประธาน/ผู้นำองค์กรภาคีวัฒนธรรม', level: 1 },
+      { title: 'รองประธานองค์กรภาคีวัฒนธรรม', level: 2 },
+      { title: 'กรรมการองค์กรภาคี', level: 3 },
+      { title: 'เลขานุการองค์กรภาคี', level: 4 },
+    ]
+
+    const partnerPosIds: Record<string, string> = {}
+    for (const pos of partnerPositions) {
+      const existing = await payload.find({ collection: 'cultural-partner-positions', where: { title: { equals: pos.title } }, limit: 1 })
+      if (existing.docs.length > 0) {
+        partnerPosIds[pos.title] = String(existing.docs[0].id)
+      } else {
+        const created = await payload.create({ collection: 'cultural-partner-positions', data: pos })
+        partnerPosIds[pos.title] = String(created.id)
+      }
+    }
+
+    // ============================================================
+    // 2.1 Seed Cultural Partners & Members
+    // ============================================================
+    const samplePartners = [
+      {
+        name: 'สมาคมขัวศิลปะเชียงราย',
+        slug: 'art-bridge-chiang-rai',
+        code: 'CP-01',
+        description: 'เครือข่ายส่งเสริมและสร้างสรรค์งานศิลปะร่วมสมัยและมรดกทางวัฒนธรรมเชียงราย',
+        contact: { address: 'ต.บ้านดู่ อ.เมืองเชียงราย จ.เชียงราย', phone: '053-166-623', email: 'artbridge.cr@gmail.com' },
+        chairmanName: 'นายสุวิทย์ ใจป้อม',
+      },
+      {
+        name: 'มูลนิธิมรดกเมืองเชียงราย',
+        slug: 'chiang-rai-heritage-foundation',
+        code: 'CP-02',
+        description: 'อนุรักษ์ ฟื้นฟู และสืบสานสถาปัตยกรรมและมรดกเมืองล้านนาเชียงราย',
+        contact: { address: 'อ.เมืองเชียงราย จ.เชียงราย', phone: '053-711-444', email: 'heritage.cr@gmail.com' },
+        chairmanName: 'ดร.นคร พงษ์น้อย',
+      },
+      {
+        name: 'ชมรมปราชญ์ชาวบ้านและภูมิปัญญาล้านนา',
+        slug: 'lanna-wisdom-club',
+        code: 'CP-03',
+        description: 'ศูนย์รวมปราชญ์ท้องถิ่นและองค์ความรู้ภูมิผญาเมืองเชียงราย',
+        contact: { address: 'อ.เมืองเชียงราย จ.เชียงราย', phone: '053-712-345', email: 'lannawisdom@gmail.com' },
+        chairmanName: 'พ่อครูสมพร สุขเกษม',
+      },
+      {
+        name: 'สมาคมเครือข่ายช่างดนตรีและศิลปะการแสดงล้านนา',
+        slug: 'lanna-music-performing-arts',
+        code: 'CP-04',
+        description: 'ส่งเสริม อนุรักษ์ และถ่ายทอดดนตรีพื้นบ้านล้านนา สะล้อ ซึง ดนตรีมังคละ และการแสดงพื้นเมือง',
+        contact: { address: 'อ.เมืองเชียงราย จ.เชียงราย', phone: '053-714-567', email: 'music.lanna@gmail.com' },
+        chairmanName: 'อาจารย์ฉลอง พิณทอง',
+      },
+      {
+        name: 'เครือข่ายพิพิธภัณฑ์ท้องถิ่นเมืองเชียงราย',
+        slug: 'chiang-rai-local-museums',
+        code: 'CP-05',
+        description: 'รวบรวมและเชื่อมโยงพิพิธภัณฑ์ชุมชน แหล่งเรียนรู้ประวัติศาสตร์ และคลังโบราณวัตถุในท้องถิ่น',
+        contact: { address: 'อ.เชียงแสน จ.เชียงราย', phone: '053-777-888', email: 'museums.cr@gmail.com' },
+        chairmanName: 'นายสมชาย ศิริชัย',
+      },
+      {
+        name: 'ชมรมอนุรักษ์วัฒนธรรมชนเผ่าและชาติพันธุ์เชียงราย',
+        slug: 'ethnic-culture-conservation-club',
+        code: 'CP-06',
+        description: 'สืบสานวิถีชีวิต อัตลักษณ์ ภาษา และการแต่งกายของกลุ่มชาติพันธุ์หลากหลายในเชียงราย',
+        contact: { address: 'อ.แม่จัน จ.เชียงราย', phone: '053-771-234', email: 'ethnic.cr@gmail.com' },
+        chairmanName: 'นายซูเมอร์ อู๋พั่ว',
+      },
+      {
+        name: 'สมาคมส่งเสริมหัตถกรรมและผ้าทอพื้นเมืองเชียงราย',
+        slug: 'chiang-rai-handicraft-textile',
+        code: 'CP-07',
+        description: 'สนับสนุนกลุ่มทอผ้าพื้นเมือง ลวดลายล้านนา ผ้าลายน้ำไหล และงานหัตถกรรมสร้างสรรค์',
+        contact: { address: 'อ.แม่สาย จ.เชียงราย', phone: '053-731-999', email: 'textile.cr@gmail.com' },
+        chairmanName: 'นางวรรณา ศรีสุข',
+      },
+      {
+        name: 'เครือข่ายเยาวชนสร้างสรรค์และวัฒนธรรมร่วมสมัย',
+        slug: 'youth-cultural-creative-network',
+        code: 'CP-08',
+        description: 'พลังเยาวชนรุ่นใหม่ขับเคลื่อนวัฒนธรรมเชียงรายผ่านสื่อสร้างสรรค์และงานออกแบบร่วมสมัย',
+        contact: { address: 'อ.เมืองเชียงราย จ.เชียงราย', phone: '053-718-222', email: 'youth.cr@gmail.com' },
+        chairmanName: 'นายกิตติศักดิ์ คำมา',
+      },
+    ]
+
+    const seededPartnerIds: Record<string, string> = {}
+    for (const p of samplePartners) {
+      const existing = await payload.find({ collection: 'cultural-partners', where: { slug: { equals: p.slug } }, limit: 1 })
+      let pId = ''
+      if (existing.docs.length > 0) {
+        pId = String(existing.docs[0].id)
+      } else {
+        const created = await payload.create({
+          collection: 'cultural-partners',
+          data: {
+            name: p.name,
+            slug: p.slug,
+            code: p.code,
+            description: p.description,
+            contact: p.contact,
+            order: 1,
+            isActive: true,
+          },
+        })
+        pId = String(created.id)
+      }
+      seededPartnerIds[p.slug] = pId
+
+      // Seed Chairman
+      const existingChairman = await payload.find({
+        collection: 'cultural-partner-members',
+        where: { name: { equals: p.chairmanName } },
+        limit: 1,
+      })
+      if (existingChairman.docs.length === 0) {
+        await payload.create({
+          collection: 'cultural-partner-members',
+          data: {
+            name: p.chairmanName,
+            position: partnerPosIds['ประธาน/ผู้นำองค์กรภาคีวัฒนธรรม'],
+            positionOrder: 1,
+            partner: pId,
+            isActive: true,
+          },
+        })
+      }
+
+      // Seed ProvincialBoard entry for partner chairman auto-linking
+      const existingBoardEntry = await payload.find({
+        collection: 'provincial-board',
+        where: { partner: { equals: pId } },
+        limit: 1,
+      })
+      if (existingBoardEntry.docs.length === 0) {
+        await payload.create({
+          collection: 'provincial-board',
+          data: {
+            sourceType: 'partner',
+            partner: pId,
+            position: positionIds['กรรมการ'] || positionIds['กรรมการสภาวัฒนธรรมจังหวัด'],
+            positionOrder: 4,
+            isActive: true,
+          },
+        })
       }
     }
 

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getPageHeroes, getProvincialBoard, getDistrictChairmen } from '@/lib/payload'
+import { getPageHeroes, getProvincialBoard, getCulturalPartnerChairmen, getDistrictChairmen } from '@/lib/payload'
 import CmsImage from '@/components/CmsImage'
 import { resolveMediaAlt, resolveMediaUrl, type MediaLike } from '@/lib/media'
 import type { PublicBoardMember, PublicDistrictChairman } from '@/lib/public-organization'
@@ -55,10 +55,28 @@ export default async function BoardPage() {
         return a.order - b.order
     })
 
+    const partnerChairmenList: PublicDistrictChairman[] = (await getCulturalPartnerChairmen() || [])
     const districtChairmenList: PublicDistrictChairman[] = (await getDistrictChairmen() || [])
-    .sort((a, b) => (a.districtCode || '').localeCompare(b.districtCode || ''));
+        .sort((a, b) => (a.districtCode || '').localeCompare(b.districtCode || ''));
+
+    // รวมทั้งประธานสภาวัฒนธรรมอำเภอ และประธาน/ผู้นำองค์กรภาคีวัฒนธรรม เข้าด้วยกันในระดับกรรมการ (Level 4)
+    const networkChairmenList = [...districtChairmenList, ...partnerChairmenList]
 
     const resolvedBoardMembers = orderedBoardMembers.map((member) => {
+        if (member.sourceType === 'partner' && member.partner?.slug) {
+            const chairman = partnerChairmenList.find(
+                (c) => c.districtSlug === member.partner?.slug
+            )
+            if (chairman) {
+                return {
+                    ...member,
+                    name: chairman.name,
+                    position: member.position,
+                    image: chairman.image,
+                    partnerSlug: chairman.districtSlug,
+                }
+            }
+        }
         if (member.sourceType === 'district' && member.district?.slug) {
             const chairman = districtChairmenList.find(
                 (c) => c.districtSlug === member.district?.slug
@@ -77,6 +95,7 @@ export default async function BoardPage() {
         return {
             ...member,
             districtSlug: null,
+            partnerSlug: null,
         }
     })
 
@@ -85,36 +104,36 @@ export default async function BoardPage() {
     const viceChairmen = resolvedBoardMembers.filter((m) => m.positionLevel === 2)
     const committees = resolvedBoardMembers.filter((m) => m.positionLevel === 3)
     
-    // ดึงข้อมูลจากตำแหน่งประธานสภาวัฒนธรรมอำเภอของแต่ละอำเภอมาทำเป็นกรรมการสภาวัฒนธรรมจังหวัด (หรือกรรมการที่ป้อนแบบกำหนดเอง)
+    // ดึงข้อมูลจากตำแหน่งประธานองค์กรภาคีวัฒนธรรม (หรือสภาอำเภอ fallback) มาเป็นกรรมการสภาวัฒนธรรมจังหวัด
     const manualCoordinators = resolvedBoardMembers.filter(
         (m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ') && m.sourceType === 'manual'
     )
-    const dbDistrictCoordinators = resolvedBoardMembers.filter(
-        (m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ') && m.sourceType === 'district'
+    const dbNetworkCoordinators = resolvedBoardMembers.filter(
+        (m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ') && (m.sourceType === 'partner' || m.sourceType === 'district')
     )
-    const resolvedDistrictCoordinators = districtChairmenList.map((chairman, idx) => {
-        const dbOverride = dbDistrictCoordinators.find((m) => m.district?.slug === chairman.districtSlug)
+    const resolvedNetworkCoordinators = networkChairmenList.map((chairmanItem, idx) => {
+        const dbOverride = dbNetworkCoordinators.find((m) => (m.partner?.slug || m.district?.slug) === chairmanItem.districtSlug)
         if (dbOverride) {
-            const displayPosition = dbOverride.position === 'กรรมการ' ? chairman.position : (dbOverride.position || chairman.position)
+            const displayPosition = dbOverride.position === 'กรรมการ' ? chairmanItem.position : (dbOverride.position || chairmanItem.position)
             return {
-                name: chairman.name,
+                name: chairmanItem.name,
                 position: displayPosition,
                 positionLevel: 4,
                 order: (dbOverride.order && dbOverride.order !== 99) ? dbOverride.order : (idx + 1),
-                image: chairman.image,
-                districtSlug: chairman.districtSlug,
+                image: chairmanItem.image,
+                districtSlug: chairmanItem.districtSlug,
             }
         }
         return {
-            name: chairman.name,
-            position: chairman.position,
+            name: chairmanItem.name,
+            position: chairmanItem.position,
             positionLevel: 4,
             order: idx + 1,
-            image: chairman.image,
-            districtSlug: chairman.districtSlug,
+            image: chairmanItem.image,
+            districtSlug: chairmanItem.districtSlug,
         }
     })
-    const coordinators = [...resolvedDistrictCoordinators, ...manualCoordinators];
+    const coordinators = [...resolvedNetworkCoordinators, ...manualCoordinators];
 
     const secretaryMembers = resolvedBoardMembers.filter((m) => m.positionLevel === 5 || (m.positionLevel === 4 && m.position.includes('เลขานุการ')))
 

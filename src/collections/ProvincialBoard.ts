@@ -6,6 +6,7 @@ export const ProvincialBoard: CollectionConfig = {
         useAsTitle: 'name',
         group: 'บุคลากร',
         description: 'คณะกรรมการสภาวัฒนธรรมจังหวัด',
+        defaultColumns: ['sourceType', 'name', 'position', 'partner', 'district', 'positionOrder'],
     },
     labels: {
         singular: 'กรรมการจังหวัด',
@@ -19,10 +20,21 @@ export const ProvincialBoard: CollectionConfig = {
             defaultValue: 'manual',
             options: [
                 { label: 'ป้อนข้อมูลเอง', value: 'manual' },
+                { label: 'ดึงจากประธานเครือข่ายองค์กรภาคีวัฒนธรรม', value: 'partner' },
                 { label: 'ดึงจากประธานสภาวัฒนธรรมอำเภอ', value: 'district' },
             ],
             admin: {
-                description: 'เลือกรูปแบบการใส่ข้อมูลกรรมการ (แบบป้อนเอง หรือ ดึงข้อมูลจากตำแหน่งประธานอำเภออัตโนมัติ)',
+                description: 'เลือกรูปแบบการใส่ข้อมูลกรรมการ (แบบป้อนเอง หรือ ดึงข้อมูลจากตำแหน่งประธานอัตโนมัติ)',
+            },
+        },
+        {
+            name: 'partner',
+            type: 'relationship',
+            relationTo: 'cultural-partners',
+            label: 'ดึงข้อมูลจากประธานองค์กรภาคีวัฒนธรรม',
+            admin: {
+                condition: (data) => data?.sourceType === 'partner',
+                description: 'เลือกองค์กรภาคีที่ต้องการดึงข้อมูลประธานมาเป็นกรรมการโดยอัตโนมัติ',
             },
         },
         {
@@ -40,12 +52,12 @@ export const ProvincialBoard: CollectionConfig = {
             type: 'text',
             label: 'ชื่อ-นามสกุล',
             validate: (val: unknown, { data }: { data: Record<string, unknown> }) => {
-                if (data?.sourceType === 'district') return true
+                if (data?.sourceType === 'district' || data?.sourceType === 'partner') return true
                 if (typeof val !== 'string' || !val) return 'กรุณากรอกชื่อ-นามสกุล'
                 return true
             },
             admin: {
-                condition: (data) => data?.sourceType !== 'district',
+                condition: (data) => data?.sourceType === 'manual',
             },
         },
         {
@@ -74,7 +86,7 @@ export const ProvincialBoard: CollectionConfig = {
             relationTo: 'media',
             label: 'รูปภาพ',
             admin: {
-                condition: (data) => data?.sourceType !== 'district',
+                condition: (data) => data?.sourceType === 'manual',
             },
         },
         {
@@ -82,7 +94,7 @@ export const ProvincialBoard: CollectionConfig = {
             type: 'textarea',
             label: 'ประวัติโดยย่อ',
             admin: {
-                condition: (data) => data?.sourceType !== 'district',
+                condition: (data) => data?.sourceType === 'manual',
             },
         },
         {
@@ -90,7 +102,7 @@ export const ProvincialBoard: CollectionConfig = {
             type: 'text',
             label: 'เบอร์โทรศัพท์',
             admin: {
-                condition: (data) => data?.sourceType !== 'district',
+                condition: (data) => data?.sourceType === 'manual',
             },
         },
         {
@@ -98,7 +110,7 @@ export const ProvincialBoard: CollectionConfig = {
             type: 'email',
             label: 'อีเมล',
             admin: {
-                condition: (data) => data?.sourceType !== 'district',
+                condition: (data) => data?.sourceType === 'manual',
             },
         },
         {

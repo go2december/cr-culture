@@ -36,8 +36,14 @@ export interface PublicBoardMember {
     order: number
     image: string | null
     districtSlug?: string | null
-    sourceType?: 'manual' | 'district' | null
+    partnerSlug?: string | null
+    sourceType?: 'manual' | 'partner' | 'district' | null
     district?: {
+        id?: string | number | null
+        slug?: string | null
+        name?: string | null
+    } | null
+    partner?: {
         id?: string | number | null
         slug?: string | null
         name?: string | null
@@ -50,6 +56,38 @@ export interface PublicDistrictChairman {
     districtName: string
     districtSlug: string
     districtCode?: string | null
+    image: string | null
+}
+
+export interface PublicCulturalPartnerSummary {
+    id: string | number
+    name: string
+    slug: string
+    code?: string | null
+    description?: string | null
+    latitude?: number | null
+    longitude?: number | null
+    address?: string | null
+    phoneNumber?: string | null
+    email?: string | null
+    facebook?: string | null
+}
+
+export interface PublicPartnerMember {
+    name: string
+    position: string
+    order: number
+    image: MediaLike
+    phone?: string | null
+    isActive?: boolean | null
+}
+
+export interface PublicPartnerChairman {
+    name: string
+    position: string
+    partnerName: string
+    partnerSlug: string
+    partnerCode?: string | null
     image: string | null
 }
 

@@ -1,10 +1,18 @@
 ## สถานะปัจจุบัน (อัปเดตทุกครั้งที่หยุดพัฒนา)
 
 ไฟล์นี้เป็นสรุปสถานะสั้นแบบ canonical เพื่อลดข้อมูลซ้ำในโปรเจกต์
-อัปเดตล่าสุด: 4 กรกฎาคม 2569
+อัปเดตล่าสุด: 7 สิงหาคม 2569
 
 
-## Recent Work (ปรับปรุงระบบแสดงผลหมวดหมู่รางวัลแยกตามปี พ.ศ. — 15 กรกฎาคม 2569)
+## Recent Work (ปรับโครงสร้างเครือข่ายทางวัฒนธรรมและคณะกรรมการจังหวัด — 7 สิงหาคม 2569)
+- **Cultural Networks Pages Redesign (`/cultural-networks/districts` & `/cultural-networks/partners`)**: Redesigned both network list pages to use homepage-style cards grid layout. On `/cultural-networks/districts`, added an interactive **District Minimap** section placed at the bottom of the page covering all 18 districts, sorted districts strictly by district code (`5701`, `5702`, ...), and normalized district names to prevent duplicate "อำเภอ" prefixes.
+- **Cultural Networks Navigation & Architecture**: ปรับเปลี่ยนเมนูบน Navbar จากเดิม "เครือข่ายอำเภอ" เป็น **"เครือข่ายทางวัฒนธรรม"** (`/cultural-networks`) พร้อม Submenu 2 รายการ ได้แก่ "สภาวัฒนธรรมอำเภอ" (`/cultural-networks/districts`) และ "เครือข่ายองค์กรภาคีวัฒนธรรม" (`/cultural-networks/partners`) พร้อมตั้งค่า Redirect จาก URL เดิม `/districts` ไร้รอยต่อ
+- **New Cultural Partner Collections & Admin Columns (Payload CMS)**: เพิ่ม 3 คอลเลกชันใหม่ใน CMS ได้แก่ `cultural-partners`, `cultural-partner-members`, และ `cultural-partner-positions` พร้อมกำหนด `defaultColumns` ในตาราง Admin (`/admin`) สำหรับทุกคอลเลกชัน เพื่อให้แสดงผลตารางข้อมูลได้อย่างชัดเจนและสมบูรณ์แบบในส่วน Backend
+- **Provincial Board Multi-Source Integration**: ปรับปรุงคอลเลกชัน `provincial-board` Backend และหน้า `/about/board` Frontend ให้ดึงข้อมูล **ทั้งประธานสภาวัฒนธรรมอำเภอ (18 อำเภอ) และประธาน/ผู้นำเครือข่ายองค์กรภาคีวัฒนธรรม** มาเรนเดอร์ร่วมกันเป็นกรรมการจังหวัด (Level 4) โดยอัตโนมัติ
+- **Seeder Integration & Sample Data**: เพิ่มข้อมูลตั้งต้นองค์กรภาคีวัฒนธรรม 8 องค์กรครอบคลุมหลายสาขาวัฒนธรรม (ขัวศิลปะ, มรดกเมือง, ปราชญ์ชาวบ้าน, ดนตรีล้านนา, พิพิธภัณฑ์ท้องถิ่น, ชาติพันธุ์, ผ้าทอหัตกรรม, เยาวชนสร้างสรรค์) พร้อมรายนามประธาน/ผู้นำองค์กรผูกโยงเข้ากับระบบคณะกรรมการจังหวัดใน `/api/seed` และหน้า `/cultural-networks/partners`
+- **Pre-Deploy Verification Audit**: ผ่านการตรวจสอบระบบ Pre-deploy Checklist คุณภาพอย่างครบถ้วน Linting (`npm run lint`), TypeScript Static Analysis (`npm run typecheck`), Master Checklist Audit (`python .agent/scripts/checklist.py`), และ Next.js Production Build (`npm run build`) สำเร็จ 100% พร้อมใช้งานจริงบน Production
+- **Production Deployment Package**: จัดทำคู่มือและไฟล์กำหนดค่าสำหรับการ Deploy ผลงาน (`docs/01_Project_Core/Deployment_Guide.md`) ครอบคลุมการตั้งค่า Environment Variables (`.env.production`), ตัวเลือกการ Deploy (Vercel Cloud & Docker Container), และขั้นตอนเรียกใช้ Seeder `/api/seed` หลัง Deploy
+
 - **Year Grouping UX**: ปรับปรุงหน้าทำเนียบรางวัลทั้ง 3 กลุ่ม (คนดีศรีเชียงราย, ครูภูมิผญาเมืองเชียงราย, ยุวชนวัฒนธรรม) ให้แสดงรายการปี พ.ศ. (แบบ Option A) ก่อนเป็นอันดับแรก โดยคำนวณจำนวนผู้ได้รับรางวัล/ผลงานเด่นในแต่ละปี พร้อมข้อมูลพิธีการ (สถานที่และวันที่) จากฐานข้อมูล
 - **Award Badge Layout & Header Refinement**: เปลี่ยนไอคอนรูปถ้วยรางวัล `🏆` ให้เป็นชื่อรางวัลในรูปแบบชิป ปรับเอาหัวข้อ "ทำเนียบตามปี พ.ศ..." ออกในหน้าเลือกปี และปรับข้อความในหน้ารายปีให้อยู่ในบรรทัดเดียวกันในรูปแบบ `ชื่อรางวัล (มี X รายการ ในปี พ.ศ. YEAR)` พร้อมเปลี่ยนคำว่า "พบ X รายการ" เป็น "มี X รายการ" และระบุจำนวนครูภูมิผญาให้เป็น "ผู้ได้รับรางวัล"
 - **Navigation & Filtering**: เพิ่มปุ่มย้อนกลับไปหน้าเลือกปีเมื่อเลือกปี พ.ศ. เรียบร้อยแล้ว และติดตั้งระบบ Search Override ให้สลับมาแสดงข้อมูลทุกปีโดยอัตโนมัติหากผู้ใช้งานกรอกช่องค้นหาเพื่อเพิ่มความสะดวกในการค้นหาข้อมูล

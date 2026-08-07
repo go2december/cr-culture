@@ -27,6 +27,9 @@ import { WisdomCategories } from './collections/WisdomCategories'
 import { WisdomAwards } from './collections/WisdomAwards'
 import { YouthAwardCategories } from './collections/YouthAwardCategories'
 import { Prefixes } from './collections/Prefixes'
+import { CulturalPartnerPositions } from './collections/CulturalPartnerPositions'
+import { CulturalPartners } from './collections/CulturalPartners'
+import { CulturalPartnerMembers } from './collections/CulturalPartnerMembers'
 
 
 // Globals
@@ -91,6 +94,9 @@ export default buildConfig({
         WisdomAwards,
         YouthAwardCategories,
         Prefixes,
+        CulturalPartnerPositions,
+        CulturalPartners,
+        CulturalPartnerMembers,
     ],
     globals: [
         AboutPage,

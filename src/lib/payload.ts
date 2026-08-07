@@ -13,6 +13,9 @@ import {
   mapDistrictChairman,
   mapDistrictMember,
   mapDistrictSummary,
+  mapPartnerSummary,
+  mapPartnerMember,
+  mapPartnerChairman,
   mapHeritage,
   mapInstitution,
   mapKhonDeeAward,
@@ -29,6 +32,8 @@ import {
   type RawBoardMember,
   type RawDistrictMember,
   type RawDistrictSummary,
+  type RawPartnerMember,
+  type RawPartnerSummary,
   type RawHeritage,
   type RawInstitution,
   type RawKhonDeeAward,
@@ -58,7 +63,7 @@ type FindResponse<T> = {
 
 type QueryWhere = Record<string, unknown>
 
-type CollectionSlug = 'provincial-board' | 'districts' | 'district-members' | 'activities' | 'heritage-blog' | 'tags' | 'news' | 'award-years' | 'award-categories' | 'khon-dee-awards' | 'institutions' | 'awardees' | 'youth-award-histories' | 'wisdom-categories' | 'wisdom-awards' | 'youth-award-categories'
+type CollectionSlug = 'provincial-board' | 'districts' | 'district-members' | 'cultural-partners' | 'cultural-partner-members' | 'cultural-partner-positions' | 'activities' | 'heritage-blog' | 'tags' | 'news' | 'award-years' | 'award-categories' | 'khon-dee-awards' | 'institutions' | 'awardees' | 'youth-award-histories' | 'wisdom-categories' | 'wisdom-awards' | 'youth-award-categories'
 
 type GlobalSlug = 'about-page' | 'page-heroes'
 
@@ -205,6 +210,61 @@ export const getDistrictMembers = cache(async (districtId: string) => {
     sort: 'order',
     depth: 2,
   }, mapDistrictMember)
+  return response.docs
+})
+
+/**
+ * ดึงข้อมูลเครือข่ายองค์กรภาคีวัฒนธรรมทั้งหมด
+ */
+export const getCulturalPartners = cache(async () => {
+  const response = await findMappedDocs<RawPartnerSummary, PublicDistrictSummary>('cultural-partners', {
+    limit: 100,
+    sort: 'order',
+    depth: 1,
+  }, mapPartnerSummary)
+  return response.docs
+})
+
+/**
+ * ดึงข้อมูลเครือข่ายองค์กรภาคีวัฒนธรรมเจาะจงด้วย slug
+ */
+export const getCulturalPartnerBySlug = cache(async (slug: string) => {
+  return await findMappedOne<RawPartnerSummary, PublicDistrictSummary>('cultural-partners', {
+    slug: {
+      equals: slug,
+    },
+  }, 1, mapPartnerSummary)
+})
+
+/**
+ * ดึงกรรมการเครือข่ายองค์กรภาคีวัฒนธรรมแบบเจาะจงองค์กร
+ */
+export const getCulturalPartnerMembers = cache(async (partnerId: string) => {
+  const response = await findMappedDocs<RawPartnerMember, PublicDistrictMember>('cultural-partner-members', {
+    where: {
+      partner: {
+        equals: partnerId,
+      },
+    },
+    limit: 100,
+    sort: 'order',
+    depth: 2,
+  }, mapPartnerMember)
+  return response.docs
+})
+
+/**
+ * ดึงประธาน/ผู้นำเครือข่ายองค์กรภาคีวัฒนธรรม (position.level = 1)
+ */
+export const getCulturalPartnerChairmen = cache(async () => {
+  const response = await findMappedDocs<RawPartnerMember, PublicDistrictChairman>('cultural-partner-members', {
+    where: {
+      'position.level': { equals: 1 },
+    },
+    limit: 100,
+    sort: 'positionOrder',
+    depth: 2,
+  }, mapPartnerChairman)
   return response.docs
 })
 
