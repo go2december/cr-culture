@@ -141,6 +141,8 @@ export default async function BoardPage() {
         }
     })
 
+    const coordinators = [...districtCoordinators, ...partnerCoordinators, ...manualCoordinators];
+
     const secretaryMembers = resolvedBoardMembers.filter((m) => m.positionLevel === 5 || (m.positionLevel === 4 && m.position.includes('เลขานุการ')))
 
     const hero = pageHeroes?.aboutBoard || {}
@@ -289,80 +291,35 @@ export default async function BoardPage() {
                 </>
                 )}
 
-                {/* 4. กรรมการ (แยกเป็น 2 แบบ) */}
-                {(districtCoordinators.length > 0 || partnerCoordinators.length > 0 || manualCoordinators.length > 0) && (
+                {/* 4. กรรมการ */}
+                {coordinators.length > 0 && (
                 <>
                     <div className="text-center mb-12">
-                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Board Members & Network Leaders</span>
-                        <h2 className="section-header mb-0! text-primary font-display">กรรมการสภาวัฒนธรรมจังหวัด</h2>
+                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Board Members</span>
+                        <h2 className="section-header mb-0! text-primary font-display">กรรมการ</h2>
                     </div>
 
-                    {/* แบบที่ 1: กรรมการ (ประธานสภาวัฒนธรรมอำเภอ) */}
-                    {districtCoordinators.length > 0 && (
-                        <div className="mb-16">
-                            <div className="flex items-center gap-3 mb-8 pb-3 border-b border-base-200 max-w-5xl mx-auto">
-                                <span className="w-3.5 h-3.5 rounded-full bg-primary" />
-                                <h3 className="text-xl font-bold text-primary font-display">กรรมการ (ประธานสภาวัฒนธรรมประจำอำเภอ 18 อำเภอ)</h3>
+                    <div className="flex flex-wrap justify-center gap-5 mb-20 max-w-5xl mx-auto">
+                        {coordinators.map((member, i: number) => (
+                            <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center w-full sm:w-[calc(50%-10px)] md:w-[calc(25%-15px)] reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
+                                <div className="mb-6 transition-transform duration-300">
+                                    <MemberAvatar image={member.image} name={member.name} size="md" />
+                                </div>
+                                <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
+                                {member.partnerSlug ? (
+                                    <Link href={`/cultural-networks/partners/${member.partnerSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                        {member.position}
+                                    </Link>
+                                ) : member.districtSlug ? (
+                                    <Link href={`/cultural-networks/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                        {member.position}
+                                    </Link>
+                                ) : (
+                                    <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
+                                )}
                             </div>
-                            <div className="flex flex-wrap justify-center gap-5 max-w-5xl mx-auto">
-                                {districtCoordinators.map((member, i: number) => (
-                                    <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center w-full sm:w-[calc(50%-10px)] md:w-[calc(25%-15px)] reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
-                                        <div className="mb-6 transition-transform duration-300">
-                                            <MemberAvatar image={member.image} name={member.name} size="md" />
-                                        </div>
-                                        <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                        <Link href={`/cultural-networks/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
-                                            {member.position}
-                                        </Link>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* แบบที่ 2: กรรมการ (ประธาน/ผู้นำเครือข่ายองค์กรภาคีวัฒนธรรม) */}
-                    {partnerCoordinators.length > 0 && (
-                        <div className="mb-16">
-                            <div className="flex items-center gap-3 mb-8 pb-3 border-b border-base-200 max-w-5xl mx-auto">
-                                <span className="w-3.5 h-3.5 rounded-full bg-secondary" />
-                                <h3 className="text-xl font-bold text-primary font-display">กรรมการ (ประธานเครือข่ายองค์กรภาคีวัฒนธรรม)</h3>
-                            </div>
-                            <div className="flex flex-wrap justify-center gap-5 max-w-5xl mx-auto">
-                                {partnerCoordinators.map((member, i: number) => (
-                                    <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center w-full sm:w-[calc(50%-10px)] md:w-[calc(25%-15px)] reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
-                                        <div className="mb-6 transition-transform duration-300">
-                                            <MemberAvatar image={member.image} name={member.name} size="md" />
-                                        </div>
-                                        <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                        <Link href={`/cultural-networks/partners/${member.partnerSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
-                                            {member.position}
-                                        </Link>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* กรรมการป้อนข้อมูลเอง (ถ้ามี) */}
-                    {manualCoordinators.length > 0 && (
-                        <div className="mb-16">
-                            <div className="flex items-center gap-3 mb-8 pb-3 border-b border-base-200 max-w-5xl mx-auto">
-                                <span className="w-3.5 h-3.5 rounded-full bg-accent" />
-                                <h3 className="text-xl font-bold text-primary font-display">กรรมการสภาวัฒนธรรมจังหวัด (ผู้ทรงคุณวุฒิ)</h3>
-                            </div>
-                            <div className="flex flex-wrap justify-center gap-5 max-w-5xl mx-auto">
-                                {manualCoordinators.map((member, i: number) => (
-                                    <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center w-full sm:w-[calc(50%-10px)] md:w-[calc(25%-15px)] reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
-                                        <div className="mb-6 transition-transform duration-300">
-                                            <MemberAvatar image={member.image} name={member.name} size="md" />
-                                        </div>
-                                        <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                        <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                        ))}
+                    </div>
                 </>
                 )}
 
