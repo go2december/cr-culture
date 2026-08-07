@@ -259,12 +259,12 @@ export default async function BoardPage() {
                 </>
                 )}
 
-                {/* 3. คณะกรรมการ / หัวหน้าฝ่าย */}
+                {/* 3. คณะกรรมการบริหารและประสานงาน */}
                 {committees.length > 0 && (
                 <>
                     <div className="text-center mb-12">
                         <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Executive Committee</span>
-                        <h2 className="section-header mb-0! text-primary font-display">กรรมการและหัวหน้าฝ่ายงาน</h2>
+                        <h2 className="section-header mb-0! text-primary font-display">คณะกรรมการบริหารและประสานงาน</h2>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-20 max-w-5xl mx-auto">
