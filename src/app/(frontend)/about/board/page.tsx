@@ -59,8 +59,7 @@ export default async function BoardPage() {
     const districtChairmenList: PublicDistrictChairman[] = (await getDistrictChairmen() || [])
         .sort((a, b) => (a.districtCode || '').localeCompare(b.districtCode || ''));
 
-    // รวมทั้งประธานสภาวัฒนธรรมอำเภอ และประธาน/ผู้นำองค์กรภาคีวัฒนธรรม เข้าด้วยกันในระดับกรรมการ (Level 4)
-    const networkChairmenList = [...districtChairmenList, ...partnerChairmenList]
+
 
     const resolvedBoardMembers = orderedBoardMembers.map((member) => {
         if (member.sourceType === 'partner' && member.partner?.slug) {
@@ -104,36 +103,43 @@ export default async function BoardPage() {
     const viceChairmen = resolvedBoardMembers.filter((m) => m.positionLevel === 2)
     const committees = resolvedBoardMembers.filter((m) => m.positionLevel === 3)
     
-    // ดึงข้อมูลจากตำแหน่งประธานองค์กรภาคีวัฒนธรรม (หรือสภาอำเภอ fallback) มาเป็นกรรมการสภาวัฒนธรรมจังหวัด
+    // ดึงข้อมูลจากตำแหน่งประธานองค์กรภาคีวัฒนธรรม และสภาอำเภอ มาเป็นกรรมการสภาวัฒนธรรมจังหวัด (แยกเป็น 2 กลุ่มอย่างชัดเจน)
     const manualCoordinators = resolvedBoardMembers.filter(
         (m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ') && m.sourceType === 'manual'
     )
     const dbNetworkCoordinators = resolvedBoardMembers.filter(
         (m) => m.positionLevel === 4 && !m.position.includes('เลขานุการ') && (m.sourceType === 'partner' || m.sourceType === 'district')
     )
-    const resolvedNetworkCoordinators = networkChairmenList.map((chairmanItem, idx) => {
-        const dbOverride = dbNetworkCoordinators.find((m) => (m.partner?.slug || m.district?.slug) === chairmanItem.districtSlug)
-        if (dbOverride) {
-            const displayPosition = dbOverride.position === 'กรรมการ' ? chairmanItem.position : (dbOverride.position || chairmanItem.position)
-            return {
-                name: chairmanItem.name,
-                position: displayPosition,
-                positionLevel: 4,
-                order: (dbOverride.order && dbOverride.order !== 99) ? dbOverride.order : (idx + 1),
-                image: chairmanItem.image,
-                districtSlug: chairmanItem.districtSlug,
-            }
-        }
+
+    // แบบที่ 1: กรรมการ (ประธานสภาวัฒนธรรมอำเภอ 18 อำเภอ)
+    const districtCoordinators = districtChairmenList.map((districtItem, idx) => {
+        const dbOverride = dbNetworkCoordinators.find((m) => m.district?.slug === districtItem.districtSlug)
+        const displayPosition = dbOverride && dbOverride.position !== 'กรรมการ' ? dbOverride.position : districtItem.position
         return {
-            name: chairmanItem.name,
-            position: chairmanItem.position,
+            name: districtItem.name,
+            position: displayPosition,
             positionLevel: 4,
-            order: idx + 1,
-            image: chairmanItem.image,
-            districtSlug: chairmanItem.districtSlug,
+            order: (dbOverride?.order && dbOverride.order !== 99) ? dbOverride.order : (idx + 1),
+            image: districtItem.image,
+            districtSlug: districtItem.districtSlug,
+            partnerSlug: null as string | null,
         }
     })
-    const coordinators = [...resolvedNetworkCoordinators, ...manualCoordinators];
+
+    // แบบที่ 2: กรรมการ (ประธาน/ผู้นำเครือข่ายองค์กรภาคีวัฒนธรรม)
+    const partnerCoordinators = partnerChairmenList.map((partnerItem, idx) => {
+        const dbOverride = dbNetworkCoordinators.find((m) => m.partner?.slug === partnerItem.districtSlug)
+        const displayPosition = dbOverride && dbOverride.position !== 'กรรมการ' ? dbOverride.position : partnerItem.position
+        return {
+            name: partnerItem.name,
+            position: displayPosition,
+            positionLevel: 4,
+            order: (dbOverride?.order && dbOverride.order !== 99) ? dbOverride.order : (idx + 1 + districtChairmenList.length),
+            image: partnerItem.image,
+            districtSlug: null as string | null,
+            partnerSlug: partnerItem.districtSlug,
+        }
+    })
 
     const secretaryMembers = resolvedBoardMembers.filter((m) => m.positionLevel === 5 || (m.positionLevel === 4 && m.position.includes('เลขานุการ')))
 
@@ -218,37 +224,13 @@ export default async function BoardPage() {
                         <h2 className="text-3xl font-bold text-primary font-display">ประธานสภาวัฒนธรรม</h2>
                     </div>
 
-                    <div className="group relative bg-white rounded-3xl p-10 lg:p-12 w-full max-w-xl border border-base-200 shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:shadow-2xl hover:shadow-secondary/5 hover:border-secondary/30 transition-all duration-500 text-center reveal-soft">
-                        <div className="absolute inset-0 bg-linear-to-b from-secondary/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <div className="relative z-10 flex flex-col items-center">
-                            <div className="mb-8 transition-transform duration-500">
-                                <div className="w-40 h-40 rounded-full bg-linear-to-br from-primary to-secondary p-1 shadow-xl">
-                                    <div className="relative w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden border-4 border-white">
-                                        {chairman.image ? (
-                                            <CmsImage src={chairman.image} alt={chairman.name} fill sizes="160px" className="object-cover" priority />
-                                        ) : (
-                                            <div className="w-full h-full bg-slate-50 flex items-center justify-center text-primary/30">
-                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                            <h3 className="text-3xl font-bold mb-3 text-primary tracking-tight font-display group-hover:text-primary-dark transition-colors">
-                                {chairman.name}
-                            </h3>
-                            {chairman.districtSlug ? (
-                                <Link href={`/districts/${chairman.districtSlug}`} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/20 text-secondary-dark font-medium text-sm hover:bg-secondary/30 transition-colors hover:underline">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
-                                    {chairman.position}
-                                </Link>
-                            ) : (
-                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/20 text-secondary-dark font-medium text-sm">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
-                                    {chairman.position}
-                                </div>
-                            )}
+                    <div className="bg-white rounded-3xl p-8 md:p-10 border border-base-200 shadow-lg hover:shadow-xl transition-all duration-300 text-center flex flex-col items-center max-w-md w-full relative overflow-hidden group reveal-soft">
+                        <div className="absolute top-0 left-0 right-0 h-2 bg-linear-to-r from-primary via-secondary to-accent" />
+                        <div className="mb-6 transition-transform duration-300 group-hover:scale-105">
+                            <MemberAvatar image={chairman.image} name={chairman.name} size="lg" />
                         </div>
+                        <h3 className="text-2xl font-bold mb-2 text-primary font-display">{chairman.name}</h3>
+                        <p className="text-secondary-dark font-medium text-lg mb-4">{chairman.position}</p>
                     </div>
                 </div>
                 )}
@@ -257,36 +239,30 @@ export default async function BoardPage() {
                 {viceChairmen.length > 0 && (
                 <>
                     <div className="text-center mb-12">
-                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Vice Chairman</span>
-                        <h2 className="section-header mb-0! text-primary font-display">รองประธาน</h2>
+                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Vice Chairmen</span>
+                        <h2 className="section-header mb-0! text-primary font-display">รองประธานสภาวัฒนธรรม</h2>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-20 max-w-5xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20 max-w-5xl mx-auto">
                         {viceChairmen.map((member, i: number) => (
-                            <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
+                            <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.08)] hover:border-secondary/40 transition-all duration-300 text-center flex flex-col items-center reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
                                 <div className="mb-6 transition-transform duration-300">
                                     <MemberAvatar image={member.image} name={member.name} size="md" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                {member.districtSlug ? (
-                                    <Link href={`/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
-                                        {member.position}
-                                    </Link>
-                                ) : (
-                                    <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
-                                )}
+                                <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
                             </div>
                         ))}
                     </div>
                 </>
                 )}
 
-                {/* 3. กรรมการฝ่ายธุรการและประสานงาน */}
+                {/* 3. คณะกรรมการ / หัวหน้าฝ่าย */}
                 {committees.length > 0 && (
                 <>
                     <div className="text-center mb-12">
-                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Administrative & Coordination</span>
-                        <h2 className="section-header mb-0! text-primary font-display">กรรมการฝ่ายธุรการและประสานงาน</h2>
+                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Executive Committee</span>
+                        <h2 className="section-header mb-0! text-primary font-display">กรรมการและหัวหน้าฝ่ายงาน</h2>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-20 max-w-5xl mx-auto">
@@ -296,8 +272,12 @@ export default async function BoardPage() {
                                     <MemberAvatar image={member.image} name={member.name} size="md" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                {member.districtSlug ? (
-                                    <Link href={`/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                {member.partnerSlug ? (
+                                    <Link href={`/cultural-networks/partners/${member.partnerSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                        {member.position}
+                                    </Link>
+                                ) : member.districtSlug ? (
+                                    <Link href={`/cultural-networks/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
                                         {member.position}
                                     </Link>
                                 ) : (
@@ -309,31 +289,80 @@ export default async function BoardPage() {
                 </>
                 )}
 
-                {/* 4. กรรมการ */}
-                {coordinators.length > 0 && (
+                {/* 4. กรรมการ (แยกเป็น 2 แบบ) */}
+                {(districtCoordinators.length > 0 || partnerCoordinators.length > 0 || manualCoordinators.length > 0) && (
                 <>
                     <div className="text-center mb-12">
-                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">กรรมการ</span>
-                        <h2 className="section-header mb-0! text-primary font-display">กรรมการ</h2>
+                        <span className="text-secondary font-semibold tracking-widest text-sm uppercase mb-3 block">Board Members & Network Leaders</span>
+                        <h2 className="section-header mb-0! text-primary font-display">กรรมการสภาวัฒนธรรมจังหวัด</h2>
                     </div>
 
-                    <div className="flex flex-wrap justify-center gap-5 mb-20 max-w-5xl mx-auto">
-                        {coordinators.map((member, i: number) => (
-                            <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center w-full sm:w-[calc(50%-10px)] md:w-[calc(25%-15px)] reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
-                                <div className="mb-6 transition-transform duration-300">
-                                    <MemberAvatar image={member.image} name={member.name} size="md" />
-                                </div>
-                                <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                {member.districtSlug ? (
-                                    <Link href={`/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
-                                        {member.position}
-                                    </Link>
-                                ) : (
-                                    <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
-                                )}
+                    {/* แบบที่ 1: กรรมการ (ประธานสภาวัฒนธรรมอำเภอ) */}
+                    {districtCoordinators.length > 0 && (
+                        <div className="mb-16">
+                            <div className="flex items-center gap-3 mb-8 pb-3 border-b border-base-200 max-w-5xl mx-auto">
+                                <span className="w-3.5 h-3.5 rounded-full bg-primary" />
+                                <h3 className="text-xl font-bold text-primary font-display">กรรมการ (ประธานสภาวัฒนธรรมประจำอำเภอ 18 อำเภอ)</h3>
                             </div>
-                        ))}
-                    </div>
+                            <div className="flex flex-wrap justify-center gap-5 max-w-5xl mx-auto">
+                                {districtCoordinators.map((member, i: number) => (
+                                    <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center w-full sm:w-[calc(50%-10px)] md:w-[calc(25%-15px)] reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
+                                        <div className="mb-6 transition-transform duration-300">
+                                            <MemberAvatar image={member.image} name={member.name} size="md" />
+                                        </div>
+                                        <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
+                                        <Link href={`/cultural-networks/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                            {member.position}
+                                        </Link>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* แบบที่ 2: กรรมการ (ประธาน/ผู้นำเครือข่ายองค์กรภาคีวัฒนธรรม) */}
+                    {partnerCoordinators.length > 0 && (
+                        <div className="mb-16">
+                            <div className="flex items-center gap-3 mb-8 pb-3 border-b border-base-200 max-w-5xl mx-auto">
+                                <span className="w-3.5 h-3.5 rounded-full bg-secondary" />
+                                <h3 className="text-xl font-bold text-primary font-display">กรรมการ (ประธาน/ผู้นำเครือข่ายองค์กรภาคีวัฒนธรรม)</h3>
+                            </div>
+                            <div className="flex flex-wrap justify-center gap-5 max-w-5xl mx-auto">
+                                {partnerCoordinators.map((member, i: number) => (
+                                    <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center w-full sm:w-[calc(50%-10px)] md:w-[calc(25%-15px)] reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
+                                        <div className="mb-6 transition-transform duration-300">
+                                            <MemberAvatar image={member.image} name={member.name} size="md" />
+                                        </div>
+                                        <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
+                                        <Link href={`/cultural-networks/partners/${member.partnerSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                            {member.position}
+                                        </Link>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* กรรมการป้อนข้อมูลเอง (ถ้ามี) */}
+                    {manualCoordinators.length > 0 && (
+                        <div className="mb-16">
+                            <div className="flex items-center gap-3 mb-8 pb-3 border-b border-base-200 max-w-5xl mx-auto">
+                                <span className="w-3.5 h-3.5 rounded-full bg-accent" />
+                                <h3 className="text-xl font-bold text-primary font-display">กรรมการสภาวัฒนธรรมจังหวัด (ผู้ทรงคุณวุฒิ)</h3>
+                            </div>
+                            <div className="flex flex-wrap justify-center gap-5 max-w-5xl mx-auto">
+                                {manualCoordinators.map((member, i: number) => (
+                                    <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center w-full sm:w-[calc(50%-10px)] md:w-[calc(25%-15px)] reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
+                                        <div className="mb-6 transition-transform duration-300">
+                                            <MemberAvatar image={member.image} name={member.name} size="md" />
+                                        </div>
+                                        <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
+                                        <p className="text-sm font-medium text-secondary-dark">{member.position}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </>
                 )}
 
@@ -352,8 +381,12 @@ export default async function BoardPage() {
                                     <MemberAvatar image={member.image} name={member.name} size="md" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2 text-base-content group-hover:text-primary transition-colors font-display">{member.name}</h3>
-                                {member.districtSlug ? (
-                                    <Link href={`/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                {member.partnerSlug ? (
+                                    <Link href={`/cultural-networks/partners/${member.partnerSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
+                                        {member.position}
+                                    </Link>
+                                ) : member.districtSlug ? (
+                                    <Link href={`/cultural-networks/districts/${member.districtSlug}`} className="text-sm font-medium text-secondary hover:text-secondary-dark transition-colors hover:underline">
                                         {member.position}
                                     </Link>
                                 ) : (
