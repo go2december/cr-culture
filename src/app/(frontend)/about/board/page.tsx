@@ -267,9 +267,9 @@ export default async function BoardPage() {
                         <h2 className="section-header mb-0! text-primary font-display">คณะกรรมการบริหารและประสานงาน</h2>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-20 max-w-5xl mx-auto">
+                    <div className="flex flex-wrap justify-center gap-5 mb-20 max-w-5xl mx-auto">
                         {committees.map((member, i: number) => (
-                            <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
+                            <div key={i} className={`group bg-white rounded-3xl p-6 border border-base-200 shadow-sm hover:shadow-[0_8px_30px_rgb(212,175,55,0.06)] hover:border-secondary/30 transition-all duration-300 text-center flex flex-col items-center w-full sm:w-[calc(50%-10px)] md:w-[calc(25%-15px)] reveal-soft ${i % 4 === 0 ? 'stagger-1' : i % 4 === 1 ? 'stagger-2' : i % 4 === 2 ? 'stagger-3' : 'stagger-4'}`}>
                                 <div className="mb-6 transition-transform duration-300">
                                     <MemberAvatar image={member.image} name={member.name} size="md" />
                                 </div>
