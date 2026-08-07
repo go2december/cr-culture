@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
     }
 
     const partnerPositions = [
-      { title: 'ประธาน/ผู้นำองค์กรภาคีวัฒนธรรม', level: 1 },
+      { title: 'ประธานเครือข่ายองค์กรภาคีวัฒนธรรม', level: 1 },
       { title: 'รองประธานองค์กรภาคีวัฒนธรรม', level: 2 },
       { title: 'กรรมการองค์กรภาคี', level: 3 },
       { title: 'เลขานุการองค์กรภาคี', level: 4 },
@@ -259,7 +259,7 @@ export async function GET(request: NextRequest) {
           collection: 'cultural-partner-members',
           data: {
             name: p.chairmanName,
-            position: partnerPosIds['ประธาน/ผู้นำองค์กรภาคีวัฒนธรรม'],
+            position: partnerPosIds['ประธานเครือข่ายองค์กรภาคีวัฒนธรรม'],
             positionOrder: 1,
             partner: pId,
             isActive: true,

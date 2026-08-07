@@ -375,10 +375,16 @@ export const mapPartnerMember = (doc: RawPartnerMember): PublicDistrictMember =>
 
 export const mapPartnerChairman = (doc: RawPartnerMember): PublicDistrictChairman => {
     const partner = normalizeRelationRef(doc.partner)
+    const partnerName = partner?.name || ''
+    const displayPosition = partnerName
+        ? (partnerName.startsWith('สมาคม') || partnerName.startsWith('ชมรม') || partnerName.startsWith('มูลนิธิ') || partnerName.startsWith('เครือข่าย')
+            ? `ประธาน${partnerName}`
+            : `ประธานเครือข่าย${partnerName}`)
+        : 'ประธานเครือข่ายองค์กรภาคีวัฒนธรรม'
 
     return {
         name: doc.name,
-        position: `ประธาน/ผู้นำองค์กร ${partner?.name || 'องค์กรภาคีวัฒนธรรม'}`,
+        position: displayPosition,
         districtName: partner?.name || '-',
         districtSlug: partner?.slug || '#',
         districtCode: partner?.code || null,

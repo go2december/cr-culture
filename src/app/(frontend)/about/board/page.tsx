@@ -325,7 +325,7 @@ export default async function BoardPage() {
                         <div className="mb-16">
                             <div className="flex items-center gap-3 mb-8 pb-3 border-b border-base-200 max-w-5xl mx-auto">
                                 <span className="w-3.5 h-3.5 rounded-full bg-secondary" />
-                                <h3 className="text-xl font-bold text-primary font-display">กรรมการ (ประธาน/ผู้นำเครือข่ายองค์กรภาคีวัฒนธรรม)</h3>
+                                <h3 className="text-xl font-bold text-primary font-display">กรรมการ (ประธานเครือข่ายองค์กรภาคีวัฒนธรรม)</h3>
                             </div>
                             <div className="flex flex-wrap justify-center gap-5 max-w-5xl mx-auto">
                                 {partnerCoordinators.map((member, i: number) => (

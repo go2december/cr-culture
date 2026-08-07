@@ -22,7 +22,7 @@ export const CulturalPartnerPositions: CollectionConfig = {
         {
             name: 'level',
             type: 'number',
-            label: 'ระดับความสำคัญ (1 คือสูงสุด เช่น ประธาน/ผู้นำองค์กร)',
+            label: 'ระดับความสำคัญ (1 คือสูงสุด เช่น ประธานเครือข่ายองค์กรภาคี)',
             defaultValue: 99,
             admin: {
                 description: 'ใช้สำหรับเรียงลำดับการแสดงผล เช่น ประธาน = 1, รองประธาน = 2',
