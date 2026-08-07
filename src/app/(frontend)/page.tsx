@@ -67,7 +67,7 @@ export default async function Home() {
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-5">
-                                <Link href="/districts" className="group relative w-full sm:w-auto overflow-hidden rounded-full bg-linear-to-r from-[#A03C3C] to-[#8A2B2B] px-10 py-5 text-center text-lg font-bold text-white shadow-lg transition-colors hover:brightness-110 hover:shadow-xl hover:shadow-[#A03C3C]/30">
+                                <Link href="/cultural-networks/districts" className="group relative w-full sm:w-auto overflow-hidden rounded-full bg-linear-to-r from-[#A03C3C] to-[#8A2B2B] px-10 py-5 text-center text-lg font-bold text-white shadow-lg transition-colors hover:brightness-110 hover:shadow-xl hover:shadow-[#A03C3C]/30">
                                     <span className="relative z-10 flex items-center justify-center gap-3">
                                         เครือข่าย 18 อำเภอ
                                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1.5 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
@@ -356,7 +356,7 @@ export default async function Home() {
                         {publicDistricts.length > 0 ? publicDistricts.map((district, i) => (
                             <Link
                                 key={district.id || i}
-                                href={`/districts/${district.slug || district.name.toLowerCase().replace(/\s+/g, '-')}`}
+                                href={`/cultural-networks/districts/${district.slug || district.name.toLowerCase().replace(/\s+/g, '-')}`}
                                 className="group bg-slate-50 rounded-xl border border-base-200/80 p-5 flex flex-col items-center gap-4 hover:bg-white hover:border-secondary/50 hover:shadow-[0_8px_30px_rgb(212,175,55,0.1)] transition-all duration-300 relative overflow-hidden"
                             >
                                 <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-secondary-light to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
