@@ -23,7 +23,7 @@ export default async function CulturalPartnersPage() {
     const hero = pageHeroes?.districts || {}
     const heroMedia = hero.heroImage as MediaLike
     const heroImageUrl = resolveMediaUrl(heroMedia)
-    const heroImageAlt = resolveMediaAlt(heroMedia, 'ภาพพื้นหลังเครือข่ายองค์กรภาคีวัฒนธรรม')
+    const heroImageAlt = resolveMediaAlt(heroMedia, 'ภาพพื้นหลังเครือข่ายองค์กรทางวัฒนธรรม')
     const hasHeroImage = Boolean(heroImageUrl)
 
     return (
@@ -47,7 +47,7 @@ export default async function CulturalPartnersPage() {
                                     เครือข่ายทางวัฒนธรรม
                                 </div>
                                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight font-display text-white leading-[1.05] drop-shadow-lg reveal-soft stagger-1">
-                                    เครือข่ายองค์กรภาคีวัฒนธรรม
+                                    เครือข่ายองค์กรทางวัฒนธรรม
                                 </h1>
                                 <div className="w-24 h-1 rounded-full bg-linear-to-r from-secondary via-accent/60 to-transparent mb-6 reveal-soft stagger-2" />
                                 <p className="text-lg md:text-xl max-w-3xl font-light leading-relaxed text-white/82 reveal-soft stagger-2">
@@ -69,7 +69,7 @@ export default async function CulturalPartnersPage() {
                                 เครือข่ายทางวัฒนธรรม
                             </div>
                             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight reveal-soft stagger-1 font-display">
-                                เครือข่ายองค์กรภาคีวัฒนธรรม
+                                เครือข่ายองค์กรทางวัฒนธรรม
                             </h1>
                             <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto font-light leading-relaxed reveal-soft stagger-2">
                                 รวมพลังความร่วมมือระหว่างองค์กร สมาคม มูลนิธิ และสถาบันวัฒนธรรมเพื่อขับเคลื่อนมรดกภูมิปัญญาเมืองเชียงราย
@@ -87,7 +87,7 @@ export default async function CulturalPartnersPage() {
                     <ul>
                         <li><Link href="/" className="inline-flex min-h-11 items-center hover:text-primary transition-colors">หน้าแรก</Link></li>
                         <li className="text-base-content/60">เครือข่ายทางวัฒนธรรม</li>
-                        <li className="text-primary font-medium">เครือข่ายองค์กรภาคีวัฒนธรรม</li>
+                        <li className="text-primary font-medium">เครือข่ายองค์กรทางวัฒนธรรม</li>
                     </ul>
                 </div>
             </div>
@@ -123,7 +123,7 @@ export default async function CulturalPartnersPage() {
                             </div>
 
                             <div className="pt-4 border-t border-base-100 w-full flex items-center justify-center gap-1.5 text-xs font-bold text-primary group-hover:text-accent transition-colors">
-                                <span className="group-hover:underline underline-offset-4">ดูข้อมูลองค์กรภาคี</span>
+                                <span className="group-hover:underline underline-offset-4">ข้อมูลองค์กร</span>
                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform">
                                     <path d="M5 12h14" />
                                     <path d="m12 5 7 7-7 7" />

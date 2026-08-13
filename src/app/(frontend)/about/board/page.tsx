@@ -126,7 +126,7 @@ export default async function BoardPage() {
         }
     })
 
-    // แบบที่ 2: กรรมการ (ประธาน/ผู้นำเครือข่ายองค์กรภาคีวัฒนธรรม)
+    // แบบที่ 2: กรรมการ (ประธาน/ผู้นำเครือข่ายองค์กรทางวัฒนธรรม)
     const partnerCoordinators = partnerChairmenList.map((partnerItem, idx) => {
         const dbOverride = dbNetworkCoordinators.find((m) => m.partner?.slug === partnerItem.districtSlug)
         const displayPosition = dbOverride && dbOverride.position !== 'กรรมการ' ? dbOverride.position : partnerItem.position

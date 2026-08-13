@@ -38,7 +38,7 @@ const menuItems = [
         href: '/cultural-networks/districts',
         submenu: [
             { label: 'สภาวัฒนธรรมอำเภอ', href: '/cultural-networks/districts' },
-            { label: 'เครือข่ายองค์กรภาคีวัฒนธรรม', href: '/cultural-networks/partners' },
+            { label: 'เครือข่ายองค์กรทางวัฒนธรรม', href: '/cultural-networks/partners' },
         ],
     },
     {

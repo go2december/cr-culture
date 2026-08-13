@@ -1,8 +1,16 @@
 ## สถานะปัจจุบัน (อัปเดตทุกครั้งที่หยุดพัฒนา)
 
 ไฟล์นี้เป็นสรุปสถานะสั้นแบบ canonical เพื่อลดข้อมูลซ้ำในโปรเจกต์
-อัปเดตล่าสุด: 7 สิงหาคม 2569
+อัปเดตล่าสุด: 13 สิงหาคม 2569
 
+
+## Recent Work (ปรับชื่อเครือข่ายองค์กรภาคีวัฒนธรรมเป็นเครือข่ายองค์กรทางวัฒนธรรม — 13 สิงหาคม 2569)
+- **Cultural Partner Terminology & UI Button Update**: ปรับแก้ไขข้อความเกี่ยวกับองค์กรภาคีวัฒนธรรมจากเดิม **"เครือข่ายองค์กรภาคีวัฒนธรรม"** เป็น **"เครือข่ายองค์กรทางวัฒนธรรม"** ทั้งหมดทั่วทั้งระบบ เปลี่ยนปุ่มกดบนการ์ดในหน้า `/cultural-networks/partners` จาก **"ดูข้อมูลองค์กรภาคี"** เป็น **"ข้อมูลองค์กร"**, ปรับชื่อป้ายคอลเลกชันระบบหลังบ้าน CMS จาก **"ตำแหน่งกรรมการองค์กรภาคี"** เป็น **"ตำแหน่งกรรมการองค์กร"** (`cultural-partner-positions`), และปรับป้ายคอลเลกชันบุคลากรจาก **"กรรมการองค์กรภาคี"** เป็น **"กรรมการองค์กรทางวัฒนธรรม"** (`cultural-partner-members`)
+- **Pre-Deploy Verification Audit**: ผ่านการตรวจสอบระบบคุณภาพก่อน Deploy สำเร็จครบถ้วน 100%
+  - 🔍 **ESLint**: `npm run lint` PASSED (0 errors)
+  - 📘 **TypeScript**: `npm run typecheck` PASSED (0 errors)
+  - 🏗️ **Production Build**: `npm run build` PASSED (Compiled in 33.6s, all 36 routes generated successfully)
+  - 📋 **Master Checklist Audit**: `python .agent/scripts/checklist.py .` PASSED (All checks passed)
 
 ## Recent Work (ปรับโครงสร้างเครือข่ายทางวัฒนธรรมและคณะกรรมการจังหวัด — 7 สิงหาคม 2569)
 - **Cultural Networks Pages Redesign (`/cultural-networks/districts` & `/cultural-networks/partners`)**: Redesigned both network list pages to use homepage-style cards grid layout. On `/cultural-networks/districts`, added an interactive **District Minimap** section placed at the bottom of the page covering all 18 districts, sorted districts strictly by district code (`5701`, `5702`, ...), and normalized district names to prevent duplicate "อำเภอ" prefixes.

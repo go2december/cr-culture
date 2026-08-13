@@ -5,12 +5,12 @@ export const CulturalPartnerMembers: CollectionConfig = {
     admin: {
         useAsTitle: 'name',
         group: 'บุคลากร',
-        description: 'กรรมการและผู้บริหารเครือข่ายองค์กรภาคีวัฒนธรรม',
+        description: 'กรรมการและผู้บริหารเครือข่ายองค์กรทางวัฒนธรรม',
         defaultColumns: ['name', 'position', 'partner', 'isActive'],
     },
     labels: {
-        singular: 'กรรมการองค์กรภาคี',
-        plural: 'กรรมการองค์กรภาคี',
+        singular: 'กรรมการองค์กรทางวัฒนธรรม',
+        plural: 'กรรมการองค์กรทางวัฒนธรรม',
     },
     fields: [
         {
@@ -27,7 +27,7 @@ export const CulturalPartnerMembers: CollectionConfig = {
             required: true,
             hasMany: false,
             admin: {
-                description: 'เลือกตำแหน่งจากรายการ (สามารถเพิ่มใหม่ได้จากเมนู ตำแหน่งกรรมการองค์กรภาคี)',
+                description: 'เลือกตำแหน่งจากรายการ (สามารถเพิ่มใหม่ได้จากเมนู ตำแหน่งกรรมการองค์กร)',
             },
         },
         {

@@ -5,12 +5,12 @@ export const CulturalPartners: CollectionConfig = {
     admin: {
         useAsTitle: 'name',
         group: 'เครือข่าย',
-        description: 'ข้อมูลเครือข่ายองค์กรภาคีวัฒนธรรม จังหวัดเชียงราย',
+        description: 'ข้อมูลเครือข่ายองค์กรทางวัฒนธรรม จังหวัดเชียงราย',
         defaultColumns: ['name', 'code', 'order', 'isActive'],
     },
     labels: {
         singular: 'องค์กรภาคีวัฒนธรรม',
-        plural: 'เครือข่ายองค์กรภาคีวัฒนธรรม',
+        plural: 'เครือข่ายองค์กรทางวัฒนธรรม',
     },
     fields: [
         {

@@ -380,7 +380,7 @@ export const mapPartnerChairman = (doc: RawPartnerMember): PublicDistrictChairma
         ? (partnerName.startsWith('สมาคม') || partnerName.startsWith('ชมรม') || partnerName.startsWith('มูลนิธิ') || partnerName.startsWith('เครือข่าย')
             ? `ประธาน${partnerName}`
             : `ประธานเครือข่าย${partnerName}`)
-        : 'ประธานเครือข่ายองค์กรภาคีวัฒนธรรม'
+        : 'ประธานเครือข่ายองค์กรทางวัฒนธรรม'
 
     return {
         name: doc.name,

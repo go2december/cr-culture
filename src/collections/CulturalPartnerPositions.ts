@@ -5,11 +5,11 @@ export const CulturalPartnerPositions: CollectionConfig = {
     admin: {
         useAsTitle: 'title',
         group: 'ตั้งค่าระบบ',
-        description: 'จัดการข้อมูลตำแหน่งของคณะกรรมการเครือข่ายองค์กรภาคีวัฒนธรรม',
+        description: 'จัดการข้อมูลตำแหน่งของคณะกรรมการเครือข่ายองค์กรทางวัฒนธรรม',
     },
     labels: {
-        singular: 'ตำแหน่งกรรมการองค์กรภาคี',
-        plural: 'ตำแหน่งกรรมการองค์กรภาคี',
+        singular: 'ตำแหน่งกรรมการองค์กร',
+        plural: 'ตำแหน่งกรรมการองค์กร',
     },
     fields: [
         {

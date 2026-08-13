@@ -17,7 +17,7 @@ export async function generateMetadata({
         return {}
     }
 
-    const title = `${partnerData.name} - เครือข่ายองค์กรภาคีวัฒนธรรม`
+    const title = `${partnerData.name} - เครือข่ายองค์กรทางวัฒนธรรม`
     const description = partnerData.description || `ข้อมูลเครือข่าย ประธาน และคณะกรรมการของ ${partnerData.name} จังหวัดเชียงราย`
 
     return {
@@ -73,7 +73,7 @@ export default async function CulturalPartnerDetailPage({
                 <div className="container mx-auto px-4 relative z-10 text-center">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md border border-base-200 text-sm font-medium text-primary shadow-sm mb-6">
                         <span className="w-2 h-2 rounded-full bg-accent" />
-                        เครือข่ายองค์กรภาคีวัฒนธรรม
+                        เครือข่ายองค์กรทางวัฒนธรรม
                     </div>
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary tracking-tight font-display">
                         {partner.name}
@@ -91,7 +91,7 @@ export default async function CulturalPartnerDetailPage({
                 <div className="breadcrumbs text-sm text-base-content/60 font-light">
                     <ul>
                         <li><Link href="/" className="hover:text-primary transition-colors">หน้าแรก</Link></li>
-                        <li><Link href="/cultural-networks/partners" className="hover:text-primary transition-colors">เครือข่ายองค์กรภาคีวัฒนธรรม</Link></li>
+                        <li><Link href="/cultural-networks/partners" className="hover:text-primary transition-colors">เครือข่ายองค์กรทางวัฒนธรรม</Link></li>
                         <li className="text-primary font-medium">{partner.name}</li>
                     </ul>
                 </div>
@@ -109,7 +109,7 @@ export default async function CulturalPartnerDetailPage({
                                 </div>
                                 <div>
                                     <h2 className="text-2xl font-bold text-primary font-display">
-                                        คณะผู้บริหารและกรรมการองค์กรภาคี
+                                        คณะผู้บริหารและกรรมการองค์กรทางวัฒนธรรม
                                     </h2>
                                     <p className="text-sm text-base-content/60 font-light">
                                         รายนามผู้นำและคณะทำงานขับเคลื่อนองค์กร

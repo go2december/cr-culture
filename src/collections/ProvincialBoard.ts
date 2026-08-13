@@ -20,7 +20,7 @@ export const ProvincialBoard: CollectionConfig = {
             defaultValue: 'manual',
             options: [
                 { label: 'ป้อนข้อมูลเอง', value: 'manual' },
-                { label: 'ดึงจากประธานเครือข่ายองค์กรภาคีวัฒนธรรม', value: 'partner' },
+                { label: 'ดึงจากประธานเครือข่ายองค์กรทางวัฒนธรรม', value: 'partner' },
                 { label: 'ดึงจากประธานสภาวัฒนธรรมอำเภอ', value: 'district' },
             ],
             admin: {
