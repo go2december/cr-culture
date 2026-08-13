@@ -40,10 +40,10 @@ export const CulturalPartnerMembers: CollectionConfig = {
             name: 'partner',
             type: 'relationship',
             relationTo: 'cultural-partners',
-            label: 'สังกัดองค์กรภาคีวัฒนธรรม',
+            label: 'สังกัดองค์กรวัฒนธรรม',
             required: true,
             admin: {
-                description: 'เลือกองค์กรภาคีที่สังกัด',
+                description: 'เลือกองค์กรวัฒนธรรมที่สังกัด',
             },
         },
         {
