@@ -40,7 +40,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Copy static files and public assets
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/media ./media
+# Create empty media dir — actual files come from the persistent volume mount
+RUN mkdir -p /app/media
 # Set proper permissions for prerender cache
 RUN mkdir .next
 
